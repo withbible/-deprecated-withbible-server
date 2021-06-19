@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>5장 퀴즈</title>
+    <link rel="stylesheet" type="text/css" href="/css/style-quiz.css">
+    <script type="module" src="/js/quiz5.js"></script>
+</head>
+
+<body>
+    <div class="container" id="quiz">
+        <div class="quiz-header">
+            <h2 id="question">question text</h2>
+            <ul>
+                <li>
+                    <input type="radio" id="a" name="answer" class="answer">
+                    <label id="a_text" for="a">Question</label>
+                </li>
+                <li>
+                    <input type="radio" id="b" name="answer" class="answer">
+                    <label id="b_text" for="b">Question</label>
+                </li>
+            </ul>
+        </div>
+
+        <div class="btn-group">
+            <button id="next">다음</button>
+            <button id="submit">전송</button>
+        </div>
+    </div>
+
+</body>
+
+</html>
