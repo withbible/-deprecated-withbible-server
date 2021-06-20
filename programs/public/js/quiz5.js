@@ -83,7 +83,7 @@ submit.addEventListener('click', submitquiz);
 function submitquiz() {
 
     const req = {
-        score5: score,
+        score: score,
     };
     //서버로 score값 보내준다.
     fetch("/quiz/q5", {

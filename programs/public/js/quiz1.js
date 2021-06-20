@@ -30,8 +30,19 @@ const submit = document.getElementById("submit");
 
 let currentQuiz = 0;//푼문제수
 let score = 0;//맞은 문제수
+const URL = "http://localhost:3000"
 
-loadQuiz();
+window.addEventListener('load', e => {
+    e.preventDefault();
+    console.log(`${URL}/quiz/api/q1`);
+    const options = {
+        headers: { 'Accept': 'application/json' }
+    }
+    fetch(`${URL}/quiz/api/q1`, options)
+        .then(res => res.json())
+        .then(data => console.log(data))
+        .catch(err => console.log(err))
+})
 
 function loadQuiz() {//문제를 출력
     deselectAnswers();
@@ -84,7 +95,7 @@ submit.addEventListener('click', submitquiz);
 function submitquiz() {
 
     const req = {
-        score1: score,
+        score: score,
     };
     //서버로 score값 보내준다.
     fetch("/quiz/q1", {
