@@ -9,7 +9,7 @@ const submit = document.getElementById("submit");
 let currentQuiz = 0;//푼문제수
 let score = 0;//맞은 문제수
 let quizData = [];
-const URL = "http://localhost:3000"
+const URL = "http://localhost:3000/quiz"
 
 class Quiz {
     o = 'O';
@@ -38,7 +38,7 @@ window.addEventListener('load', e => {
     const options = {
         headers: { 'Accept': 'application/json' }
     }
-    fetch(`${URL}/quiz/api/q${document.title.charAt(0)}`, options)
+    fetch(`${URL}/api/q${document.title.charAt(0)}`, options)
         .then(res => res.json())
         .then(data => {
             let quizs = new Quizs()
@@ -47,7 +47,6 @@ window.addEventListener('load', e => {
                     quizs.newQuiz(each[1], each[2])
                 }
             })
-            console.log(quizs.allQuizs);
             quizData = quizs.allQuizs;
             loadQuiz()
         })
@@ -99,22 +98,17 @@ function nextquiz() {
     }
 }
 
-submit.addEventListener('click', submitquiz);
-
 function submitquiz() {
-    const req = {
-        score: score,
-    };
-    //서버로 score값 보내준다.
-    fetch("/quiz/q1", {
+    const data = { score: score }
+    fetch(`${URL}/q${document.title.charAt(0)}`, {
         method: "POST",
         headers: {
-            "Content-Type": "application/json"
+            'Content-Type': 'application/json;charset=utf-8'
         },
-        body: JSON.stringify(req)
-    }).then((res) => res.json())//응답값을 보내줌(비동기)then을 사용한 이유
-        //res.json의 반환값은 promise임으로
-        //아래 then은 위에 then과 같이 res로 반환하기 때문에 생략가능
+        mode: 'cors',
+        body: JSON.stringify(data)
+    })
+        .then((res) => res.json())
         .then((res) => {
             if (res.success) {
                 alert("당신의 점수는 " + score + '/' + quizData.length + "입니다!");
@@ -126,3 +120,4 @@ function submitquiz() {
         });
 }
 
+submit.addEventListener('click', submitquiz);
