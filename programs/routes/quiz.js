@@ -11,7 +11,7 @@ router.get('/', (req, res) => {
   js.readFile(path.join(__dirname, "../public/database", "userdata.json"))
     .then(async function (data) {//성공했을때 then을 실행
       const user = await JSON.parse(data);
-
+      console.log(req.session)
       const sessionid = req.session.successId;//session의 아이디 값 불러옴
       const idx = user.id.indexOf(sessionid);//session아이디값의 인덱스 번호
 
@@ -50,8 +50,13 @@ router.post('/q:quizId', (req, res) => {
         const response = {};
         const sessionid = req.session.successId;
         const idx = user.id.indexOf(sessionid);
-        var whichScore = `user.score${req.params.quizId}`
-        whichScore.splice(idx, 1, score);
+
+        for (var each in user) {
+          if (each.charAt(-1) == `${req.params.quizId}`) {
+            each.splice(idx, 1, score)
+          }
+        }
+
         const newdata = user;
         response.success = true;
 
