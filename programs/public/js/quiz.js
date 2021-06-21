@@ -1,26 +1,4 @@
 
-const quizData = [
-    {
-        question: 'this는 함수를 호출할 때 결정된다.',
-        a: 'O',
-        b: 'X',
-        correct: 'a'
-    },
-    {
-        question: '명시적으로 this를 바인딩 하는 방법중에 call과 apply가 있는데 배열로 매개변수로 지정하는 것은 call이다.',
-        a: 'O',
-        b: 'X',
-        correct: 'b'
-    },
-    {
-        question: 'cannot assign to read only property "length" of object라고 에러가 나는 이유는 읽기 전용이기 때문이다.',
-        a: 'O',
-        b: 'X',
-        correct: 'a'
-    },
-];
-
-
 const quiz = document.getElementById("quiz");
 const answersEls = document.querySelectorAll('.answer');
 const question = document.getElementById("question");
@@ -28,18 +6,60 @@ const a_text = document.getElementById("a_text");
 const b_text = document.getElementById("b_text");
 const submit = document.getElementById("submit");
 
-let currentQuiz = 0;
-let score = 0;
+let currentQuiz = 0;//푼문제수
+let score = 0;//맞은 문제수
+let quizData = [];
+const URL = "http://localhost:3000"
 
-loadQuiz();
+class Quiz {
+    o = 'O';
+    x = 'X';
+
+    constructor(question, correct) {
+        this.question = question;
+        this.correct = correct;
+    }
+}
+
+class Quizs {
+    constructor() {
+        this.quizs = []
+    }
+    newQuiz(question, correct) {
+        let quiz = new Quiz(question, correct)
+        this.quizs.push(quiz)
+        // return quiz
+    }
+    get allQuizs() { return this.quizs; }
+}
+
+window.addEventListener('load', e => {
+    e.preventDefault();
+    const options = {
+        headers: { 'Accept': 'application/json' }
+    }
+    fetch(`${URL}/quiz/api/q${document.title.charAt(0)}`, options)
+        .then(res => res.json())
+        .then(data => {
+            let quizs = new Quizs()
+            data["data"].forEach(each => {
+                if (each[0] == document.title.charAt(0)) {
+                    quizs.newQuiz(each[1], each[2])
+                }
+            })
+            console.log(quizs.allQuizs);
+            quizData = quizs.allQuizs;
+            loadQuiz()
+        })
+        .catch(err => console.log(err))
+})
 
 function loadQuiz() {//문제를 출력
     deselectAnswers();
     const currentQuizdata = quizData[currentQuiz];
-
     question.innerText = currentQuizdata.question;
-    a_text.innerText = currentQuizdata.a;
-    b_text.innerText = currentQuizdata.b;
+    a_text.innerText = currentQuizdata.o;
+    b_text.innerText = currentQuizdata.x;
 }
 
 function deselectAnswers() {//체크를 지워줌
@@ -82,12 +102,11 @@ function nextquiz() {
 submit.addEventListener('click', submitquiz);
 
 function submitquiz() {
-
     const req = {
         score: score,
     };
     //서버로 score값 보내준다.
-    fetch("/quiz/q3", {
+    fetch("/quiz/q1", {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
