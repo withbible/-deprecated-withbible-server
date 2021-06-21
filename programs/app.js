@@ -45,13 +45,13 @@ app.get('/', (req, res) => {
 });
 
 app.get('/login', (req, res) => {
-    fs.readFile(__dirname + '/login.html', 'utf8', (err, text) => {
+    fs.readFile(__dirname + '/public/html/login.html', 'utf8', (err, text) => {
         res.send(text);
     });
 });
 
 app.get('/membership', (req, res) => {
-    fs.readFile(__dirname + '/membership.html', 'utf8', (err, text) => {
+    fs.readFile(__dirname + '/public/html/membership.html', 'utf8', (err, text) => {
         res.send(text);
     });
 });

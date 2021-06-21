@@ -10,7 +10,7 @@ router.get('/q:quizId', (req, res) => {
       'Content-Type': 'text/html'
     }
   }
-  res.sendFile(path.join(__dirname, "./", `quiz${req.params.quizId}.html`), options);
+  res.sendFile(path.join(__dirname, "./public/html", `quiz${req.params.quizId}.html`), options);
 });
 
 router.get('/api/q:quizId', (req, res) => {
