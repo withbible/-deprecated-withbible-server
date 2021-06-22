@@ -3,8 +3,15 @@ const fs = require('fs');
 const js = require('fs').promises;
 const router = express.Router();
 const path = require('path');
-const data = require("../data.json")
+const data = require("../data.json");
+const Quiz = require('../models/Quiz');
 
+
+var options = {
+  headers: {
+    'Content-Type': 'text/html'
+  }
+}
 
 router.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, "../public/html", "quiz.html"));
@@ -28,21 +35,29 @@ router.get('/', (req, res) => {
     .catch((err) => { console.error(err) });//실패시 catch 실행
 });
 
-router.get('/q:quizId', (req, res) => {
-  var options = {
-    headers: {
-      'Content-Type': 'text/html'
-    }
-  }
-  res.sendFile(path.join(__dirname, "../public/html", `quiz${req.params.quizId}.html`), options);
-});
+router.get('/api', (req, res) => {
+  Quiz.find().then(quizs =>
+    res.json({ success: true, quizs: quizs })
+  );
+})
 
 router.get('/api/q:quizId', (req, res) => {
   res.json(data);
 })
 
+router.get('/q:quizId', (req, res) => {
+  res.sendFile(path.join(__dirname, "../public/html", `quiz${req.params.quizId}.html`), options);
+});
+
 router.post('/q:quizId', (req, res) => {
   const score = String(req.body.score);
+  // send db
+  new Quiz({
+    chapter: req.params.quizId,
+    scoreDetail: req.body.scoreDetail
+  }).save()
+
+  // handle static file
   fs.readFile(path.join(__dirname, "../public/html", `quiz${req.params.quizId}.html`), 'utf8', (err, text) => {
     js.readFile(path.join(__dirname, "../public/database", "userdata.json"))
       .then(async function (data) {
@@ -65,6 +80,10 @@ router.post('/q:quizId', (req, res) => {
       })
       .catch((err) => { console.error(err) });
   });
+});
+
+router.get('/totaldata', (req, res) => {
+  res.sendFile(path.join(__dirname, "../public/html", "totaldata.html"), options);
 });
 
 module.exports = router;

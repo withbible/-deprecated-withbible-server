@@ -8,6 +8,7 @@ const submit = document.getElementById("submit");
 
 let currentQuiz = 0;//푼문제수
 let score = 0;//맞은 문제수
+let scoreDetail = [];
 let quizData = [];
 const URL = "http://localhost:3000/quiz"
 
@@ -87,8 +88,12 @@ function nextquiz() {
     if (answer) {//체크가 되어 있다면
         if (answer === quizData[currentQuiz].correct) {//정답일시
             score++;
+            scoreDetail[currentQuiz] = true;
         }
+        else if (answer != quizData[currentQuiz].correct)
+            scoreDetail[currentQuiz] = false;
         currentQuiz++;
+
         if (currentQuiz < quizData.length) {//푼문제가 quizdata의 길이보다 작으면
             loadQuiz();//다음문제 실행
         }
@@ -99,20 +104,23 @@ function nextquiz() {
 }
 
 function submitquiz() {
-    const data = { score: score }
+    const data = {
+        score: score,
+        scoreDetail: scoreDetail
+    }
     fetch(`${URL}/q${document.title.charAt(0)}`, {
         method: "POST",
         headers: {
-            'Content-Type': 'application/json;charset=utf-8'
+            'Content-Type': 'application/json'
         },
-        mode: 'cors',
         body: JSON.stringify(data)
     })
         .then((res) => res.json())
         .then((res) => {
+            console.log(scoreDetail);
             if (res.success) {
                 alert("당신의 점수는 " + score + '/' + quizData.length + "입니다!");
-                location.href = '/';
+                location.href = '/quiz/totaldata';
             }
         })
         .catch((err) => {
