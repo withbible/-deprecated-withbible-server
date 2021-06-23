@@ -6,12 +6,13 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Document</title>
+  <link rel="stylesheet" type="text/css" href="/css/index.css">
   <link rel="stylesheet" type="text/css" href="/css/style.css">
 </head>
 
 <body>
   <input type="button" id="loginBtn" value="checking..." onClick="location.href='/login'">
-  <div class="board">
+  <div class="board temp">
     <div class="list-container">
       <ul id="list">
         <li class="list-item"><a href="/quiz">퀴즈기능</a></li>
@@ -22,12 +23,11 @@
   </div>
 </body>
 <script>
-  var cookie = 
-  console.log(cookie);
+  var cookie =
+    console.log(cookie);
   if (cookie) {
     document.querySelector('#loginBtn').value = '로그아웃'
-  }
-  else {
+  } else {
     document.querySelector('#loginBtn').value = '로그인'
   }
 </script>
