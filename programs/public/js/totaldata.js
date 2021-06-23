@@ -52,7 +52,7 @@ window.addEventListener('load', e => {
   fetch(URL)
     .then(res => res.json())
     .then(data => {
-      const quizPoint = (data.quizs);
+      const quizPoint = countQuizPoints(data.quizs);
       for (let quiz in quizPoint) {
         dataPoints["chapter01"].push({ label: quiz, y: quizPoint[quiz] });
       }
