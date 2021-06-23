@@ -1,6 +1,8 @@
 let chart = {}
 
-let dataPoints = []
+let dataPoints = [
+  // {'q1': 2, 'q2': 3, 'q3': 2}
+]
 
 function initChartUI(chapter) {
   return chart = new CanvasJS.Chart('chartContainer', {
