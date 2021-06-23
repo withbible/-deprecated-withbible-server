@@ -36,8 +36,10 @@ router.get('/', (req, res) => {
 });
 
 router.get('/api', (req, res) => {
-  Quiz.find().then(quizs =>
-    res.json({ success: true, quizs: quizs })
+  Quiz.find().then(quizs => {
+    const result = quizs.filter(each => each.chapter == req.query.chapter);
+    res.json({ success: true, quizs: result })
+  }
   );
 })
 

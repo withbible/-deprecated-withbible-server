@@ -1,16 +1,12 @@
 let chart = {}
 
-let dataPoints = {
-  "chapter01": [
+let dataPoints = []
 
-  ]
-}
-
-function initChartUI() {
+function initChartUI(chapter) {
   return chart = new CanvasJS.Chart('chartContainer', {
     theme: 'them1',
     title: {
-      text: '챕터 1장 정답률 🤔'
+      text: `챕터 ${chapter}장 정답률 🤔`
     },
     data: [
       {
@@ -21,7 +17,7 @@ function initChartUI() {
         indexLabel: "{label}",
         indexLabelPlacement: "inside",
         indexLabelFontSize: 15,
-        dataPoints: dataPoints["chapter01"],
+        dataPoints: dataPoints,
       }
     ]
   });
@@ -46,16 +42,19 @@ function countQuizPoints(quizs) {
 }
 
 window.addEventListener('load', e => {
-  chart = initChartUI();
+  const query = new URLSearchParams(window.location.search);
+  const chapter = query.get('chapter');
+  chart = initChartUI(chapter);
 
   URL = "http://localhost:3000/quiz/api"
-  fetch(URL)
+  fetch(URL + `?${query}`)
     .then(res => res.json())
     .then(data => {
       const quizPoint = countQuizPoints(data.quizs);
       for (let quiz in quizPoint) {
-        dataPoints["chapter01"].push({ label: quiz, y: quizPoint[quiz] });
+        dataPoints.push({ label: quiz, y: quizPoint[quiz] });
       }
+      console.log(dataPoints);
       chart.render();
     })
 })

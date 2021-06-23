@@ -110,17 +110,14 @@ function submitquiz() {
     }
     fetch(`${URL}/q${document.title.charAt(0)}`, {
         method: "POST",
-        headers: {
-            'Content-Type': 'application/json'
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data)
     })
         .then((res) => res.json())
         .then((res) => {
-            console.log(scoreDetail);
             if (res.success) {
                 alert("당신의 점수는 " + score + '/' + quizData.length + "입니다!");
-                location.href = '/quiz/totaldata';
+                location.href = `/quiz/totaldata?chapter=${document.title.charAt(0)}`;
             }
         })
         .catch((err) => {
