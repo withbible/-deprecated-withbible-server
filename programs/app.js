@@ -3,6 +3,7 @@ const fs = require('fs');
 const js = require('fs').promises;
 const session = require("express-session");
 const FileStore = require('session-file-store')(session);
+const cookieParser = require('cookie-parser');
 const cors = require('cors');
 const path = require('path');
 
@@ -10,11 +11,13 @@ require(path.join(__dirname, "/public/database", "db.js"));
 var app = express();
 
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(cookieParser());
 app.use(session({
     secret: 'secret',//세션의 비밀키 암호화 시켜줌
     resave: false,//세션을 항상 저장 할 것인지 :false
-    saveUninitialized: true,//세션이 필요하기 전까진 구동x : true
+    saveUninitialized: false,//세션이 필요하기 전까진 구동x : true
     store: new FileStore(),//파일 선언
+    httpOnly : false,
     cookie: {
         maxAge:1000*60*60, //쿠키 유효시간 1시간!
     }
@@ -31,6 +34,7 @@ app.use('/vote', require('./routes/vote'))
 app.get('/', (req, res) => {
     fs.readFile(__dirname + '/public/html/index.html', 'utf8', (err, text) => {
         res.send(text);
+        console.log(req.session);
     });
 })
 
@@ -66,6 +70,7 @@ app.post("/login", (req, res) => {
                         req.session.successId = user.id[idx];//그 인덱스에 맞는 id값 세션에 저장!
                         req.session.if_logined = true;//로그인은 성공했어요
                         req.session.username = user.name[idx];//이름을 세션에 저장
+                        response.if_logined = req.session.if_logined;
                         return res.json(response);//success라는 json을 프론트로 응답해줌
                     }
                 }
