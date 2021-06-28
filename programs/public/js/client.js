@@ -1,3 +1,5 @@
+// const { response } = require("express");
+
 const id = document.querySelector("#id"),//login.html의 id='id'를 가져옴
     pw = document.querySelector("#pw"),// login.html의 id='psword'를 가져옴
     loginBtn = document.querySelector("#btn"); //login.html의 button를 가져옴

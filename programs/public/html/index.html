@@ -23,12 +23,23 @@
   </div>
 </body>
 <script>
-  var cookie =
-    console.log(cookie);
-  if (cookie) {
-    document.querySelector('#loginBtn').value = '로그아웃'
-  } else {
-    document.querySelector('#loginBtn').value = '로그인'
+  var loginBtn =  document.getElementById("loginBtn");
+  var disable = document.getElementById("list");
+  var if_logined = "<%= if_logined %>";
+
+  console.log(if_logined);
+  if (if_logined == 'true') {
+    loginBtn.value = '로그아웃'
+    //버튼 누르면 세션 삭제
+  }
+  else {
+    loginBtn.value = '로그인'
+    // disable.disabled = true;
+    //버튼 ul,li disabled작업
+  }
+
+  if(loginBtn.value == '로그아웃'){
+    document.getElementById("loginBtn").setAttribute("onClick", alert("로그아웃할게얌"));
   }
 </script>
 
