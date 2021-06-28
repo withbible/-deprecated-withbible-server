@@ -1,21 +1,11 @@
-const loginbutton = document.querySelector('#loginBtn')
 
-const param = location.search;
-var query = new URLSearchParams(param);
-var if_logined = query.get('if_logined');
-
-
-console.log("이건 : ", if_logined);
-console.log(typeof(if_logined));
-
-if (if_logined =='true') {
-  loginbutton.value = '로그아웃'
-}
-else {
-  loginbutton.value = '로그인'
-}
+// const param = location.search;
+// var query = new URLSearchParams(param);
+// var if_logined = query.get('if_logined');
 
 
+// console.log("이건 : ", if_logined);
+// console.log(typeof(if_logined));
 
 
 

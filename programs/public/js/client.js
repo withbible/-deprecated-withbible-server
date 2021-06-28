@@ -27,7 +27,7 @@ function login(){
         .then((res)=>{
             if(res.success){
                 alert("ID는 :  " + res.userId);
-                location.href = `/?if_logined=${res.if_logined}`;
+                location.href = '/';
             }
             else{
                 alert(res.msg);

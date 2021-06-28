@@ -7,9 +7,13 @@ const cookieParser = require('cookie-parser');
 const cors = require('cors');
 const path = require('path');
 
+
+
 require(path.join(__dirname, "/public/database", "db.js"));
 var app = express();
 
+app.engine('html',require('ejs').renderFile);
+app.set('view engine','html');
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(cookieParser());
 app.use(session({
@@ -29,13 +33,24 @@ app.use(cors());
 app.use('/quiz', require('./routes/quiz'))
 app.use('/vote', require('./routes/vote'))
 
+function authIsOwner(req,res){
+    if(req.session.if_logined){
+        return true;            
+    }
+    else{
+        return false;
+    }
+
+}
 
 
 app.get('/', (req, res) => {
-    fs.readFile(__dirname + '/public/html/index.html', 'utf8', (err, text) => {
-        res.send(text);
-        console.log(req.session);
-    });
+    var if_logined = req.session.if_logined;
+    res.render(__dirname + "/public/html/index.html",{if_logined:if_logined});
+    // fs.readFile(__dirname + '/public/html/index.html', 'utf8', (err, text) => {
+    //     var if_logined = req.session.if_logined;
+    //     res.send(text);
+    // });
 })
 
 app.get('/login', (req, res) => {
