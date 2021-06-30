@@ -130,3 +130,34 @@ body {
     border-radius: 25px;
     cursor: pointer;
 }
+
+.board{
+    text-align: center;
+}
+.listheader input{    
+    width: 50px;
+    margin-bottom: 10px;
+    border: 2px solid skyblue;
+    background-color: rgba(0,0,0,0);
+    color: skyblue;
+    border-radius: 10%;
+
+}
+.list-container ul{
+    list-style: none;
+}
+.list-container li{
+    margin-bottom: 10px;
+}
+.list-container a{
+    font-size: large;
+    width: 100px;
+    height: 50px;
+    border: 5px solid blue;
+    display: inline-block;
+    border-radius: 10%;
+    text-decoration: none;
+    font-family: Georgia;
+    line-height: 40px;
+}
+
