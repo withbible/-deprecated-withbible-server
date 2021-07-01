@@ -11,20 +11,22 @@
 </head>
 
 <body>
-  <input type="button" id="loginBtn" value="checking..." onClick="location.href='/login'">
-  <div class="board temp">
+  <div class="board">
+    <div class="listheader">
+      <input type="button" id="loginBtn" value="checking..." onClick="location.href='/login'">
+    </div>
     <div class="list-container">
       <ul id="list">
-        <li class="list-item"><a href="/quiz">퀴즈기능</a></li>
-        <li class="list-item"><a href="/vote">투표기능</a></li>
-        <li class="list-item"><a href="http://localhost:5000/" target="_blank">채팅기능</a></li>
+        <li class="list-item"><a href="/quiz" class="disabledlink">퀴즈기능</a></li>
+        <li class="list-item"><a href="/vote" class="disabledlink">투표기능</a></li>
+        <li class="list-item"><a href="/" class="disabledlink">채팅기능</a></li>
       </ul>
     </div>
   </div>
 </body>
 <script>
   var loginBtn =  document.getElementById("loginBtn");
-  var disable = document.getElementById("list");
+  
   var if_logined = "<%= if_logined %>";
 
   console.log(if_logined);
@@ -34,8 +36,8 @@
   }
   else {
     loginBtn.value = '로그인'
-    // disable.disabled = true;
-    //버튼 ul,li disabled작업
+    document.querySelector('.disabledlink').removeAttribute('href');
+    //모든 a href 비활성화 할것(퀴즈기능만 비활됨)
   }
 
   if(loginBtn.value == '로그아웃'){
