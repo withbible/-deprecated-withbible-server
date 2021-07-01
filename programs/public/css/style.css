@@ -137,13 +137,13 @@ body {
 .listheader input{    
     width: 50px;
     margin-bottom: 10px;
-    border: 2px solid skyblue;
+    border: 5px solid #166cea;
     background-color: rgba(0,0,0,0);
-    color: skyblue;
+    color: #166cea;
+    font-weight: bold;
     border-radius: 10%;
-
 }
-.list-container ul{
+/* .list-container ul{
     list-style: none;
 }
 .list-container li{
@@ -159,5 +159,5 @@ body {
     text-decoration: none;
     font-family: Georgia;
     line-height: 40px;
-}
+} */
 

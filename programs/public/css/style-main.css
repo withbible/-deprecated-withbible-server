@@ -1,7 +1,9 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
 
 
-
+li{
+	list-style-type: none;
+}
 *{margin: 0; padding: 0; box-sizing: border-box;}
 
 body{
@@ -36,16 +38,12 @@ h1 {
     font-size: 40px;
     border-bottom: 1px solid #eaeaea;
 }
-#list {
-    margin: 20px 1000;
-    margin-left: 30px;
-}
 a:link {color:#000;}
 a:hover{color: rgb(69, 136, 199);}
 .list-item {
     border-bottom: 1px solid #eaeaea;
-    margin-right: 32px;
-    padding: 16px 0;
+    text-align: center;
+    padding: 16px 0 0;
     font-size: 20px;
 }
 #exit{
@@ -59,6 +57,20 @@ a:hover{color: rgb(69, 136, 199);}
     cursor: pointer;
     border-bottom-left-radius: 25px;
     border-bottom-right-radius: 25px;
+    bottom: 30px;
+    border-left-color: #000;
+}
+#btn{
+    background-color: #166cea;
+    display: block;
+    width: 100%;
+    padding: 20px;
+    color: #fff;
+    border: none;
+    font-size: 30px;
+    cursor: pointer;
+    border-top-left-radius: 25px;
+    border-top-right-radius: 25px;
     bottom: 30px;
     border-left-color: #000;
 }
