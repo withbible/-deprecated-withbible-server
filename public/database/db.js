@@ -1,11 +1,12 @@
 const mongoose = require('mongoose');
+require('dotenv').config();
 
 // Map global promises
 mongoose.Promise = global.Promise;
 
 // Mongoose Connect
 mongoose.connect(
-  'mongodb+srv://Brave:dms!15096@pusherpoll.yj9ql.mongodb.net/test',
+  process.env.MONGO_URL,
   {
     useNewUrlParser: true,
     useUnifiedTopology: true
