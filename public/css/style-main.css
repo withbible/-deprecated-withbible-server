@@ -1,9 +1,9 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
 
 
-li{
-	list-style-type: none;
-}
+li{ list-style-type: none; }
+a{ text-decoration: none;}
+
 *{margin: 0; padding: 0; box-sizing: border-box;}
 
 body{
