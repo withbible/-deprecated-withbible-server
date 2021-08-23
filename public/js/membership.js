@@ -1,12 +1,14 @@
-const id = document.querySelector("#id"),//membership.html의 id='id'를 가져옴
-    pw = document.querySelector("#pw"),//membership.html의 id='pw'를 가져옴
-    repw = document.querySelector("#repw"),//membership.html의 id='repw'를 가져옴
-    names = document.querySelector("#names"),//membership.html의 id='name'를 가져옴
-    email = document.querySelector("#email"),//membership.html의 id='email'를 가져옴
-    age = document.querySelector("#age"),//membership.html의 id='age'를 가져옴
-    mbutton = document.querySelector("#btn");//membership.html의 회원가입버튼을 가져옴
+const id = document.querySelector("#id"),
+    pw = document.querySelector("#pw"),
+    repw = document.querySelector("#repw"),
+    names = document.querySelector("#names"),
+    email = document.querySelector("#email"),
+    age = document.querySelector("#age"),
+    mbutton = document.querySelector("#btn");
 
-mbutton.addEventListener("click", checkmembership);//클릭을 하면 login 함수 실행
+const URL = "http://localhost:3000/users/membership";
+
+mbutton.addEventListener("click", checkmembership);
 
 function check_Id(id) {
     var regExp = /^[A-za-z0-9]{4,12}$/;//영문과 숫자를 섞어 4~12자리
@@ -64,7 +66,7 @@ function checkmembership() {
         };
 
         //서버로 id, pw값 보내줌(membership.js -> app.js)
-        fetch("/membership", {
+        fetch("/users/membership", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"//json으로 보내준다
@@ -76,7 +78,7 @@ function checkmembership() {
             .then((res) => {
                 if (res.success) {
                     alert("회원가입을 축하드립니다. 이제 공부하세요:)");
-                    location.href = '/login';
+                    location.href = '/users/login';
                 }
                 else {
                     alert(res.msg);
