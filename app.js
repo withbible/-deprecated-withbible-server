@@ -28,6 +28,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 
 app.use('/quiz', require('./routes/quiz'));
+app.use('/quiz/v2', require('./routes/quiz_v2'))
 app.use('/vote', require('./routes/vote'));
 app.use('/users', require('./routes/user'));
 
@@ -41,6 +42,6 @@ app.get('/', (req, res) => {
     // });
 })
 
-app.listen(3000, function () {
-    console.log('app listening on port 3000!');
+app.listen(5000, function () {
+    console.log('app listening on port 5000!');
 });
