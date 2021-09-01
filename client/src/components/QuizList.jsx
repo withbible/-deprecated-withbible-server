@@ -11,21 +11,22 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const QuizList = ({ subjects }) => {
+const QuizList = ({ quizInfo }) => {
   const classes = useStyles();
-  const subjectList = subjects.map((subject, index) => (
-    <div>
-      <h3 key={index}>{subject.key}</h3>
+  return (
+    <>
+      <h3>{quizInfo.key}</h3>
       <Grid container spacing={3}>
-        {range(1, Math.floor(subject.doc_count / 2), 1).map((quizChapterId) => (
-          <Grid item>
-            <Paper className={classes.child}>{quizChapterId}</Paper>
-          </Grid>
-        ))}
+        {range(1, Math.floor(quizInfo.doc_count / 2), 1).map(
+          (quizChapterId, index) => (
+            <Grid item key={index}>
+              <Paper className={classes.child}>챕터{quizChapterId}</Paper>
+            </Grid>
+          )
+        )}
       </Grid>
-    </div>
-  ));
-  return <div>{subjectList}</div>;
+    </>
+  );
 };
 
 export default QuizList;
