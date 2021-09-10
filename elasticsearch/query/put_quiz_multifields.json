@@ -1,0 +1,39 @@
+{
+  "settings": {
+    "analysis":{
+      "analyzer": {
+        "my_custom_analyzer": {
+          "type": "custom",
+          "tokenizer": "nori_tokenizer",
+          "filter": [
+            "my_stop_filter"
+          ]
+        }
+      }, 
+      "filter": {
+        "my_stop_filter": {
+          "type": "nori_part_of_speech",
+          "stoptags": [
+            "E", "IC", "J", "MAG", "MAJ",
+            "MM", "SP", "SSC", "SSO", "SC",
+            "SE", "XPN", "XSA", "XSN", "XSV",
+            "UNA", "NA", "VSV", "NNB"
+          ]
+        }
+      }
+    }
+  }, 
+  "mappings": {
+    "properties":{
+      "message": {
+        "type": "text",
+        "fields": {
+          "nori": {
+            "type": "text",
+            "analyzer": "my_custom_analyzer" 
+        } 
+        }
+      }
+    }
+  }
+}

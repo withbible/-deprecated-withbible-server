@@ -1,10 +1,9 @@
 # ELK
 
 ## Setup
+- Install `Ubuntu` >  `JDK`.
 
-- `ubuntu` 환경에 `JDK8` 수동설치.
-
-- Check [본인 os에 맞는 버전 찾기](https://www.elastic.co/kr/support/matrix).
+- Check [Right OS version](https://www.elastic.co/kr/support/matrix).
 
 - Download [ELK](https://www.elastic.co/kr/downloads/).
 
@@ -12,13 +11,10 @@
 
 ```bash
 # Install at admin
-sudo dpkg -i <file>
+sudo apt install <service.name>
 
 # Set service command
 sudo systemctl enable <service name>.service
-
-# Aware logstash service (WSL issue)
-/usr/share/logstash/bin/system-install /etc/logstash/startup.options sysv
 ```
 
 ### Everytime

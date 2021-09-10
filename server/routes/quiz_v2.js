@@ -3,7 +3,7 @@ const quizRouter = express.Router();
 const axios = require('axios');
 
 quizRouter.get('/', async (_, res) => {
-  await axios.get("http://localhost:9200/quiz/_search",
+  await axios.get("http://210.123.255.141:9200/quiz/_search",
     {
       headers: { "Content-Type": "application/json" },
       data: {
@@ -38,7 +38,7 @@ quizRouter.get('/', async (_, res) => {
 })
 quizRouter.get('/:keyword', async (req, res) => {
   const { keyword } = req.params;
-  await axios.get("http://localhost:9200/quiz/_search",
+  await axios.get("http://210.123.255.141:9200/quiz/_search",
     {
       headers: { "Content-Type": "application/json" },
       data: {
@@ -54,7 +54,7 @@ quizRouter.get('/:keyword', async (req, res) => {
             ],
             "filter": [
               {
-                "match": { "message": keyword }
+                "match": { "message.nori": keyword }
               }
             ]
           }
