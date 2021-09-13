@@ -1,36 +1,42 @@
-var express = require('express');
-const session = require("express-session");
-const FileStore = require('session-file-store')(session);
-const cookieParser = require('cookie-parser');
-const cors = require('cors');
 const path = require('path');
 
+const express = require('express');
+const cookieParser = require('cookie-parser');
+const morgan = require('morgan');
+const cors = require('cors');
+const session = require("express-session");
+const FileStore = require('session-file-store')(session);
 
 require(path.join(__dirname, "/public/database", "db.js"));
-var app = express();
 
-app.engine('html', require('ejs').renderFile);
-app.set('view engine', 'html');
+
+const app = express();
+
+// app.engine('html', require('ejs').renderFile);
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'pug');
+
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(morgan('dev'));
 app.use(cookieParser());
 app.use(session({
-    secret: 'secret',//세션의 비밀키 암호화 시켜줌
-    resave: false,//세션을 항상 저장 할 것인지 :false
-    saveUninitialized: false,//세션이 필요하기 전까진 구동x : true
-    store: new FileStore(),//파일 선언
+    secret: 'secret',
+    resave: false,
+    saveUninitialized: false,
+    store: new FileStore(),
     httpOnly: false,
     cookie: {
-        maxAge: 1000 * 60 * 60, //쿠키 유효시간 1시간!
+        maxAge: 1000 * 60 * 60,
     }
 }));
 app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(express.urlencoded({ extended: false }));
 app.use(cors());
 
 app.use('/quiz', require('./routes/quiz'));
 app.use('/quiz/v2', require('./routes/quiz_v2'))
 app.use('/vote', require('./routes/vote'));
-app.use('/users', require('./routes/user'));
+app.use('/user', require('./routes/user'));
 
 
 app.get('/', (req, res) => {
@@ -42,6 +48,18 @@ app.get('/', (req, res) => {
     // });
 })
 
+app.use((req, res, next) => {
+    const error = new Error(`${req.method} ${req.url} 라우터가 없습니다.`);
+    error.status = 404;
+    next(error);
+})
+app.use((err, req, res, next) => {
+    res.status(err.status || 500);
+    res.render('index', {
+        'title': 'Not Found',
+        'error': err.message
+    });
+})
 app.listen(5000, function () {
     console.log('app listening on port 5000!');
 });
