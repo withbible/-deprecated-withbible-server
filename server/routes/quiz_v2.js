@@ -1,18 +1,19 @@
 const express = require('express');
 const quizRouter = express.Router();
 const axios = require('axios');
+require('dotenv').config();
+
+PRODUCTION_URL = process.env.ELK_DOMAIN + "/quiz/_search"
+DEV_URL = "http://localhost:9200/quiz/_search"
 
 quizRouter.get('/', async (_, res) => {
-  await axios.get("http://210.123.255.141:9200/quiz/_search",
+  await axios.get(DEV_URL,
     {
       headers: { "Content-Type": "application/json" },
       data: {
         "query": {
           "bool": {
             "must_not": [
-              {
-                "match": { "pass": "pass" }
-              },
               {
                 "match": { "subject_category": "subject_category" }
               }
@@ -38,21 +39,16 @@ quizRouter.get('/', async (_, res) => {
 })
 quizRouter.get('/:keyword', async (req, res) => {
   const { keyword } = req.params;
-  await axios.get("http://210.123.255.141:9200/quiz/_search",
+  await axios.get(DEV_URL,
     {
       headers: { "Content-Type": "application/json" },
       data: {
         "query": {
           "bool": {
-            "must_not": [
+            "should": [
               {
-                "match": { "pass": "pass" }
+                "match": { "answer": keyword }
               },
-              {
-                "match": { "subject_category": "subject_category" }
-              }
-            ],
-            "filter": [
               {
                 "match": { "message.nori": keyword }
               }
@@ -76,5 +72,28 @@ quizRouter.get('/:keyword', async (req, res) => {
       res.status(500).json({ message: err.message });
     })
 })
-
+quizRouter.get('/content/:chapterid', async (req, res) => {
+  const { chapterid } = req.params;
+  await axios.get(DEV_URL,
+    {
+      headers: { "Content-Type": "application/json" },
+      data: {
+        "query": {
+          "bool": {
+            "should": [
+              {
+                "match": { "chapter_category": chapterid }
+              }
+            ]
+          }
+        }
+      }
+    })
+    .then(result => {
+      res.json({ data: result.data.hits });
+    })
+    .catch(err => {
+      res.status(500).json({ message: err.message });
+    })
+})
 module.exports = quizRouter;
