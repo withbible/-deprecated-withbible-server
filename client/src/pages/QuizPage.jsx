@@ -4,36 +4,46 @@ import axios from "axios";
 
 import { Button, Checkbox, Paper } from "@material-ui/core";
 
-function getShuffleAnswerKeys() {
-  const candidate = ["answer", "wrong_1", "wrong_2", "wrong_3"];
-  const shuffle = [];
-  while (candidate.length > 0)
-    shuffle.push(
-      candidate.splice(Math.floor(Math.random() * candidate.legnth), 1)[0]
-    );
-  return [...shuffle.slice()];
+let CANDIDATE = ["answer", "wrong_1", "wrong_2", "wrong_3"];
+
+function fisherYatesShuffle(arr) {
+  for (var i = arr.length - 1; i > 0; i--) {
+    var j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return [...arr];
 }
 
 const QuizPage = memo((_) => {
   const { chapterId } = useParams();
   const [quizTitle, setQuizTitle] = useState("");
-  const [currentQuiz, setCurrentQuiz] = useState({});
+  const [quizInstruction, setQuizInstruction] = useState("");
   const [quizNum, setQuizNum] = useState(0);
-
   const [quizTable, setQuizTable] = useState({});
-  const [currentInstruction, setCurrentInstruction] = useState("");
-  const shuffleAnswerKeys = useMemo((_) => getShuffleAnswerKeys(), []);
-  const [shuffleAnswer, setShuffleAnswer] = useState(shuffleAnswerKeys);
+  const [shuffleAnswerKeys, setShuffleAnswerKeys] = useState({});
   const [shuffleAnswerUI, setShuffleAnswerUI] = useState([]);
 
   const [selectedValue, setSelectedValue] = useState("");
   const isFirstRender = useRef(true);
 
+  // Need Map use size
   const quizLength = Object.keys(quizTable).length;
   const minMove = quizNum === 0;
   const maxMove = quizNum + 1 === quizLength;
 
-  useEffect(
+  useMemo(
+    (_) => {
+      setShuffleAnswerKeys((_) => {
+        let result = {};
+        for (let index = 0; index < quizLength; index++) {
+          result[index] = fisherYatesShuffle(CANDIDATE);
+        }
+        return { ...result };
+      });
+    },
+    [quizLength]
+  );
+  useMemo(
     (_) => {
       axios
         .get(`/quiz/v2/content/${chapterId}`)
@@ -44,7 +54,6 @@ const QuizPage = memo((_) => {
           }
           setQuizTable({ ...data.data.hits });
           setQuizTitle(data.data.hits[0]["_source"]["subject_category"]);
-          setCurrentInstruction(data.data.hits[0]["_source"]["instruction"]);
         })
         .catch((err) => console.log(err.message));
     },
@@ -56,18 +65,10 @@ const QuizPage = memo((_) => {
         isFirstRender.current = false;
         return;
       }
-      console.log("is render");
       if (!selectedValue) setSelectedValue(quizTable[quizNum]["cache"]);
-
-      /**
-       * Dev
-          setCurrentQuiz((_) => {
-            if (!selectedValue) setSelectedValue(quizTable[quizNum]["cache"]);
-            return { ...quizTable[quizNum] };
-        });
-       */
+      setQuizInstruction(quizTable[quizNum]["_source"]["instruction"]);
       setShuffleAnswerUI([
-        ...shuffleAnswer.map((value, index) => {
+        ...shuffleAnswerKeys[quizNum].map((value, index) => {
           return (
             <div key={index}>
               {/* 체크해제 가능한가 */}
@@ -84,20 +85,38 @@ const QuizPage = memo((_) => {
         }),
       ]);
     },
-    [quizTable, quizNum, shuffleAnswer, selectedValue]
+    [quizTable, quizNum, shuffleAnswerKeys, selectedValue]
   );
 
   const movePrevious = (_) => {
     setQuizNum((quizNum) => quizNum - 1);
+    quizTable[quizNum]["cache"] = selectedValue;
+
     setSelectedValue("");
   };
   const moveNext = (_) => {
     setQuizNum((quizNum) => quizNum + 1);
     quizTable[quizNum]["cache"] = selectedValue;
+
+    if (shuffleAnswerKeys[quizNum][selectedValue] === "answer")
+      quizTable[quizNum]["correct"] = true;
+    else quizTable[quizNum]["correct"] = false;
+
     setSelectedValue("");
   };
   const onClick = (_) => {
-    // cache 집계
+    quizTable[quizNum]["cache"] = selectedValue;
+
+    if (shuffleAnswerKeys[quizNum][selectedValue] === "answer")
+      quizTable[quizNum]["correct"] = true;
+    else quizTable[quizNum]["correct"] = false;
+
+    const submitSheet = Object.values(quizTable).map(
+      (each) => each["correct"] || false
+    );
+
+    //submit
+    console.log(submitSheet);
   };
   return (
     <>
@@ -109,8 +128,9 @@ const QuizPage = memo((_) => {
           Question # {quizNum + 1} / {Object.keys(quizTable).length}
         </span>
       </div>
+      {/* Paper에 패딩값 필요 */}
       <Paper elevation={4}>
-        <h3>{currentInstruction}</h3>
+        <h3>{quizInstruction}</h3>
 
         {shuffleAnswerUI}
 
