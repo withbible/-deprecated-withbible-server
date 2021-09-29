@@ -81,11 +81,17 @@ userRouter.get("/me", (req, res) => {
     res.status(400).json({ message: err.message });
   }
 });
-userRouter.patch("/record", async (req, res) => {
+userRouter.patch("/record/:chapterid", async (req, res) => {
   try {
     if (!req.user)
       throw new Error("권한이 없습니다.");
-
+    const { chapterid } = req.params;
+    await User.updateOne(
+      { _id: req.user.id },
+      { "$set": { "quizRecord": req.body.sheet } },
+      { new: true }
+    );
+    res.json({ message: `${chapterid} is updated` });
   } catch (err) {
     res.status(400).json({ message: err.message });
   }

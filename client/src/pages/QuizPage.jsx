@@ -104,7 +104,8 @@ const QuizPage = memo((_) => {
 
     setSelectedValue("");
   };
-  const onClick = (_) => {
+  const onClick = async (e) => {
+    e.preventDefault();
     quizTable[quizNum]["cache"] = selectedValue;
 
     if (shuffleAnswerKeys[quizNum][selectedValue] === "answer")
@@ -114,9 +115,20 @@ const QuizPage = memo((_) => {
     const submitSheet = Object.values(quizTable).map(
       (each) => each["correct"] || false
     );
-
-    //submit
-    console.log(submitSheet);
+    const submitObject = { sheet: {} };
+    submitObject["sheet"][`${chapterId}`] = submitSheet;
+    console.log(submitObject);
+    await axios({
+      url: `/user/record/${chapterId}`,
+      method: "patch",
+      data: submitObject,
+    })
+      .then(({data}) => {
+        console.log(data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
   return (
     <>

@@ -9,8 +9,8 @@ const UserSchema = new mongoose.Schema({
       createdAt: { type: Date, required: true },
     }],
   quizRecord: {
-    type: Map,
-    of: String
+    type: Object,
+    of: [String]
   }
 }, { timestamps: true })
 
