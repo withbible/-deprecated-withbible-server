@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useMemo, memo } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, Prompt } from "react-router-dom";
 import axios from "axios";
 
 import { Button, Checkbox, Paper } from "@material-ui/core";
@@ -24,6 +24,7 @@ const QuizPage = memo((_) => {
   const [shuffleAnswerUI, setShuffleAnswerUI] = useState([]);
 
   const [selectedValue, setSelectedValue] = useState("");
+  const [isNotSubmit, setIsNotSubmit] = useState(true);
   const isFirstRender = useRef(true);
 
   // Need Map use size
@@ -87,6 +88,13 @@ const QuizPage = memo((_) => {
     },
     [quizTable, quizNum, shuffleAnswerKeys, selectedValue]
   );
+  useEffect((_) => {
+    if (isNotSubmit) {
+      window.onbeforeunload = () => true;
+    } else {
+      window.onbeforeunload = undefined;
+    }
+  });
 
   const movePrevious = (_) => {
     setQuizNum((quizNum) => quizNum - 1);
@@ -100,6 +108,7 @@ const QuizPage = memo((_) => {
 
     if (shuffleAnswerKeys[quizNum][selectedValue] === "answer")
       quizTable[quizNum]["correct"] = true;
+    else if (!selectedValue) quizTable[quizNum]["correct"] = null;
     else quizTable[quizNum]["correct"] = false;
 
     setSelectedValue("");
@@ -110,11 +119,10 @@ const QuizPage = memo((_) => {
 
     if (shuffleAnswerKeys[quizNum][selectedValue] === "answer")
       quizTable[quizNum]["correct"] = true;
+    else if (!selectedValue) quizTable[quizNum]["correct"] = null;
     else quizTable[quizNum]["correct"] = false;
 
-    const submitSheet = Object.values(quizTable).map(
-      (each) => each["correct"] || false
-    );
+    const submitSheet = Object.values(quizTable).map((each) => each["correct"]);
     const submitObject = { sheet: {} };
     submitObject["sheet"][`${chapterId}`] = submitSheet;
     console.log(submitObject);
@@ -123,15 +131,20 @@ const QuizPage = memo((_) => {
       method: "patch",
       data: submitObject,
     })
-      .then(({data}) => {
+      .then(({ data }) => {
         console.log(data);
       })
       .catch((err) => {
         console.log(err);
-      });
+      })
+      .finally(setIsNotSubmit(false));
   };
   return (
     <>
+      <Prompt
+        when={isNotSubmit}
+        message="퀴즈를 제출 하지 않았습니다. 그래도 나가시겠습니까?"
+      />
       <div style={{ overflow: "hidden", padding: "20px 0" }}>
         <h2 style={{ float: "left", margin: 0 }}>
           {quizTitle} (챕터 {chapterId.charAt(chapterId.length - 1)})
@@ -147,7 +160,6 @@ const QuizPage = memo((_) => {
         {shuffleAnswerUI}
 
         <div style={{ marginTop: 20 }}>
-          {/* 새로고침, 홈으로 갈시 저장 alert 필요 */}
           <Button
             variant="outlined"
             style={{ float: "left" }}

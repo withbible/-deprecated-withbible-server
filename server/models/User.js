@@ -10,7 +10,7 @@ const UserSchema = new mongoose.Schema({
     }],
   quizRecord: {
     type: Object,
-    of: [String]
+    of: [Boolean || null]
   }
 }, { timestamps: true })
 
