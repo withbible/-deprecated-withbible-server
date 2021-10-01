@@ -1,7 +1,9 @@
-const express = require('express');
-const quizRouter = express.Router();
-const axios = require('axios');
 require('dotenv').config();
+const express = require('express');
+const axios = require('axios');
+
+const quizRouter = express.Router();
+const User = require("../models/User");
 
 PRODUCTION_URL = process.env.ELK_DOMAIN + "/quiz/_search"
 DEV_URL = "http://localhost:9200/quiz/_search"
@@ -95,5 +97,19 @@ quizRouter.get('/content/:chapterid', async (req, res) => {
     .catch(err => {
       res.status(500).json({ message: err.message });
     })
+})
+quizRouter.get('/chart/:chapterid', async (req, res) => {
+  const { chapterid } = req.params;
+  const filter = {}
+  filter[`quizRecord.${chapterid}`] = { "$exists": true }
+
+  await User.find(filter)
+    .then(result => {
+      res.json({ data: result });
+    })
+    .catch(err => {
+      res.status(500).json({ message: err.message });
+    })
+
 })
 module.exports = quizRouter;
