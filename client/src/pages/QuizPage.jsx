@@ -1,8 +1,17 @@
-import React, { useState, useEffect, useRef, useMemo, memo } from "react";
-import { useParams, Prompt } from "react-router-dom";
+import React, {
+  useContext,
+  useState,
+  useEffect,
+  useRef,
+  useMemo,
+  memo,
+} from "react";
+import { useParams, Prompt, Link } from "react-router-dom";
 import axios from "axios";
 
 import { Button, Checkbox, Paper } from "@material-ui/core";
+
+import { QuizContext } from "../context/QuizContext";
 
 let CANDIDATE = ["answer", "wrong_1", "wrong_2", "wrong_3"];
 
@@ -16,7 +25,8 @@ function fisherYatesShuffle(arr) {
 
 const QuizPage = memo((_) => {
   const { chapterId } = useParams();
-  const [quizTitle, setQuizTitle] = useState("");
+  const { quizTitle, setQuizTitle } = useContext(QuizContext);
+
   const [quizInstruction, setQuizInstruction] = useState("");
   const [quizNum, setQuizNum] = useState(0);
   const [quizTable, setQuizTable] = useState({});
@@ -49,6 +59,7 @@ const QuizPage = memo((_) => {
       axios
         .get(`/quiz/v2/content/${chapterId}`)
         .then(({ data }) => {
+          console.log("is it render");
           if (isFirstRender.current) {
             isFirstRender.current = false;
             return;
@@ -58,7 +69,7 @@ const QuizPage = memo((_) => {
         })
         .catch((err) => console.log(err.message));
     },
-    [chapterId]
+    [chapterId, setQuizTitle]
   );
   useEffect(
     (_) => {
@@ -88,13 +99,13 @@ const QuizPage = memo((_) => {
     },
     [quizTable, quizNum, shuffleAnswerKeys, selectedValue]
   );
-  useEffect((_) => {
-    if (isNotSubmit) {
-      window.onbeforeunload = () => true;
-    } else {
-      window.onbeforeunload = undefined;
-    }
-  });
+  useEffect(
+    (_) => {
+      if (maxMove) setIsNotSubmit(false);
+      else setIsNotSubmit(true);
+    },
+    [maxMove]
+  );
 
   const movePrevious = (_) => {
     setQuizNum((quizNum) => quizNum - 1);
@@ -115,6 +126,7 @@ const QuizPage = memo((_) => {
   };
   const onClick = async (e) => {
     e.preventDefault();
+
     quizTable[quizNum]["cache"] = selectedValue;
 
     if (shuffleAnswerKeys[quizNum][selectedValue] === "answer")
@@ -136,9 +148,14 @@ const QuizPage = memo((_) => {
       })
       .catch((err) => {
         console.log(err);
-      })
-      .finally(setIsNotSubmit(false));
+      });
   };
+
+  if (isNotSubmit) {
+    window.onbeforeunload = () => true;
+  } else {
+    window.onbeforeunload = undefined;
+  }
   return (
     <>
       <Prompt
@@ -176,14 +193,13 @@ const QuizPage = memo((_) => {
               color="secondary"
               onClick={onClick}
             >
-              Submit
+              <Link to={`/quiz/chart/${chapterId}`}>Submit</Link>
             </Button>
           ) : (
             <Button
               variant="outlined"
               style={{ float: "right" }}
               color="primary"
-              disabled={maxMove && true}
               onClick={moveNext}
             >
               Next
