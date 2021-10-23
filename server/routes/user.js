@@ -6,18 +6,20 @@ const User = require("../models/User");
 
 
 userRouter.post("/register", async (req, res) => {
+  const { username, password, name } = req.body;
   try {
-    if (req.body.password.length < 6)
+    if (password.length < 6)
       throw new Error("비밀번호를 최소 6자 이상으로 해주세요.");
-    if (req.body.username.length < 3)
+    if (username.length < 3)
       throw new Error("username은 3자 이상으로 해주세요.");
 
-    const hashedPassword = await hash(req.body.password, 10);
+    const hashedPassword = await hash(password, 10);
     const user = await new User({
-      name: req.body.name,
-      username: req.body.username,
+      name,
+      username,
       hashedPassword,
-      sessions: [{ createdAt: new Date() }]
+      sessions: [{ createdAt: new Date() }],
+      quizRecord: {}
     }).save();
     const session = user.sessions[0];
     res.json({
@@ -67,15 +69,17 @@ userRouter.patch("/logout", async (req, res) => {
   }
 });
 userRouter.get("/me", (req, res) => {
+  const { id, name, quizRecord } = req.user;
   try {
     if (!req.user)
       throw new Error("권한이 없습니다.");
 
     res.json({
       message: "success",
-      userId: req.user.id,
+      userId: id,
       sessionId: req.headers.sessionid,
-      name: req.user.name
+      name,
+      quizRecord
     });
   } catch (err) {
     res.status(400).json({ message: err.message });
@@ -88,8 +92,11 @@ userRouter.patch("/record/:chapterid", async (req, res) => {
     const { chapterid } = req.params;
     await User.updateOne(
       { _id: req.user.id },
-      { "$set": { "quizRecord": req.body.sheet } },
-      { new: true }
+      {
+        "$set": {
+          [`quizRecord.${chapterid}`]: req.body.sheet[chapterid]
+        }
+      },
     );
     res.json({ message: `${chapterid} is updated` });
   } catch (err) {

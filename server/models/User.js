@@ -9,8 +9,7 @@ const UserSchema = new mongoose.Schema({
       createdAt: { type: Date, required: true },
     }],
   quizRecord: {
-    type: Object,
-    of: [Boolean || null]
+    type: Object, of: [Boolean || null] 
   }
 }, { timestamps: true })
 
