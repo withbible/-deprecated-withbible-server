@@ -1,8 +1,12 @@
-import React from "react";
+import React, { useContext, useEffect } from "react";
 import { Link } from "react-router-dom";
+
 import { Grid, Paper } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
+import { yellow } from "@material-ui/core/colors";
 import { ScrollMenu } from "react-horizontal-scrolling-menu";
+
+import { AuthContext } from "../context/AuthContext";
 
 const DIVID_NUM = 10;
 const SUBJECT_CODE = {
@@ -27,21 +31,37 @@ const useStyles = makeStyles((theme) => ({
   child: {
     padding: theme.spacing(3),
   },
+  yellowPaper: {
+    padding: theme.spacing(3),
+    backgroundColor: yellow[300],
+  },
 }));
 
 const QuizList = ({ quizInfo }) => {
   const classes = useStyles();
+  const { record } = useContext(AuthContext);
   const lastChapterId = Math.floor(quizInfo.doc_count / DIVID_NUM + 1);
 
+  useEffect(() => {
+    if (!record) return;
+  }, [record]);
+
   const QuizItem = ({ chapterId }) => {
+    const CHAPTER_CODE = SUBJECT_CODE[quizInfo.key] + chapterId;
     return (
       <Grid className={classes.grid}>
-        <Paper className={classes.child}>
-          <Link
-            to={`/quiz/v2/content/${SUBJECT_CODE[quizInfo.key] + chapterId}`}
-          >
-            챕터{chapterId}
-          </Link>
+        {/* 
+          1. 로그인 > 랜더링이 완료되어 색이 입혀지지 않는다. 새로고침을 해야한다. 
+          2. 삼항연산자로 조건을 넣고 있는데, 진행중임을 나타내느 bluePaper는 어떻게 넣을 것인가
+        */}
+        <Paper
+          className={
+            record && Object.keys(record).includes(CHAPTER_CODE)
+              ? classes.yellowPaper
+              : classes.child
+          }
+        >
+          <Link to={`/quiz/${CHAPTER_CODE}`}>챕터{chapterId}</Link>
         </Paper>
       </Grid>
     );
@@ -60,11 +80,13 @@ const QuizList = ({ quizInfo }) => {
             />
           )
         )}
-        { quizInfo.doc_count % DIVID_NUM && <QuizItem
-          key={lastChapterId}
-          chapterId={lastChapterId}
-          className={classes.item}
-        />}
+        {quizInfo.doc_count % DIVID_NUM && (
+          <QuizItem
+            key={lastChapterId}
+            chapterId={lastChapterId}
+            className={classes.item}
+          />
+        )}
       </ScrollMenu>
     </>
   );

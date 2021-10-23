@@ -5,6 +5,7 @@ export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [me, setMe] = useState();
+  const [record, setRecord] = useState();
   useEffect(() => {
     const sessionId = localStorage.getItem("sessionId");
     if (me) {
@@ -13,13 +14,14 @@ export const AuthProvider = ({ children }) => {
     } else if (sessionId) {
       axios
         .get("/user/me", { headers: { sessionid: sessionId } })
-        .then((result) =>
+        .then(({ data }) => {
           setMe({
-            userId: result.data.userId,
-            sessionId: result.data.sessionId,
-            name: result.data.name,
-          })
-        )
+            userId: data.userId,
+            sessionId: data.sessionId,
+            name: data.name,
+          });
+          setRecord({ ...data.quizRecord });
+        })
         .catch(() => {
           localStorage.removeItem("sessionId");
           delete axios.defaults.headers.common.sessionid;
@@ -27,6 +29,9 @@ export const AuthProvider = ({ children }) => {
     } else delete axios.defaults.headers.common.sessionid;
   }, [me]);
   return (
-    <AuthContext.Provider value={[me, setMe]}> {children}</AuthContext.Provider>
+    <AuthContext.Provider value={{ me, setMe, record }}>
+      {" "}
+      {children}
+    </AuthContext.Provider>
   );
 };
