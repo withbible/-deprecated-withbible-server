@@ -5,11 +5,10 @@ const axios = require('axios');
 const quizRouter = express.Router();
 const User = require("../models/User");
 
-PRODUCTION_URL = process.env.ELK_DOMAIN + "/quiz/_search"
-DEV_URL = "http://localhost:9200/quiz/_search"
+SEARCH_URL = process.env.ELK_DOMAIN + "/quiz/_search"
 
-quizRouter.get('/', async (_, res) => {
-  await axios.get(DEV_URL,
+quizRouter.get('/', async (req, res) => {
+  await axios.get(SEARCH_URL,
     {
       headers: { "Content-Type": "application/json" },
       data: {
@@ -33,7 +32,10 @@ quizRouter.get('/', async (_, res) => {
       }
     })
     .then(result => {
-      res.json({ data: result.data.aggregations });
+      res.json({
+        quizRecord: req.user?.quizRecord ?? "",
+        data: result.data.aggregations
+      });
     })
     .catch(err => {
       res.status(500).json({ message: err.message });
@@ -41,7 +43,7 @@ quizRouter.get('/', async (_, res) => {
 })
 quizRouter.get('/:keyword', async (req, res) => {
   const { keyword } = req.params;
-  await axios.get(DEV_URL,
+  await axios.get(SEARCH_URL,
     {
       headers: { "Content-Type": "application/json" },
       data: {
@@ -68,7 +70,11 @@ quizRouter.get('/:keyword', async (req, res) => {
       }
     })
     .then(result => {
-      res.json({ data: result.data.aggregations });
+      res.json({
+        keyword,
+        quizRecord: req.user?.quizRecord ?? "",
+        data: result.data.aggregations,
+      });
     })
     .catch(err => {
       res.status(500).json({ message: err.message });
@@ -76,7 +82,7 @@ quizRouter.get('/:keyword', async (req, res) => {
 })
 quizRouter.get('/content/:chapterid', async (req, res) => {
   const { chapterid } = req.params;
-  await axios.get(DEV_URL,
+  await axios.get(SEARCH_URL,
     {
       headers: { "Content-Type": "application/json" },
       data: {

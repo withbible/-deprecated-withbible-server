@@ -11,7 +11,7 @@ const RegisterPage = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [passwordCheck, setPasswordCheck] = useState("");
-  const [, setMe] = useContext(AuthContext);
+  const { setMe } = useContext(AuthContext);
   const history = useHistory();
 
   const submitHandler = async (e) => {
@@ -36,8 +36,7 @@ const RegisterPage = () => {
       history.push("/");
       toast.success("회원가입 성공!");
     } catch (err) {
-      console.log(err.response);
-      toast.error(err.response.data.message);
+      toast.error(err);
     }
   };
   return (

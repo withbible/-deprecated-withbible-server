@@ -9,7 +9,7 @@ import CustomInput from "../components/CustomInput";
 const LoginPage = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [, setMe] = useContext(AuthContext);
+  const { setMe, setRecord } = useContext(AuthContext);
   const history = useHistory();
 
   const loginHandler = async (e) => {
@@ -17,12 +17,13 @@ const LoginPage = () => {
       e.preventDefault();
       if (username.length < 3 || password.length < 6)
         throw new Error("입력하신 정보가 올바르지 않습니다.");
-      const result = await axios.patch("/user/login", { username, password });
+      const { data } = await axios.patch("/user/login", { username, password });
       setMe({
-        userId: result.data.userId,
-        sessionId: result.data.sessionId,
-        name: result.data.name,
+        userId: data.userId,
+        sessionId: data.sessionId,
+        name: data.name,
       });
+      setRecord(data.quizRecord);
       history.push("/");
       toast.success("로그인!");
     } catch (err) {

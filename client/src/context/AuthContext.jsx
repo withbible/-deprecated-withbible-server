@@ -5,9 +5,11 @@ export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [me, setMe] = useState();
-  const [record, setRecord] = useState();
+  const [record, setRecord] = useState(null);
+
   useEffect(() => {
     const sessionId = localStorage.getItem("sessionId");
+
     if (me) {
       axios.defaults.headers.common.sessionid = me.sessionId;
       localStorage.setItem("sessionId", me.sessionId);
@@ -20,7 +22,7 @@ export const AuthProvider = ({ children }) => {
             sessionId: data.sessionId,
             name: data.name,
           });
-          setRecord({ ...data.quizRecord });
+          setRecord(data.quizRecord);
         })
         .catch(() => {
           localStorage.removeItem("sessionId");
@@ -29,8 +31,7 @@ export const AuthProvider = ({ children }) => {
     } else delete axios.defaults.headers.common.sessionid;
   }, [me]);
   return (
-    <AuthContext.Provider value={{ me, setMe, record }}>
-      {" "}
+    <AuthContext.Provider value={{ me, setMe, record, setRecord }}>
       {children}
     </AuthContext.Provider>
   );

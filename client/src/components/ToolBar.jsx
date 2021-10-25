@@ -6,12 +6,13 @@ import axios from "axios";
 import { AuthContext } from "../context/AuthContext";
 
 const ToolBar = () => {
-  const [me, setMe] = useContext(AuthContext);
+  const { me, setMe, setRecord } = useContext(AuthContext);
 
   const logOutHandler = async () => {
     try {
       await axios.patch("/user/logout");
       setMe();
+      setRecord(null);
       toast.success("로그아웃!");
     } catch (err) {
       console.error(err);

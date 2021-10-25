@@ -1,9 +1,9 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext } from "react";
 import { Link } from "react-router-dom";
 
 import { Grid, Paper } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import { yellow } from "@material-ui/core/colors";
+import { yellow, blue } from "@material-ui/core/colors";
 import { ScrollMenu } from "react-horizontal-scrolling-menu";
 
 import { AuthContext } from "../context/AuthContext";
@@ -31,9 +31,13 @@ const useStyles = makeStyles((theme) => ({
   child: {
     padding: theme.spacing(3),
   },
-  yellowPaper: {
+  endPaper: {
     padding: theme.spacing(3),
     backgroundColor: yellow[300],
+  },
+  proceedPaper: {
+    padding: theme.spacing(3),
+    backgroundColor: blue[300],
   },
 }));
 
@@ -42,22 +46,18 @@ const QuizList = ({ quizInfo }) => {
   const { record } = useContext(AuthContext);
   const lastChapterId = Math.floor(quizInfo.doc_count / DIVID_NUM + 1);
 
-  useEffect(() => {
-    if (!record) return;
-  }, [record]);
-
   const QuizItem = ({ chapterId }) => {
     const CHAPTER_CODE = SUBJECT_CODE[quizInfo.key] + chapterId;
     return (
       <Grid className={classes.grid}>
-        {/* 
-          1. 로그인 > 랜더링이 완료되어 색이 입혀지지 않는다. 새로고침을 해야한다. 
-          2. 삼항연산자로 조건을 넣고 있는데, 진행중임을 나타내느 bluePaper는 어떻게 넣을 것인가
-        */}
         <Paper
           className={
-            record && Object.keys(record).includes(CHAPTER_CODE)
-              ? classes.yellowPaper
+            record &&
+            record[CHAPTER_CODE] &&
+            record[CHAPTER_CODE].some((each) => each === null)
+              ? classes.proceedPaper
+              : record && Object.keys(record).includes(CHAPTER_CODE)
+              ? classes.endPaper
               : classes.child
           }
         >
@@ -80,7 +80,7 @@ const QuizList = ({ quizInfo }) => {
             />
           )
         )}
-        {quizInfo.doc_count % DIVID_NUM && (
+        {lastChapterId && (
           <QuizItem
             key={lastChapterId}
             chapterId={lastChapterId}
