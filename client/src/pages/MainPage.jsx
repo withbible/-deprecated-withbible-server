@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useContext } from "react";
 import axios from "axios";
 
-import { Paper, InputBase, IconButton } from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
-import SearchIcon from "@material-ui/icons/Search";
+import { Paper, InputBase, IconButton } from "@mui/material";
+import makeStyles from "@mui/styles/makeStyles";
+import SearchIcon from "@mui/icons-material/Search";
 
 import { AuthContext } from "../context/AuthContext";
 import QuizList from "../components/QuizList";

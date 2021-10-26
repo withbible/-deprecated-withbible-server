@@ -1,10 +1,10 @@
 import React, { useContext } from "react";
 import { Link } from "react-router-dom";
-
-import { Grid, Paper } from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
-import { yellow, blue } from "@material-ui/core/colors";
 import { ScrollMenu } from "react-horizontal-scrolling-menu";
+
+import { Grid, Paper } from "@mui/material";
+import makeStyles from "@mui/styles/makeStyles";
+import { yellow, blue } from "@mui/material/colors";
 
 import { AuthContext } from "../context/AuthContext";
 
@@ -21,8 +21,10 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(3),
   },
   endPaper: {
-    padding: theme.spacing(3),
+    "& .MuiPaper-root": {      
+    },
     backgroundColor: yellow[300],
+    padding: theme.spacing(3),
   },
   proceedPaper: {
     padding: theme.spacing(3),

@@ -9,7 +9,7 @@ import React, {
 import { useParams, Prompt, Link } from "react-router-dom";
 import axios from "axios";
 
-import { Button, Checkbox, Paper } from "@material-ui/core";
+import { Button, Checkbox, Paper } from "@mui/material";
 
 import { QuizContext } from "../context/QuizContext";
 
@@ -59,7 +59,6 @@ const QuizPage = memo((_) => {
       axios
         .get(`/quiz/v2/content/${chapterId}`)
         .then(({ data }) => {
-          console.log("is it render");
           if (isFirstRender.current) {
             isFirstRender.current = false;
             return;
