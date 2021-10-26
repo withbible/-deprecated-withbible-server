@@ -34,9 +34,9 @@ const MainPage = (_) => {
 
   useEffect(
     (_) => {
-      // console.log("am i render");
+      console.log("am i render");
       axios.get("/quiz/v2").then(({ data }) => {
-        setSubjects(data.data.group_by_state.buckets);
+        setSubjects(data.quiz.buckets);
         setRecord(data.quizRecord);
       });
     },
@@ -49,7 +49,7 @@ const MainPage = (_) => {
   const onSubmit = async (e) => {
     e.preventDefault();
     await axios.get(`/quiz/v2/${searchKeyword}`).then(({ data }) => {
-      setSubjects(data.data.group_by_state.buckets);
+      setSubjects(data.quiz.buckets);
       setRecord(data.quizRecord);
     });
   };
@@ -63,6 +63,7 @@ const MainPage = (_) => {
           <SearchIcon />
         </IconButton>
       </Paper>
+
       {subjects.map((value) => {
         return <QuizList key={value.key} quizInfo={value} />;
       })}

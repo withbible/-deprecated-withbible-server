@@ -8,17 +8,6 @@ import { ScrollMenu } from "react-horizontal-scrolling-menu";
 
 import { AuthContext } from "../context/AuthContext";
 
-const DIVID_NUM = 10;
-const SUBJECT_CODE = {
-  "소프트웨어 설계": "sd_0",
-  "소프트웨어 개발": "sw_0",
-  "데이터베이스 활용": "db_0",
-  "정보시스템 구축관리": "im_0",
-};
-
-const range = (start, stop, step) =>
-  Array.from({ length: (stop - start) / step + 1 }, (_, i) => start + i * step);
-
 const useStyles = makeStyles((theme) => ({
   root: {},
   item: {
@@ -41,52 +30,42 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+// quizInfo memorize해서 넘기기
 const QuizList = ({ quizInfo }) => {
   const classes = useStyles();
   const { record } = useContext(AuthContext);
-  const lastChapterId = Math.floor(quizInfo.doc_count / DIVID_NUM + 1);
+  const chapters = quizInfo && quizInfo.group_by_chapter.buckets;
 
   const QuizItem = ({ chapterId }) => {
-    const CHAPTER_CODE = SUBJECT_CODE[quizInfo.key] + chapterId;
     return (
       <Grid className={classes.grid}>
         <Paper
           className={
             record &&
-            record[CHAPTER_CODE] &&
-            record[CHAPTER_CODE].some((each) => each === null)
+            record[chapterId] &&
+            record[chapterId].some((each) => each === null)
               ? classes.proceedPaper
-              : record && Object.keys(record).includes(CHAPTER_CODE)
+              : record && Object.keys(record).includes(chapterId)
               ? classes.endPaper
               : classes.child
           }
         >
-          <Link to={`/quiz/${CHAPTER_CODE}`}>챕터{chapterId}</Link>
+          <Link to={`/quiz/${chapterId}`}>챕터{chapterId.split("_")[1]}</Link>
         </Paper>
       </Grid>
     );
   };
-
   return (
     <>
       <h3>{quizInfo.key}</h3>
       <ScrollMenu className={classes.root}>
-        {range(1, Math.floor(quizInfo.doc_count / DIVID_NUM), 1).map(
-          (quizChapterId) => (
-            <QuizItem
-              key={quizChapterId}
-              chapterId={quizChapterId}
-              className={classes.item}
-            />
-          )
-        )}
-        {lastChapterId && (
+        {chapters.map((chapter) => (
           <QuizItem
-            key={lastChapterId}
-            chapterId={lastChapterId}
+            key={chapter.key}
+            chapterId={chapter.key}
             className={classes.item}
           />
-        )}
+        ))}
       </ScrollMenu>
     </>
   );

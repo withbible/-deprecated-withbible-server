@@ -5,12 +5,27 @@ const axios = require('axios');
 const quizRouter = express.Router();
 const User = require("../models/User");
 
-SEARCH_URL = process.env.ELK_DOMAIN + "/quiz/_search"
+const SEARCH_URL = process.env.ELK_DOMAIN + "/quiz/_search"
+const HEADER_QUERY = { "Content-Type": "application/json" };
+const AGGREGATE_QUERY = {
+  "group_by_subject": {
+    "terms": {
+      "field": "subject_category.keyword"
+    },
+    "aggs": {
+      "group_by_chapter": {
+        "terms": {
+          "field": "chapter_category"
+        }
+      }
+    }
+  }
+}
 
 quizRouter.get('/', async (req, res) => {
   await axios.get(SEARCH_URL,
     {
-      headers: { "Content-Type": "application/json" },
+      headers: HEADER_QUERY,
       data: {
         "query": {
           "bool": {
@@ -21,20 +36,13 @@ quizRouter.get('/', async (req, res) => {
             ]
           }
         },
-        "size": 0,
-        "aggs": {
-          "group_by_state": {
-            "terms": {
-              "field": "subject_category.keyword"
-            }
-          }
-        }
+        "aggs": AGGREGATE_QUERY
       }
     })
-    .then(result => {
+    .then(({ data }) => {
       res.json({
         quizRecord: req.user?.quizRecord ?? "",
-        data: result.data.aggregations
+        quiz: data.aggregations.group_by_subject
       });
     })
     .catch(err => {
@@ -45,7 +53,7 @@ quizRouter.get('/:keyword', async (req, res) => {
   const { keyword } = req.params;
   await axios.get(SEARCH_URL,
     {
-      headers: { "Content-Type": "application/json" },
+      headers: HEADER_QUERY,
       data: {
         "query": {
           "bool": {
@@ -59,21 +67,14 @@ quizRouter.get('/:keyword', async (req, res) => {
             ]
           }
         },
-        "size": 0,
-        "aggs": {
-          "group_by_state": {
-            "terms": {
-              "field": "subject_category.keyword"
-            }
-          }
-        }
+        "aggs": AGGREGATE_QUERY
       }
     })
     .then(result => {
       res.json({
         keyword,
         quizRecord: req.user?.quizRecord ?? "",
-        data: result.data.aggregations,
+        quiz: result.data.aggregations.group_by_subject,
       });
     })
     .catch(err => {
