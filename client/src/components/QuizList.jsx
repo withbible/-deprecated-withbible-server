@@ -5,6 +5,7 @@ import { ScrollMenu } from "react-horizontal-scrolling-menu";
 import { Grid, Paper } from "@mui/material";
 
 import { AuthContext } from "../context/AuthContext";
+import chatImg from "../image/ul-comment-message.png";
 import "./QuizList.css";
 
 // quizInfo memorize해서 넘기기
@@ -33,7 +34,13 @@ const QuizList = ({ quizInfo }) => {
   };
   return (
     <>
-      <h3>{quizInfo.key}</h3>
+      <div className="quiz-list-container">
+        <h3>{quizInfo.key}</h3>
+        <a href="http://localhost:5001">
+          <img className="chat-img" src={chatImg} alt="" />
+        </a>
+      </div>
+
       <ScrollMenu>
         {chapters.map((chapter) => (
           <QuizItem

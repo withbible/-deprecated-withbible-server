@@ -38,7 +38,7 @@ const MainPage = (_) => {
   return (
     <div>
       <h2>재학생들을 위한 기출문제 웹사이트</h2>
-      <img src={logoImg} alt="" />
+      <img className="logo-img" src={logoImg} alt="" />
       <Paper component="form" className="search-bar" onSubmit={onSubmit}>
         <InputBase className="search-input" onChange={onChange} />
         <IconButton type="submit">
@@ -46,9 +46,9 @@ const MainPage = (_) => {
         </IconButton>
       </Paper>
 
-      {subjects.map((value) => {
-        return <QuizList key={value.key} quizInfo={value} />;
-      })}
+      {subjects.map((value) => 
+          <QuizList key={value.key} quizInfo={value} />
+      )}
     </div>
   );
 };

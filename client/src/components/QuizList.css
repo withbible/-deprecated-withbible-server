@@ -16,3 +16,15 @@
   padding: 24px;
   background-color: #fff176 !important;
 }
+h3{
+  margin: 0;
+  float: left;
+}
+.chat-img{
+  width: 30px;
+  float: right;
+}
+.quiz-list-container{
+  overflow: hidden;
+  padding: 1em 0;
+}
