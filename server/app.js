@@ -5,21 +5,21 @@ const morgan = require('morgan');
 const cors = require('cors');
 
 const { authenticate } = require("./middleware/authentication");
-require(path.join(__dirname, "/public/database", "db.js"));
+require("./utils/db");
 
 const app = express();
 
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
 
-app.use(morgan('dev'));
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
-app.use(cors());
-app.use(authenticate);
-
+app.use(
+    morgan('dev'),
+    express.json(),
+    express.urlencoded({ extended: false }),
+    cors(),
+    authenticate
+);
 app.use('/quiz/v2', require('./routes/quiz_v2'))
-app.use('/vote', require('./routes/vote'));
 app.use('/user', require('./routes/user'));
 
 
