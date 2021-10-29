@@ -1,0 +1,15 @@
+h2{
+  text-align: center;
+}
+.logo-img{
+  width: 140px;
+  margin: auto;
+  display: block;
+}
+.search-bar{
+  display: flex;
+  padding: 10px;
+}
+.search-input{
+  flex: 1;
+}

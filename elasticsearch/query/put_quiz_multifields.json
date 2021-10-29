@@ -1,0 +1,85 @@
+{
+  "settings": {
+    "analysis":{
+      "analyzer": {
+        "my_custom_analyzer": {
+          "type": "custom",
+          "tokenizer": "nori_tokenizer",
+          "filter": [
+            "my_stop_filter"
+          ]
+        }
+      }, 
+      "filter": {
+        "my_stop_filter": {
+          "type": "nori_part_of_speech",
+          "stoptags": [
+            "E", "IC", "J", "MAG", "MAJ",
+            "MM", "SP", "SSC", "SSO", "SC",
+            "SE", "XPN", "XSA", "XSN", "XSV",
+            "UNA", "NA", "VSV", "NNB"
+          ]
+        }
+      }
+    }
+  }, 
+  "mappings": {
+    "properties" : {
+      "answer" : {
+        "type" : "text"
+      },
+      "chapter_category" : {
+        "type" : "keyword"
+      },
+      "instruction" : {
+        "type" : "text",
+        "fields" : {
+          "keyword" : {
+            "type" : "keyword",
+            "ignore_above" : 256
+          }
+        }
+      },
+      "message" : {
+        "type" : "text",
+        "fields" : {
+          "nori" : {
+            "type" : "text",
+            "analyzer" : "my_custom_analyzer"
+          }
+        }
+      },
+      "pass" : {
+        "type" : "boolean",
+        "null_value": true
+      },
+      "path" : {
+        "type" : "keyword"
+      },
+      "quiz_id" : {
+        "type" : "keyword"
+      },
+      "sample" : {
+        "type" : "text"
+      },
+      "subject_category" : {
+        "type" : "text",
+        "fields" : {
+          "keyword" : {
+            "type" : "keyword",
+            "ignore_above" : 256
+          }
+        }
+      },
+      "wrong_1" : {
+        "type" : "text"
+      },
+      "wrong_2" : {
+        "type" : "text"
+      },
+      "wrong_3" : {
+        "type" : "text"
+      }
+    }
+  }
+}
