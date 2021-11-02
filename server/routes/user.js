@@ -105,5 +105,39 @@ userRouter.patch("/record/:chapterid", async (req, res) => {
     res.status(400).json({ message: err.message });
   }
 });
+userRouter.post("/myscore", async (req,res) =>{
+  try{
+    const chapterId = {
+      sd_01: '소프트웨어 설계1',
+      sd_02: '소프트웨어 설계2',
+      sd_03: '소프트웨어 설계3',
+      sd_04: '소프트웨어 설계4',
+      sw_01: '소프트웨어 개발1',
+      sw_02: '소프트웨어 개발2',
+      db_01: '데이터베이스 활용1',
+      db_02: '데이터베이스 활용2',
+      im_01: '정보시스템 구축관리1',
+      im_02: '정보시스템 구축관리2',
+      nd_01: 'Not Defined1',
+      nd_02: 'Not Defined2',
+  };
+    const sessionId = req.headers.sessionid;
+    const user = await User.findOne({"sessions._id":[sessionId]});
+    
+    const userRecord = [];
+    for(var key in chapterId){
+      for(var key2 in user.quizRecord){
+        if(key == key2){
+          userRecord.push({[chapterId[key2]] : user.quizRecord[key2].filter(e=> true === e).length});
+          break;
+        }
+      }
+    }
+    res.json({data : userRecord, name : user.name});
+  }catch(err) {
+    console.error(err);
+    res.status(400).json({message:err.message});
+  }
+})
 
 module.exports = userRouter;

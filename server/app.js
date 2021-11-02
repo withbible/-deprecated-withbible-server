@@ -29,6 +29,7 @@ app.use((req, res, next) => {
     next(error);
 })
 app.use((err, req, res, next) => {
+    req.session.id
     res.status(err.status || 500);
     res.render('index', {
         'title': 'Not Found',

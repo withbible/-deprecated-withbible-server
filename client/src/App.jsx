@@ -9,6 +9,7 @@ import QuizPage from "./pages/QuizPage";
 import ChartPage from "./pages/ChartPage";
 import RegisterPage from "./pages/RegisterPage";
 import LoginPage from "./pages/LoginPage";
+import MyScorePage from "./pages/MyScorePage";
 
 const theme = createTheme();
 
@@ -22,6 +23,7 @@ const App = () => {
           <Route path="/quiz/chart/:chapterId" exact component={ChartPage} />
           <Route path="/auth/register" exact component={RegisterPage} />
           <Route path="/auth/login" exact component={LoginPage} />
+          <Route path="/mypage/score" component={MyScorePage} />
           <Route path="/" component={MainPage} />
         </Switch>
       </ThemeProvider>
