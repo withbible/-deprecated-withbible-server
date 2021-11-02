@@ -1,0 +1,10 @@
+# dependencies
+/src/lib
+/node_modules
+.package-lock.json
+
+# production
+/build
+
+# asset
+/src/image/ul-comment-message.png
