@@ -9,7 +9,6 @@ import QuizList from "../components/QuizList";
 import logoImg from "../image/logo.gif";
 import "./MainPage.css";
 
-
 const MainPage = (_) => {
   const { setRecord } = useContext(AuthContext);
   const [subjects, setSubjects] = useState([]);
