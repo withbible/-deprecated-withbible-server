@@ -16,7 +16,7 @@
   padding: 24px;
   background-color: #fff176 !important;
 }
-h3{
+.quiz-list-container > h3{
   margin: 0;
   float: left;
 }
