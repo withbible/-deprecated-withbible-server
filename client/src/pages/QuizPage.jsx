@@ -12,20 +12,22 @@ import axios from "axios";
 import { Button, Checkbox, Paper } from "@mui/material";
 
 import { QuizContext } from "../context/QuizContext";
+import { AuthContext } from "../context/AuthContext";
 
 let CANDIDATE = ["answer", "wrong_1", "wrong_2", "wrong_3"];
 
-function fisherYatesShuffle(arr) {
+const fisherYatesShuffle = (arr) => {
   for (var i = arr.length - 1; i > 0; i--) {
     var j = Math.floor(Math.random() * (i + 1));
     [arr[i], arr[j]] = [arr[j], arr[i]];
   }
   return [...arr];
-}
+};
 
 const QuizPage = memo((_) => {
   const { chapterId } = useParams();
   const { quizTitle, setQuizTitle } = useContext(QuizContext);
+  const { record } = useContext(AuthContext);
 
   const [quizInstruction, setQuizInstruction] = useState("");
   const [quizNum, setQuizNum] = useState(0);
@@ -75,16 +77,24 @@ const QuizPage = memo((_) => {
       if (isFirstRender.current) {
         isFirstRender.current = false;
         return;
-      }
-      if (!selectedValue) setSelectedValue(quizTable[quizNum]["cache"]);
+      }      
+      const quizCache = quizTable[quizNum]["cache"];
+      if (quizCache) setSelectedValue(quizCache);
+      else if (record[chapterId][quizNum])
+        setSelectedValue(
+          shuffleAnswerKeys[quizNum].findIndex(
+            (element) => element === "answer"
+          )
+        );      
+
       setQuizInstruction(quizTable[quizNum]["_source"]["instruction"]);
       setShuffleAnswerUI([
-        ...shuffleAnswerKeys[quizNum].map((value, index) => {
+        ...shuffleAnswerKeys[quizNum].map((value, index) => {          
           return (
             <div key={index}>
               {/* 체크해제 가능한가 */}
               <Checkbox
-                checked={selectedValue === index.toString()}
+                checked={selectedValue === index}
                 value={index.toString()}
                 onChange={(e) => {
                   setSelectedValue(e.target.value);
@@ -96,7 +106,7 @@ const QuizPage = memo((_) => {
         }),
       ]);
     },
-    [quizTable, quizNum, shuffleAnswerKeys, selectedValue]
+    [quizTable, quizNum, shuffleAnswerKeys, selectedValue, record, chapterId]
   );
   useEffect(
     (_) => {
@@ -174,7 +184,6 @@ const QuizPage = memo((_) => {
         <h3>{quizInstruction}</h3>
 
         {shuffleAnswerUI}
-
         <div style={{ marginTop: 20 }}>
           <Button
             variant="outlined"
