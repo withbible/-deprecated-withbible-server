@@ -105,7 +105,7 @@ userRouter.patch("/record/:chapterid", async (req, res) => {
     res.status(400).json({ message: err.message });
   }
 });
-userRouter.post("/myscore", async (req,res) =>{
+userRouter.get("/myscore", async (req,res) =>{
   try{
     const chapterId = {
       sd_01: '소프트웨어 설계1',
@@ -123,12 +123,13 @@ userRouter.post("/myscore", async (req,res) =>{
   };
     const sessionId = req.headers.sessionid;
     const user = await User.findOne({"sessions._id":[sessionId]});
-    
     const userRecord = [];
     for(var key in chapterId){
       for(var key2 in user.quizRecord){
         if(key == key2){
-          userRecord.push({[chapterId[key2]] : user.quizRecord[key2].filter(e=> true === e).length});
+          userRecord.push({"subject" : chapterId[key2],
+          "score" : user.quizRecord[key2].filter(e=> true === e).length  + " / " + user.quizRecord[key2].length, 
+          "state" : user.quizRecord[key2].some((each) => each === null) ? "proceed" : "end"});
           break;
         }
       }

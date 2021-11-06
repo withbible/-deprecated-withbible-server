@@ -6,7 +6,7 @@ import axios from "axios";
 import { AuthContext } from "../context/AuthContext";
 import CustomInput from "../components/CustomInput";
 
-import {Avatar, Button, CssBaseline, FormControlLabel, Checkbox, Link, Grid, Box, Typography, Container } from "@mui/material";
+import {Avatar, Button, CssBaseline, Link, Box, Typography, Container } from "@mui/material";
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 
@@ -14,7 +14,7 @@ function Copyright(props) {
   return (
     <Typography variant="body2" color="text.secondary" align="center" {...props}>
       {'Copyright © '}
-      <Link color="inherit" href="http://localhost:3000/">
+      <Link color="inherit" href="/">
         KBU_Study
       </Link>{' '}
       {new Date().getFullYear()}
@@ -61,22 +61,17 @@ const LoginPage = () => {
             alignItems: 'center',
           }}
         >
-          <Avatar sx={{ m: 1, bgcolor: 'green' }}>
+          <Avatar sx={{ m: 1, bgcolor: '#fff176' }}>
             <LockOutlinedIcon />
           </Avatar>
-          <Typography component="h1" variant="h5" style={{fontFamily:"NanumSquare", color: 'green', fontWeight: 700}}>
+          <Typography component="h1" variant="h5" style={{fontFamily:"NanumSquare", color:  '#64b5f6' , fontWeight: 700}}>
             로그인
           </Typography>
           <Box component="form" onSubmit={loginHandler} noValidate sx={{ mt: 1 }}>
             <CustomInput label= "회원ID" value = {username} setValue={setUsername} autoFocus />
             <CustomInput label ="비밀번호" value = {password} setValue={setPassword} type="password"/>
-            <FormControlLabel
-              control={<Checkbox value="remember" color="primary" />}
-              style = {{paddingRight: '1px'}}
-              label="아이디 저장"
-            />
             <Button
-            color="success"
+            style={{backgroundColor: '#fff176', color: '#64b5f6' }}
               type="submit"
               fullWidth
               variant="contained"
@@ -84,13 +79,6 @@ const LoginPage = () => {
             >
               로그인
             </Button>
-            <Grid container>
-              <Grid item>
-                <Link href="/auth/register" variant="body2">
-                  {"아이디가 없으신가요?(회원가입)"}
-                </Link>
-              </Grid>
-            </Grid>
           </Box>
         </Box>
         <Copyright sx={{ mt: 8, mb: 4 }} />

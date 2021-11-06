@@ -6,7 +6,7 @@ import axios from "axios";
 import { AuthContext } from "../context/AuthContext";
 import CustomInput from "../components/CustomInput";
 
-import {Avatar, Button, CssBaseline, Link, Grid, Box, Typography, Container } from "@mui/material";
+import {Avatar, Button, CssBaseline, Link, Box, Typography, Container } from "@mui/material";
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 
@@ -14,8 +14,8 @@ function Copyright(props) {
   return (
       <Typography variant="body2" color="text.secondary" align="center" {...props}>
           {'Copyright © '}
-          <Link color="inherit" href="http://localhost:3000/">
-              KBU_Sports
+          <Link color="inherit" href="/">
+              KBU_Study
           </Link>{' '}
           {new Date().getFullYear()}
           {'.'}
@@ -69,10 +69,10 @@ const RegisterPage = () => {
                 alignItems: 'center',
             }}
         >
-            <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
+            <Avatar sx={{ m: 1, bgcolor: '#fff176' }}>
                 <LockOutlinedIcon />
             </Avatar>
-            <Typography component="h1" variant="h5" style={{fontFamily:"NanumSquare", color: 'green', fontWeight: 700}}>
+            <Typography component="h1" variant="h5" style={{fontFamily:"NanumSquare", color: '#64b5f6', fontWeight: 700}}>
                 회원가입
             </Typography>
             <Box component="form" onSubmit={submitHandler} noValidate sx={{ mt: 1 }}>
@@ -81,7 +81,7 @@ const RegisterPage = () => {
                 <CustomInput label="비밀번호" value={password} type="password" setValue={setPassword} />
                 <CustomInput label="비밀번호확인" value={passwordCheck} type="password" setValue={setPasswordCheck} />
                 <Button
-                    color="success"
+                    style={{backgroundColor: '#fff176', color: '#64b5f6' }}
                     type="submit"
                     fullWidth
                     variant="contained"
@@ -89,13 +89,6 @@ const RegisterPage = () => {
                 >
                     회원가입
                 </Button>
-                <Grid container>
-                    <Grid item>
-                        <Link href="/auth/login" variant="body2">
-                            {"로그인"}
-                        </Link>
-                    </Grid>
-                </Grid>
             </Box>
         </Box>
         <Copyright sx={{ mt: 8, mb: 4 }} />

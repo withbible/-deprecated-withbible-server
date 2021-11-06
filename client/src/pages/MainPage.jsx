@@ -42,9 +42,7 @@ const MainPage = (_) => {
   };
 
   const handleClick = (hashLabel) => async () => {
-    console.info('You clicked the Chip.');
-    console.log(hashLabel.label.substring(1));
-    await axios.get(`/quiz/v2/hash/${hashLabel.label.substring(1)}`).then(({ data }) => {
+    await axios.get(`/quiz/v2/${hashLabel.label.substring(1)}`).then(({ data }) => {
       setSubjects(data.quiz.buckets);
       setRecord(data.quizRecord);
     });

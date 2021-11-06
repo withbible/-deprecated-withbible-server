@@ -6,34 +6,28 @@ import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper
 const MyScorePage = () => {
     const [scores, setScores] = useState([]);
     const [name, setName] = useState("");
+    const sessionId = localStorage.getItem("sessionId");
     useEffect(() => {
-        const headers = {
-            'Content-type': 'application/x-www-form-urlencoded; charset=UTF-8',
-            'Accept': '*/*',
-            'sessionid' : localStorage.getItem('sessionId')
-        }
-
         axios
-            .post('/user/myscore',null,{headers})
+            .get('/user/myscore', { headers: { sessionid: sessionId } })
             .then((result) => {
                 setScores(result.data.data);
                 setName(result.data.name)
-                console.log(result.data.data);
             })
             .catch((err) => console.error(err));
     }, []);
 
 
-    const boards = scores.map((score,i) => Object.entries(score).map((entrie) => (
-        <TableRow key={i} style={{ textAlign: 'center' }}>
-            <TableCell style={{ textAlign: 'center' }}>{entrie[0]}</TableCell>
-            <TableCell style={{ textAlign: 'center' }}>{entrie[1]}</TableCell>
+    const boards = scores.map((score,i) =>(
+        <TableRow key={i} style={score.state === 'proceed' ? { textAlign: 'center', backgroundColor: '#64b5f6' } : {textAlign: 'center',  backgroundColor: '#fff176' }}  >
+            <TableCell style={{ textAlign: 'center' }}>{score.subject}</TableCell>
+            <TableCell style={{ textAlign: 'center' }}>{score.score}</TableCell>
         </TableRow>
-    )));
+    ));
 
     return (
         <>
-            <h2>{name}님의 점수</h2>
+            <h2 style = {{marginTop:50, marginBottom:50}}>{name}님의 점수</h2>
             <TableContainer component={Paper}>
                     <Table aria-label="simple table">
                         <TableHead>

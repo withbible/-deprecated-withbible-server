@@ -5,7 +5,7 @@ const axios = require('axios');
 const quizRouter = express.Router();
 const User = require("../models/User");
 
-SEARCH_URL = "http://localhost:9200/quiz/_search"
+SEARCH_URL = process.env.DEV_DOMAIN + "/quiz/_search"
 const HEADER_QUERY = { "Content-Type": "application/json" };
 const AGGREGATE_QUERY = {
   "group_by_subject": {
@@ -118,37 +118,5 @@ quizRouter.get('/chart/:chapterid', async (req, res) => {
       res.status(500).json({ message: err.message });
     })
 
-})
-quizRouter.get('/hash/:keyword', async (req, res) => {
-  const { keyword } = req.params;
-  await axios.get(SEARCH_URL,
-    {
-      headers: HEADER_QUERY,
-      data: {
-        "query": {
-          "bool": {
-            "should": [
-              {
-                "match": { "answer": keyword }
-              },
-              {
-                "match": { "message.nori": keyword }
-              }
-            ]
-          }
-        },
-        "aggs": AGGREGATE_QUERY
-      }
-    })
-    .then(result => {
-      res.json({
-        keyword,
-        quizRecord: req.user?.quizRecord ?? "",
-        quiz: result.data.aggregations.group_by_subject,
-      });
-    })
-    .catch(err => {
-      res.status(500).json({ message: err.message });
-    })
 })
 module.exports = quizRouter;
