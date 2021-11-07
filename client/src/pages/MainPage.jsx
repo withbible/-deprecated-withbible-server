@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from "react";
 import axios from "axios";
 
-import { Paper, InputBase, IconButton } from "@mui/material";
+import { Paper, InputBase, IconButton, Chip } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 
 import { AuthContext } from "../context/AuthContext";
@@ -13,6 +13,11 @@ const MainPage = (_) => {
   const { setRecord } = useContext(AuthContext);
   const [subjects, setSubjects] = useState([]);
   const [searchKeyword, setSearchKeyword] = useState("");
+  const [hashData,] = useState([
+    { key: 0, label: '#공학' },
+    { key: 1, label: '#다이어그램' },
+  ]);
+  
 
   useEffect(
     (_) => {
@@ -35,10 +40,31 @@ const MainPage = (_) => {
       setRecord(data.quizRecord);
     });
   };
+
+  const handleClick = (hashLabel) => async () => {
+    await axios.get(`/quiz/v2/${hashLabel.label.substring(1)}`).then(({ data }) => {
+      setSubjects(data.quiz.buckets);
+      setRecord(data.quizRecord);
+    });
+  };
+
   return (
     <div>
       <h2>재학생들을 위한 기출문제 웹사이트</h2>
       <img className="logo-img" src={logoImg} alt="" />
+    <Paper>
+      {hashData.map((data) => {
+        return (
+            <Chip
+              key={data.key}
+              label={data.label}
+              variant="outlined"
+              onClick={handleClick(data)}
+              style={{marginRight:10}}
+            />
+        );
+      })}
+    </Paper>
       <Paper component="form" className="search-bar" onSubmit={onSubmit}>
         <InputBase className="search-input" onChange={onChange} />
         <IconButton type="submit">

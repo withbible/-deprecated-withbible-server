@@ -5,7 +5,7 @@ const axios = require('axios');
 const quizRouter = express.Router();
 const User = require("../models/User");
 
-const SEARCH_URL = process.env.ELK_DOMAIN + "/quiz/_search"
+SEARCH_URL = process.env.DEV_DOMAIN + "/quiz/_search"
 const HEADER_QUERY = { "Content-Type": "application/json" };
 const AGGREGATE_QUERY = {
   "group_by_subject": {
