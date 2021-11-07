@@ -20,7 +20,7 @@ import HomeIcon from "@mui/icons-material/Home";
 import LogoutIcon from "@mui/icons-material/Logout";
 import AccountBoxIcon from "@mui/icons-material/AccountBox";
 
-const ToolBar = () => {
+const CustomToolBar = () => {
   const { me, setMe, setRecord } = useContext(AuthContext);
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
@@ -73,9 +73,9 @@ const ToolBar = () => {
                 id="basic-menu"
                 anchorEl={anchorEl}
                 open={open}
-                onClick={handleClose}
+                onClose={handleClose}
                 MenuListProps={{
-                  "aria-labelledby": "basic-button",
+                  onMouseLeave: handleClose,
                 }}
               >
                 <a href="/mypage/score">
@@ -106,4 +106,4 @@ const ToolBar = () => {
   );
 };
 
-export default ToolBar;
+export default CustomToolBar;
