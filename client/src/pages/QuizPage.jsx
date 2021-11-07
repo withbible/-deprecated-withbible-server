@@ -79,9 +79,14 @@ const QuizPage = memo((_) => {
         isFirstRender.current = false;
         return;
       }
-      if (quizTable[quizNum]["cache"])
+      if (!selectedValue && quizTable[quizNum]["cache"])
         setSelectedValue(quizTable[quizNum]["cache"]);
-      else if (record[chapterId][quizNum])
+      else if (
+        !selectedValue &&
+        record &&
+        record[chapterId] &&
+        record[chapterId][quizNum]
+      )
         setSelectedValue(
           shuffleAnswerKeys[quizNum].findIndex(
             (element) => element === "answer"
@@ -123,18 +128,16 @@ const QuizPage = memo((_) => {
 
     setSelectedValue("");
   };
-  const enterAnswerSheet = (answer, sheet) => {
-    if (answer === "answer") sheet = true;
-    else if (!selectedValue) sheet = null;
-    else sheet = false;
+  const enterAnswerSheet = (answer) => {
+    if (answer === "answer") return true;
+    else if (!selectedValue) return null;
+    else return false;
   };
   const moveNext = (_) => {
     setQuizNum((quizNum) => quizNum + 1);
     quizTable[quizNum]["cache"] = selectedValue;
-
-    enterAnswerSheet(
-      shuffleAnswerKeys[quizNum][selectedValue],
-      quizTable[quizNum]["correct"]
+    quizTable[quizNum]["correct"] = enterAnswerSheet(
+      shuffleAnswerKeys[quizNum][selectedValue]
     );
     setSelectedValue("");
   };
@@ -144,15 +147,12 @@ const QuizPage = memo((_) => {
     result["sheet"][`${chapterId}`] = sheetData;
     return result;
   };
-  const onSubmit = async (e) => {
+  const submitAnswer = async (e) => {
     e.preventDefault();
     quizTable[quizNum]["cache"] = selectedValue;
-
-    enterAnswerSheet(
-      shuffleAnswerKeys[quizNum][selectedValue],
-      quizTable[quizNum]["correct"]
+    quizTable[quizNum]["correct"] = enterAnswerSheet(
+      shuffleAnswerKeys[quizNum][selectedValue]
     );
-
     await axios({
       url: `/user/record/${chapterId}`,
       method: "patch",
@@ -201,7 +201,11 @@ const QuizPage = memo((_) => {
             Previous
           </Button>
           {maxMove ? (
-            <Button variant="contained" color="secondary" onSubmit={onSubmit}>
+            <Button
+              variant="contained"
+              color="secondary"
+              onClick={submitAnswer}
+            >
               <Link to={`/quiz/chart/${chapterId}`}>Submit</Link>
             </Button>
           ) : (
