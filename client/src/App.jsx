@@ -3,20 +3,21 @@ import { Switch, Route } from "react-router-dom";
 
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 
-import ToolBar from "./components/ToolBar";
+import CustomToolBar from "./components/CustomToolBar";
 import MainPage from "./pages/MainPage";
 import QuizPage from "./pages/QuizPage";
 import ChartPage from "./pages/ChartPage";
 import RegisterPage from "./pages/RegisterPage";
 import LoginPage from "./pages/LoginPage";
 import MyScorePage from "./pages/MyScorePage";
+import "./styles/style.css";
 
 const theme = createTheme();
 
 const App = () => {
   return (
-    <div style={{ maxWidth: 600, margin: "auto" }}>
-      <ToolBar />
+    <div className="layout">
+      <CustomToolBar />
       <ThemeProvider theme={theme}>
         <Switch>
           <Route path="/quiz/:chapterId" exact component={QuizPage} />

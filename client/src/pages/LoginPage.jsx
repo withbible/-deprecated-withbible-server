@@ -5,20 +5,34 @@ import axios from "axios";
 
 import { AuthContext } from "../context/AuthContext";
 import CustomInput from "../components/CustomInput";
+import "../styles/style.css";
 
-import {Avatar, Button, CssBaseline, Link, Box, Typography, Container } from "@mui/material";
-import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
+import {
+  Avatar,
+  Button,
+  CssBaseline,
+  Link,
+  Box,
+  Typography,
+  Container,
+} from "@mui/material";
+import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
+import { createTheme, ThemeProvider } from "@mui/material/styles";
 
 function Copyright(props) {
   return (
-    <Typography variant="body2" color="text.secondary" align="center" {...props}>
-      {'Copyright © '}
+    <Typography
+      variant="body2"
+      color="text.secondary"
+      align="center"
+      {...props}
+    >
+      {"Copyright © "}
       <Link color="inherit" href="/">
-        KBU_Study
-      </Link>{' '}
+        해남브로 & 辛
+      </Link>{" "}
       {new Date().getFullYear()}
-      {'.'}
+      {"."}
     </Typography>
   );
 }
@@ -56,22 +70,42 @@ const LoginPage = () => {
         <Box
           sx={{
             marginTop: 8,
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
           }}
         >
-          <Avatar sx={{ m: 1, bgcolor: '#fff176' }}>
+          <Avatar sx={{ m: 1, bgcolor: "#fff176" }}>
             <LockOutlinedIcon />
           </Avatar>
-          <Typography component="h1" variant="h5" style={{fontFamily:"NanumSquare", color:  '#64b5f6' , fontWeight: 700}}>
+          <Typography
+            component="h1"
+            variant="h5"
+            className="css-blue"
+            style={{ fontWeight: 700 }}
+          >
             로그인
           </Typography>
-          <Box component="form" onSubmit={loginHandler} noValidate sx={{ mt: 1 }}>
-            <CustomInput label= "회원ID" value = {username} setValue={setUsername} autoFocus />
-            <CustomInput label ="비밀번호" value = {password} setValue={setPassword} type="password"/>
+          <Box
+            component="form"
+            onSubmit={loginHandler}
+            noValidate
+            sx={{ mt: 1 }}
+          >
+            <CustomInput
+              label="회원ID"
+              value={username}
+              setValue={setUsername}
+              autoFocus
+            />
+            <CustomInput
+              label="비밀번호"
+              value={password}
+              setValue={setPassword}
+              type="password"
+            />
             <Button
-            style={{backgroundColor: '#fff176', color: '#64b5f6' }}
+              className="css-blue bg-yellow"
               type="submit"
               fullWidth
               variant="contained"

@@ -117,7 +117,7 @@ userRouter.get("/myscore", async (req, res) => {
     for (const [chapterId, chapterRecord] of Object.entries(quizRecord)) {
       const subjectTitle = SUBJECT_CODE[chapterId.match(/^.[^_]/)];
       result[subjectTitle].push({
-        [chapterId]: {
+        [chapterId.match(/\d+/)]: {
           "score": chapterRecord.filter(each => each === true).length + "/" + chapterRecord.length,
           "state": chapterRecord.some(each => each === null) ? "proceed" : "end"
         }

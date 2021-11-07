@@ -46,7 +46,7 @@ const MyScorePage = () => {
                     : { backgroundColor: "#fff176" }
                 }
               >
-                {chapterId}
+                {chapterId}장
               </TableCell>
               <TableCell align="center">{detail.score}</TableCell>
             </TableRow>
