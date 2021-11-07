@@ -12,20 +12,23 @@ import axios from "axios";
 import { Button, Checkbox, Paper } from "@mui/material";
 
 import { QuizContext } from "../context/QuizContext";
+import { AuthContext } from "../context/AuthContext";
+import "./QuizPage.css";
 
 let CANDIDATE = ["answer", "wrong_1", "wrong_2", "wrong_3"];
 
-function fisherYatesShuffle(arr) {
+const fisherYatesShuffle = (arr) => {
   for (var i = arr.length - 1; i > 0; i--) {
     var j = Math.floor(Math.random() * (i + 1));
     [arr[i], arr[j]] = [arr[j], arr[i]];
   }
   return [...arr];
-}
+};
 
 const QuizPage = memo((_) => {
   const { chapterId } = useParams();
   const { quizTitle, setQuizTitle } = useContext(QuizContext);
+  const { record } = useContext(AuthContext);
 
   const [quizInstruction, setQuizInstruction] = useState("");
   const [quizNum, setQuizNum] = useState(0);
@@ -76,7 +79,15 @@ const QuizPage = memo((_) => {
         isFirstRender.current = false;
         return;
       }
-      if (!selectedValue) setSelectedValue(quizTable[quizNum]["cache"]);
+      if (quizTable[quizNum]["cache"])
+        setSelectedValue(quizTable[quizNum]["cache"]);
+      else if (record[chapterId][quizNum])
+        setSelectedValue(
+          shuffleAnswerKeys[quizNum].findIndex(
+            (element) => element === "answer"
+          )
+        );
+
       setQuizInstruction(quizTable[quizNum]["_source"]["instruction"]);
       setShuffleAnswerUI([
         ...shuffleAnswerKeys[quizNum].map((value, index) => {
@@ -84,10 +95,10 @@ const QuizPage = memo((_) => {
             <div key={index}>
               {/* 체크해제 가능한가 */}
               <Checkbox
-                checked={selectedValue === index.toString()}
-                value={index.toString()}
+                checked={selectedValue === index}
+                value={index}
                 onChange={(e) => {
-                  setSelectedValue(e.target.value);
+                  setSelectedValue(parseInt(e.target.value));
                 }}
               />
               {quizTable[quizNum]["_source"][value]}
@@ -96,7 +107,7 @@ const QuizPage = memo((_) => {
         }),
       ]);
     },
-    [quizTable, quizNum, shuffleAnswerKeys, selectedValue]
+    [quizTable, quizNum, shuffleAnswerKeys, selectedValue, record, chapterId]
   );
   useEffect(
     (_) => {
@@ -112,35 +123,40 @@ const QuizPage = memo((_) => {
 
     setSelectedValue("");
   };
+  const enterAnswerSheet = (answer, sheet) => {
+    if (answer === "answer") sheet = true;
+    else if (!selectedValue) sheet = null;
+    else sheet = false;
+  };
   const moveNext = (_) => {
     setQuizNum((quizNum) => quizNum + 1);
     quizTable[quizNum]["cache"] = selectedValue;
 
-    if (shuffleAnswerKeys[quizNum][selectedValue] === "answer")
-      quizTable[quizNum]["correct"] = true;
-    else if (!selectedValue) quizTable[quizNum]["correct"] = null;
-    else quizTable[quizNum]["correct"] = false;
-
+    enterAnswerSheet(
+      shuffleAnswerKeys[quizNum][selectedValue],
+      quizTable[quizNum]["correct"]
+    );
     setSelectedValue("");
   };
-  const onClick = async (e) => {
+  const makeSubmitableSheet = (sheetRecord) => {
+    const sheetData = sheetRecord.map((each) => each["correct"]);
+    const result = { sheet: {} };
+    result["sheet"][`${chapterId}`] = sheetData;
+    return result;
+  };
+  const onSubmit = async (e) => {
     e.preventDefault();
-
     quizTable[quizNum]["cache"] = selectedValue;
 
-    if (shuffleAnswerKeys[quizNum][selectedValue] === "answer")
-      quizTable[quizNum]["correct"] = true;
-    else if (!selectedValue) quizTable[quizNum]["correct"] = null;
-    else quizTable[quizNum]["correct"] = false;
+    enterAnswerSheet(
+      shuffleAnswerKeys[quizNum][selectedValue],
+      quizTable[quizNum]["correct"]
+    );
 
-    const submitSheet = Object.values(quizTable).map((each) => each["correct"]);
-    const submitObject = { sheet: {} };
-    submitObject["sheet"][`${chapterId}`] = submitSheet;
-    console.log(submitObject);
     await axios({
       url: `/user/record/${chapterId}`,
       method: "patch",
-      data: submitObject,
+      data: makeSubmitableSheet(Object.values(quizTable)),
     })
       .then(({ data }) => {
         console.log(data);
@@ -161,11 +177,11 @@ const QuizPage = memo((_) => {
         when={isNotSubmit}
         message="퀴즈를 제출 하지 않았습니다. 그래도 나가시겠습니까?"
       />
-      <div style={{ overflow: "hidden", padding: "20px 0" }}>
-        <h2 style={{ float: "left", margin: 0 }}>
+      <div className="header-container">
+        <h2 className="header-title">
           {quizTitle} (챕터 {chapterId.charAt(chapterId.length - 1)})
         </h2>
-        <span style={{ float: "right" }}>
+        <span>
           Question # {quizNum + 1} / {Object.keys(quizTable).length}
         </span>
       </div>
@@ -174,33 +190,22 @@ const QuizPage = memo((_) => {
         <h3>{quizInstruction}</h3>
 
         {shuffleAnswerUI}
-
-        <div style={{ marginTop: 20 }}>
+        <div className="button-container">
           <Button
             variant="outlined"
-            style={{ float: "left" }}
             color="primary"
+            className="btn-left"
             disabled={minMove && true}
             onClick={movePrevious}
           >
             Previous
           </Button>
           {maxMove ? (
-            <Button
-              variant="contained"
-              style={{ float: "right" }}
-              color="secondary"
-              onClick={onClick}
-            >
+            <Button variant="contained" color="secondary" onSubmit={onSubmit}>
               <Link to={`/quiz/chart/${chapterId}`}>Submit</Link>
             </Button>
           ) : (
-            <Button
-              variant="outlined"
-              style={{ float: "right" }}
-              color="primary"
-              onClick={moveNext}
-            >
+            <Button variant="outlined" color="primary" onClick={moveNext}>
               Next
             </Button>
           )}

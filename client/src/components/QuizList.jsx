@@ -7,6 +7,8 @@ import { Grid, Paper } from "@mui/material";
 import { AuthContext } from "../context/AuthContext";
 import chatImg from "../image/ul-comment-message.png";
 import "./QuizList.css";
+import { chatServerDomain } from "../../package.json";
+import { chapterIdValueObject } from "../utils/utils";
 
 // quizInfo memorize해서 넘기기
 const QuizList = ({ quizInfo }) => {
@@ -36,7 +38,13 @@ const QuizList = ({ quizInfo }) => {
     <>
       <div className="quiz-list-container">
         <h3>{quizInfo.key}</h3>
-        <a href="http://localhost:5001">
+        <a
+          href={`${chatServerDomain}/?room=${
+            chapterIdValueObject[quizInfo.key]
+          }`}
+          target="_blank"
+          rel="noreferrer"
+        >
           <img className="chat-img" src={chatImg} alt="" />
         </a>
       </div>
