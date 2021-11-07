@@ -1,8 +1,11 @@
+const util = require('util');
 const { Router } = require('express');
 const userRouter = Router();
 const { hash, compare } = require("bcryptjs");
 
 const User = require("../models/User");
+const { SUBJECT_CODE } = require("../utils/quiz");
+const DefaultDict = require('../utils/collection');
 
 
 userRouter.post("/register", async (req, res) => {
@@ -105,39 +108,25 @@ userRouter.patch("/record/:chapterid", async (req, res) => {
     res.status(400).json({ message: err.message });
   }
 });
-userRouter.get("/myscore", async (req,res) =>{
-  try{
-    const chapterId = {
-      sd_01: '소프트웨어 설계1',
-      sd_02: '소프트웨어 설계2',
-      sd_03: '소프트웨어 설계3',
-      sd_04: '소프트웨어 설계4',
-      sw_01: '소프트웨어 개발1',
-      sw_02: '소프트웨어 개발2',
-      db_01: '데이터베이스 활용1',
-      db_02: '데이터베이스 활용2',
-      im_01: '정보시스템 구축관리1',
-      im_02: '정보시스템 구축관리2',
-      nd_01: 'Not Defined1',
-      nd_02: 'Not Defined2',
-  };
-    const sessionId = req.headers.sessionid;
-    const user = await User.findOne({"sessions._id":[sessionId]});
-    const userRecord = [];
-    for(var key in chapterId){
-      for(var key2 in user.quizRecord){
-        if(key == key2){
-          userRecord.push({"subject" : chapterId[key2],
-          "score" : user.quizRecord[key2].filter(e=> true === e).length  + " / " + user.quizRecord[key2].length, 
-          "state" : user.quizRecord[key2].some((each) => each === null) ? "proceed" : "end"});
-          break;
+userRouter.get("/myscore", async (req, res) => {
+  try {
+    if (!req.user)
+      throw new Error("권한이 없습니다.");
+    const { name, quizRecord } = req.user;
+    const result = new DefaultDict(_ => []);
+    for (const [chapterId, chapterRecord] of Object.entries(quizRecord)) {
+      const subjectTitle = SUBJECT_CODE[chapterId.match(/^.[^_]/)];
+      result[subjectTitle].push({
+        [chapterId]: {
+          "score": chapterRecord.filter(each => each === true).length + "/" + chapterRecord.length,
+          "state": chapterRecord.some(each => each === null) ? "proceed" : "end"
         }
-      }
-    }
-    res.json({data : userRecord, name : user.name});
-  }catch(err) {
+      })
+    }    
+    res.json({ data: result, name });
+  } catch (err) {
     console.error(err);
-    res.status(400).json({message:err.message});
+    res.status(400).json({ message: err.message });
   }
 })
 
