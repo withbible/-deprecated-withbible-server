@@ -1,11 +1,12 @@
-require('dotenv').config();
 const express = require('express');
 const axios = require('axios');
 
 const quizRouter = express.Router();
 const User = require("../models/User");
 
-SEARCH_URL = process.env.DEV_DOMAIN + "/quiz/_search"
+require('dotenv/config');
+const SEARCH_URL = process.env.SEARCH_DOMAIN + "/quiz/_search"
+
 const HEADER_QUERY = { "Content-Type": "application/json" };
 const AGGREGATE_QUERY = {
   "group_by_subject": {

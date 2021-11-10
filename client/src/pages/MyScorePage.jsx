@@ -25,6 +25,7 @@ const MyScorePage = () => {
         setName(data.name);
       })
       .catch((err) => {
+        console.log(err);
         setError(true);
       });
   }, [sessionid]);
@@ -37,21 +38,20 @@ const MyScorePage = () => {
           {subject}
         </TableCell>
         {chapters.map((chapter) => {
-          const [chapterId, detail] = Object.entries(chapter)[0];
           return (
             <TableRow>
               {/* colSpan 늘어나는 이슈 해결 요함  */}
               <TableCell
                 align="center"
                 style={
-                  detail.state === "proceed"
+                  chapter.detail.state === "proceed"
                     ? { backgroundColor: "#64b5f6" }
                     : { backgroundColor: "#fff176" }
                 }
               >
-                {chapterId}장
+                {chapter.chapterId}장
               </TableCell>
-              <TableCell align="center">{detail.score}</TableCell>
+              <TableCell align="center">{chapter.detail.score}</TableCell>
             </TableRow>
           );
         })}

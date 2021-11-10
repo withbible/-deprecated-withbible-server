@@ -7,7 +7,6 @@ const User = require("../models/User");
 const { SUBJECT_CODE } = require("../utils/quiz");
 const DefaultDict = require('../utils/collection');
 
-
 userRouter.post("/register", async (req, res) => {
   const { username, password, name } = req.body;
   try {
@@ -117,12 +116,18 @@ userRouter.get("/myscore", async (req, res) => {
     for (const [chapterId, chapterRecord] of Object.entries(quizRecord)) {
       const subjectTitle = SUBJECT_CODE[chapterId.match(/^.[^_]/)];
       result[subjectTitle].push({
-        [chapterId.match(/\d+/)]: {
+        "chapterId": parseInt(chapterId.match(/[1-9][0-9]*/)),
+        "detail": {
           "score": chapterRecord.filter(each => each === true).length + "/" + chapterRecord.length,
           "state": chapterRecord.some(each => each === null) ? "proceed" : "end"
         }
       })
-    }    
+      result[subjectTitle].sort((a, b) =>
+        (a.chapterId > b.chapterId) ? 1
+          : (b.chapterId > a.chapterId) ? -1
+            : 0);
+    }
+
     res.json({ data: result, name });
   } catch (err) {
     console.error(err);
