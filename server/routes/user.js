@@ -113,6 +113,7 @@ userRouter.get("/myscore", async (req, res) => {
     if (!req.user)
       throw new Error("권한이 없습니다.");
     const { name, quizRecord } = req.user;
+    console.log(req.user);
     const result = new DefaultDict(_ => []);
     for (const [chapterId, chapterRecord] of Object.entries(quizRecord)) {
       const subjectTitle = SUBJECT_CODE[chapterId.match(/^.[^_]/)];
@@ -122,7 +123,7 @@ userRouter.get("/myscore", async (req, res) => {
           "state": chapterRecord.some(each => each === null) ? "proceed" : "end"
         }
       })
-    }    
+    }   
     res.json({ data: result, name });
   } catch (err) {
     console.error(err);
