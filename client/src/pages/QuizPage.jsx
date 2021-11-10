@@ -40,7 +40,6 @@ const QuizPage = memo((_) => {
   const [isNotSubmit, setIsNotSubmit] = useState(true);
   const isFirstRender = useRef(true);
 
-  // Need Map use size
   const quizLength = Object.keys(quizTable).length;
   const minMove = quizNum === 0;
   const maxMove = quizNum + 1 === quizLength;
@@ -79,31 +78,31 @@ const QuizPage = memo((_) => {
         isFirstRender.current = false;
         return;
       }
-      if (!selectedValue && quizTable[quizNum]["cache"])
-        setSelectedValue(quizTable[quizNum]["cache"]);
-      else if (
+      setQuizInstruction(quizTable[quizNum]["_source"]["instruction"]);
+
+      if (!selectedValue) setSelectedValue(quizTable[quizNum]["cache"]);
+      if (
         !selectedValue &&
         record &&
         record[chapterId] &&
         record[chapterId][quizNum]
-      )
+      ) {
         setSelectedValue(
-          shuffleAnswerKeys[quizNum].findIndex(
-            (element) => element === "answer"
-          )
+          shuffleAnswerKeys[quizNum]
+            .findIndex((element) => element === "answer")
+            .toString()
         );
+      }
 
-      setQuizInstruction(quizTable[quizNum]["_source"]["instruction"]);
       setShuffleAnswerUI([
         ...shuffleAnswerKeys[quizNum].map((value, index) => {
           return (
             <div key={index}>
-              {/* 체크해제 가능한가 */}
               <Checkbox
-                checked={selectedValue === index}
+                checked={selectedValue === index.toString()}
                 value={index}
                 onChange={(e) => {
-                  setSelectedValue(parseInt(e.target.value));
+                  setSelectedValue(e.target.value);
                 }}
               />
               {quizTable[quizNum]["_source"][value]}

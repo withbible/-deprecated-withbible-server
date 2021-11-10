@@ -14,6 +14,7 @@ import {
 const MyScorePage = () => {
   const [scores, setScores] = useState({});
   const [name, setName] = useState("");
+  const [error, setError] = useState(false);
   const sessionid = localStorage.getItem("sessionId");
 
   useMemo(() => {
@@ -23,7 +24,9 @@ const MyScorePage = () => {
         setScores(data.data);
         setName(data.name);
       })
-      .catch((err) => console.error(err));
+      .catch((err) => {
+        setError(true);
+      });
   }, [sessionid]);
 
   const boards = Object.entries(scores).map(([subject, chapters]) => {
@@ -55,7 +58,7 @@ const MyScorePage = () => {
       </TableRow>
     );
   });
-
+  if (error) return <h3>기록이 존재하지 않습니다.</h3>;
   return (
     <>
       <h2 style={{ marginTop: 50, marginBottom: 50 }}>{name}님의 점수</h2>
