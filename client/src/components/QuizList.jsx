@@ -7,6 +7,9 @@ import { chatServerDomain } from "../../package.json";
 import { chapterIdValueObject } from "../utils/utils";
 import QuizItem from "./QuizItem";
 
+const QuizMenu = (chapters) =>
+  chapters.map(({ key }) => <QuizItem key={key} chapterId={key} />);
+
 // quizInfo memorize해서 넘기기
 const QuizList = ({ quizInfo }) => {
   const chapters = quizInfo && quizInfo.group_by_chapter.buckets;
@@ -26,15 +29,7 @@ const QuizList = ({ quizInfo }) => {
         </a>
       </div>
 
-      <ScrollMenu>
-        {chapters.map((chapter) => (
-          <QuizItem
-            key={chapter.key}
-            chapterId={chapter.key}
-            className="item"
-          />
-        ))}
-      </ScrollMenu>
+      <ScrollMenu>{QuizMenu(chapters)}</ScrollMenu>
     </>
   );
 };

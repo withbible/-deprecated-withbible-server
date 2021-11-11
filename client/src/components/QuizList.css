@@ -1,20 +1,9 @@
-.item{
-  overflow: hidden;
-}
 .item-grid{  
   margin: 0px 20px 10px 0px;
 }
-.item-paper{
+.item-paper{  
+  width: 50px;
   padding: 24px;
-}
-.item-paper-proceed{
-  /* mui v5 마이그레이션 이후 bg color가 override 되지 않는 이슈로 임시방편 해결방안 */
-  padding: 24px;
-  background-color: #64b5f6 !important;
-}
-.item-paper-end{
-  padding: 24px;
-  background-color: #fff176 !important;
 }
 .quiz-list-container > h3{
   margin: 0;
