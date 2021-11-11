@@ -5,6 +5,9 @@
 .bg-yellow{
   background-color: #fff176 !important;
 }
+.bg-blue{
+  background-color: #64b5f6 !important;
+}
 .layout{
   max-width: 600px;
   margin: auto;

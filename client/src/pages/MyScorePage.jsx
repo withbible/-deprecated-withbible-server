@@ -30,38 +30,36 @@ const MyScorePage = () => {
       });
   }, [sessionid]);
 
-  const boards = Object.entries(scores).map(([subject, chapters]) => {
+  const boards = Object.entries(scores).map(([subject, chapters], index) => {
     if (!chapters.length) return "";
     return (
-      <TableRow>
+      <TableRow key={index}>
         <TableCell align="center" rowSpan={chapters.length}>
           {subject}
         </TableCell>
-        {chapters.map((chapter) => {
-          return (
-            <TableRow>
-              {/* colSpan 늘어나는 이슈 해결 요함  */}
-              <TableCell
-                align="center"
-                style={
-                  chapter.detail.state === "proceed"
-                    ? { backgroundColor: "#64b5f6" }
-                    : { backgroundColor: "#fff176" }
-                }
-              >
-                {chapter.chapterId}장
-              </TableCell>
-              <TableCell align="center">{chapter.detail.score}</TableCell>
-            </TableRow>
-          );
-        })}
+        {chapters.map((chapter) => (
+          <div>
+            {/* colSpan 늘어나는 이슈 해결 요함  */}
+            <TableCell
+              align="center"
+              style={
+                chapter.detail.state === "proceed"
+                  ? { backgroundColor: "#64b5f6" }
+                  : { backgroundColor: "#fff176" }
+              }
+            >
+              {chapter.chapterId}장
+            </TableCell>
+            <TableCell align="center">{chapter.detail.score}</TableCell>
+          </div>
+        ))}
       </TableRow>
     );
   });
   if (error) return <h3>기록이 존재하지 않습니다.</h3>;
   return (
     <>
-      <h2 style={{ marginTop: 50, marginBottom: 50 }}>{name}님의 점수</h2>
+      <h2 style={{ margin: "50px 0" }}>{name}님의 점수</h2>
       <TableContainer component={Paper}>
         <Table aria-label="simple table">
           <TableHead>
