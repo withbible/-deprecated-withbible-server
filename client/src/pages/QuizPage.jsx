@@ -31,6 +31,7 @@ const QuizPage = memo((_) => {
   const { record } = useContext(AuthContext);
 
   const [quizInstruction, setQuizInstruction] = useState("");
+  const [quizSample, setQuizSample] = useState("");
   const [quizNum, setQuizNum] = useState(0);
   const [quizTable, setQuizTable] = useState({});
   const [shuffleAnswerKeys, setShuffleAnswerKeys] = useState({});
@@ -79,7 +80,7 @@ const QuizPage = memo((_) => {
         return;
       }
       setQuizInstruction(quizTable[quizNum]["_source"]["instruction"]);
-
+      setQuizSample(quizTable[quizNum]["_source"]["sample"]);
       if (!selectedValue) setSelectedValue(quizTable[quizNum]["cache"]);
       if (
         !selectedValue &&
@@ -165,11 +166,6 @@ const QuizPage = memo((_) => {
       });
   };
 
-  if (isNotSubmit) {
-    window.onbeforeunload = () => true;
-  } else {
-    window.onbeforeunload = undefined;
-  }
   return (
     <>
       <Prompt
@@ -184,10 +180,9 @@ const QuizPage = memo((_) => {
           Question # {quizNum + 1} / {Object.keys(quizTable).length}
         </span>
       </div>
-      {/* Paper에 패딩값 필요 */}
       <Paper elevation={4}>
         <h3>{quizInstruction}</h3>
-
+        {quizSample && <p className="quiz-sample">{quizSample}</p>}
         {shuffleAnswerUI}
         <div className="button-container">
           <Button

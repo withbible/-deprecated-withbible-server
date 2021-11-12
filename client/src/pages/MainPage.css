@@ -13,3 +13,6 @@ h2{
 .search-input{
   flex: 1;
 }
+Chip{
+  margin-right: 10px;
+}
