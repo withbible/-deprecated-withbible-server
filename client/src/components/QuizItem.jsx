@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext } from "react";
 import { Link } from "react-router-dom";
 
 import { Grid, Paper, Tooltip } from "@mui/material";
@@ -6,36 +6,31 @@ import { Grid, Paper, Tooltip } from "@mui/material";
 import { AuthContext } from "../context/AuthContext";
 import "./QuizList.css";
 import "../styles/style.css";
+import { ProceedType, EndType } from "../utils/type";
 
-const checkProgress = (record, chapterId) =>
+const checkProgress = (record, chapterId, action) =>
   record && record[chapterId] && record[chapterId].some((each) => each === null)
-    ? "bg-blue"
+    ? new ProceedType()[action]
     : record && Object.keys(record).includes(chapterId)
-    ? "bg-yellow"
+    ? new EndType()[action]
     : "";
 
 const QuizItem = ({ chapterId }) => {
   const { record } = useContext(AuthContext);
 
-  useEffect((_) => {
-    if (!record) return;
-  }, [record]);
-  
   return (
     <Grid className="item-grid">
       <Tooltip
-        title={
-          record &&
-          record[chapterId] &&
-          record[chapterId].some((each) => each === null)
-            ? "진행중"
-            : record && Object.keys(record).includes(chapterId)
-            ? "완료"
-            : ""
-        }
+        title={checkProgress(record, chapterId, "toString")}
         followCursor
       >
-        <Paper className={`item-paper ${checkProgress(record, chapterId)}`}>
+        <Paper
+          className={`item-paper ${checkProgress(
+            record,
+            chapterId,
+            "cssClassName"
+          )}`}
+        >
           <Link to={`/quiz/${chapterId}`}>챕터{chapterId.split("_")[1]}</Link>
         </Paper>
       </Tooltip>
