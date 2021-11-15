@@ -154,7 +154,7 @@ const QuizPage = memo((_) => {
       shuffleAnswerKeys[quizNum][selectedValue]
     );
     await axios({
-      url: `/user/record/${chapterId}`,
+      url: `/user/myscore/${chapterId}`,
       method: "patch",
       data: makeSubmitableSheet(Object.values(quizTable)),
     })

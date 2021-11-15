@@ -4,7 +4,7 @@ import { ScrollMenu } from "react-horizontal-scrolling-menu";
 import chatImg from "../image/ul-comment-message.png";
 import "./QuizList.css";
 import { chatServerDomain } from "../../package.json";
-import { chapterIdValueObject } from "../utils/utils";
+import { SUBJECT_CODE_RECORDS } from "../utils/quiz";
 import QuizItem from "./QuizItem";
 
 const QuizMenu = (chapters) =>
@@ -20,7 +20,7 @@ const QuizList = ({ quizInfo }) => {
         <h3>{quizInfo.key}</h3>
         <a
           href={`${chatServerDomain}/?room=${
-            chapterIdValueObject[quizInfo.key]
+            SUBJECT_CODE_RECORDS[quizInfo.key]
           }`}
           target="_blank"
           rel="noreferrer"
