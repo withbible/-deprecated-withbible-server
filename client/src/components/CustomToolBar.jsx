@@ -21,7 +21,7 @@ import LogoutIcon from "@mui/icons-material/Logout";
 import AccountBoxIcon from "@mui/icons-material/AccountBox";
 
 const CustomToolBar = () => {
-  const { me, setMe, setRecord } = useContext(AuthContext);
+  const { name, setName, setRecord } = useContext(AuthContext);
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
 
@@ -35,7 +35,7 @@ const CustomToolBar = () => {
   const logOutHandler = async () => {
     try {
       await axios.patch("/user/logout");
-      setMe();
+      setName();
       setRecord(null);
       toast.success("로그아웃!");
       window.location.replace("/");
@@ -60,7 +60,7 @@ const CustomToolBar = () => {
             홈
           </Typography>
 
-          {me ? (
+          {name ? (
             <>
               <AccountBoxIcon
                 onMouseOver={handleClick}

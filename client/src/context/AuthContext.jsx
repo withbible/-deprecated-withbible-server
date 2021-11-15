@@ -1,37 +1,28 @@
 import React, { createContext, useState, useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import axios from "axios";
 
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  const [me, setMe] = useState();
+  const [name, setName] = useState("");
   const [record, setRecord] = useState(null);
+  let location = useLocation();
 
-  useEffect(() => {
-    const sessionId = localStorage.getItem("sessionId");
-
-    if (me) {
-      axios.defaults.headers.common.sessionid = me.sessionId;
-      localStorage.setItem("sessionId", me.sessionId);
-    } else if (sessionId) {
-      axios
-        .get("/user/me", { headers: { sessionid: sessionId } })
-        .then(({ data }) => {
-          setMe({
-            userId: data.userId,
-            sessionId: data.sessionId,
-            name: data.name,
-          });
-          setRecord(data.quizRecord);
-        })
-        .catch(() => {
-          localStorage.removeItem("sessionId");
-          delete axios.defaults.headers.common.sessionid;
-        });
-    } else delete axios.defaults.headers.common.sessionid;
-  }, [me]);
+  axios.defaults.headers.post["Content-Type"] = "application/json";
+  useEffect(() => {        
+    axios
+      .get("/user/me", { withCredentials: true })
+      .then(({ data }) => {
+        setName(data.name);
+        setRecord(data.quizRecord);
+      })
+      .catch((err) => {
+        console.log(err);
+      });    
+  }, [location.pathname]);
   return (
-    <AuthContext.Provider value={{ me, setMe, record, setRecord }}>
+    <AuthContext.Provider value={{ name, setName, record, setRecord }}>
       {children}
     </AuthContext.Provider>
   );

@@ -14,12 +14,11 @@ import {
 const MyScorePage = () => {
   const [scores, setScores] = useState({});
   const [name, setName] = useState("");
-  const [error, setError] = useState(false);
-  const sessionid = localStorage.getItem("sessionId");
+  const [error, setError] = useState(false);  
 
   useMemo(() => {
     axios
-      .get("/user/myscore", { headers: { sessionid } })
+      .get("/user/myscore")
       .then(({ data }) => {
         setScores(data.data);
         setName(data.name);
@@ -28,7 +27,7 @@ const MyScorePage = () => {
         console.log(err);
         setError(true);
       });
-  }, [sessionid]);
+  }, []);
 
   const boards = Object.entries(scores).map(([subject, chapters], index) => {
     if (!chapters.length) return "";

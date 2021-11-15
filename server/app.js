@@ -2,13 +2,14 @@ const path = require('path');
 
 const express = require('express');
 const morgan = require('morgan');
-const cors = require('cors');
 
-const { authenticate } = require("./middleware/authentication");
-require("./utils/db");
+require('dotenv/config');
+const { PORT } = process.env;
 
+require('./db/atlas');
 const app = express();
 
+app.set('trust proxy', 1);
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
 
@@ -16,12 +17,11 @@ app.use(
     morgan('dev'),
     express.json(),
     express.urlencoded({ extended: false }),
-    cors(),
-    authenticate
+    require('./middleware/cors'),
+    require('./middleware/session')
 );
 app.use('/quiz/v2', require('./routes/quiz_v2'))
 app.use('/user', require('./routes/user'));
-
 
 app.use((req, res, next) => {
     const error = new Error(`${req.method} ${req.url} 라우터가 없습니다.`);
@@ -35,6 +35,4 @@ app.use((err, req, res, next) => {
         'error': err.message
     });
 })
-app.listen(5000, function () {
-    console.log('app listening on port 5000!');
-});
+app.listen(PORT, _ => console.log(`app listening on port ${PORT}!`));
