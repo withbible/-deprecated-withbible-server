@@ -1,6 +1,6 @@
 # 재학생들의 강의 기출문제 웹사이트
 
-## Reference
+## API Docs
 
 {% content-ref url="readme/user.md" %}
 [user.md](readme/user.md)
