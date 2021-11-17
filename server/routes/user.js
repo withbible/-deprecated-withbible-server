@@ -4,6 +4,8 @@ const userRouter = Router();
 const { hash, compare } = require("bcryptjs");
 
 const User = require("../models/User");
+const Rank = require("../models/Rank");
+
 const { SUBJECT_CODE } = require("../utils/quiz");
 const DefaultDict = require('../utils/collection');
 
@@ -92,17 +94,40 @@ userRouter.get("/me", (req, res) => {
 });
 userRouter.patch("/record/:chapterid", async (req, res) => {
   try {
+    
     if (!req.user)
       throw new Error("권한이 없습니다.");
+    const { name, quizRecord } = req.user;
     const { chapterid } = req.params;
-    await User.updateOne(
-      { _id: req.user.id },
+    const users = await User.findByIdAndUpdate(req.user.id,
       {
         "$set": {
           [`quizRecord.${chapterid}`]: req.body.sheet[chapterid]
         }
       },
     );
+    //console.log(users.quizRecord);
+    const scorePercentage = [];//그 챕터의 정답률 배열
+    // const scorePercentage = Object.values(users.quizRecord).map(v => Object.keys(v).filter(v2 => v2 == chapterid.substring(0,2)));
+    for(var key in users.quizRecord){
+      if(key.substring(0,2) == chapterid.substring(0,2)){
+        scorePercentage.push(users.quizRecord[key].filter(each => each === true).length/users.quizRecord[key].length);
+      }
+    }
+    console.log(scorePercentage);
+    const totalPercentage = scorePercentage.reduce((acc,cur)=>{return acc+= cur},0);//총 정답률의 합
+    console.log("!!!!!!!!!!!",totalPercentage);
+    await Rank.findOneAndUpdate(
+      {subjectId : chapterid.substring(0,2)},
+      {
+        $push:{
+          ranks:{
+            name,
+            correctAnswerRate : totalPercentage,
+          }
+        }
+      }
+    ).exec();
     res.json({ message: `${chapterid} is updated` });
   } catch (err) {
     res.status(400).json({ message: err.message });
@@ -113,7 +138,6 @@ userRouter.get("/myscore", async (req, res) => {
     if (!req.user)
       throw new Error("권한이 없습니다.");
     const { name, quizRecord } = req.user;
-    console.log(req.user);
     const result = new DefaultDict(_ => []);
     for (const [chapterId, chapterRecord] of Object.entries(quizRecord)) {
       const subjectTitle = SUBJECT_CODE[chapterId.match(/^.[^_]/)];
@@ -124,6 +148,7 @@ userRouter.get("/myscore", async (req, res) => {
         }
       })
     }   
+    console.log(result);
     res.json({ data: result, name });
   } catch (err) {
     console.error(err);
