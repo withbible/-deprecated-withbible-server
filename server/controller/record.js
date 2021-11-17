@@ -2,6 +2,7 @@ const User = require('../models/User');
 
 const SUBJECT_CODE_RECORDS = require("../utils/quiz");
 const DefaultDict = require('../utils/collection');
+const logger = require('../log');
 
 const getChapterScore = async (req, res) => {
   try {
@@ -10,6 +11,7 @@ const getChapterScore = async (req, res) => {
       [`quizRecord.${chapterid}`]: { "$exists": true }
     }));
   } catch (err) {
+    logger.error(err.message);
     res.status(400).json({ message: err.message });
   }
 }
@@ -29,6 +31,7 @@ const patchMyChapterScore = async (req, res) => {
     );
     res.json({ message: `${chapterid} is updated` });
   } catch (err) {
+    logger.error(err.message);
     res.status(400).json({ message: err.message });
   }
 }
@@ -57,6 +60,7 @@ const getMyScoreAll = async (req, res) => {
       name
     });
   } catch (err) {
+    logger.error(err.message);
     res.status(500).json({ message: err.message });
   }
 }

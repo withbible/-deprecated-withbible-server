@@ -2,6 +2,8 @@ const { Router } = require('express');
 const router = Router();
 const axios = require('axios');
 
+const logger = require('../log');
+
 const SEARCH_URL = process.env.SEARCH_DOMAIN + "/quiz/_search"
 const HEADER_QUERY = { "Content-Type": "application/json" };
 const AGGREGATE_QUERY = {
@@ -43,6 +45,7 @@ router.get('/', async (req, res) => {
       });
     })
     .catch(err => {
+      logger.error(err.message);
       res.status(500).json({ message: err.message });
     })
 })
@@ -76,6 +79,7 @@ router.get('/:keyword', async (req, res) => {
       });
     })
     .catch(err => {
+      logger.error(err.message);
       res.status(500).json({ message: err.message });
     })
 })
@@ -101,6 +105,7 @@ router.get('/content/:chapterid', async (req, res) => {
       res.json({ data: data.hits });
     })
     .catch(err => {
+      logger.error(err.message);
       res.status(400).json({ message: err.message });
     })
 })

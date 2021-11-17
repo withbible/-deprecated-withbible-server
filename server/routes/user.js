@@ -13,18 +13,7 @@ router.use(authenticate);
 
 router.patch('/logout', authController.logout);
 
-router.get('/me', (req, res) => {
-  try {
-    const { name, quizRecord } = req.session.user;
-    res.json({
-      message: 'keep logined',
-      name,
-      quizRecord
-    });
-  } catch (err) {
-    res.status(401).json({ message: err.message });
-  }
-});
+router.get('/me', authController.keepLogin);
 
 router.get('/totalscore/:chapterid', recordController.getChapterScore)
 
