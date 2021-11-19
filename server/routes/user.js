@@ -106,24 +106,26 @@ userRouter.patch("/record/:chapterid", async (req, res) => {
         }
       },
     );
-    //console.log(users.quizRecord);
+
     const scorePercentage = [];//그 챕터의 정답률 배열
-    // const scorePercentage = Object.values(users.quizRecord).map(v => Object.keys(v).filter(v2 => v2 == chapterid.substring(0,2)));
     for(var key in users.quizRecord){
       if(key.substring(0,2) == chapterid.substring(0,2)){
         scorePercentage.push(users.quizRecord[key].filter(each => each === true).length/users.quizRecord[key].length);
       }
     }
-    console.log(scorePercentage);
     const totalPercentage = scorePercentage.reduce((acc,cur)=>{return acc+= cur},0);//총 정답률의 합
-    console.log("!!!!!!!!!!!",totalPercentage);
+    
+
     await Rank.findOneAndUpdate(
       {subjectId : chapterid.substring(0,2)},
       {
         $push:{
           ranks:{
-            name,
-            correctAnswerRate : totalPercentage,
+            $each : [{ 
+              name : name,
+              correctAnswerRate : totalPercentage
+              }],
+            $sort : {correctAnswerRate : -1},
           }
         }
       }
@@ -148,9 +150,27 @@ userRouter.get("/myscore", async (req, res) => {
         }
       })
     }   
-    console.log(result);
     res.json({ data: result, name });
   } catch (err) {
+    console.error(err);
+    res.status(400).json({ message: err.message });
+  }
+})
+
+userRouter.get("/ranking/:subjectId",async(req,res)=>{
+  try{
+    if (!req.user)
+    throw new Error("권한이 없습니다.");
+    const { subjectId } = req.params;//ex : sd
+    const topRankingdb = [];
+    const allRankingDb = await Rank.findOne(
+      {subjectId : subjectId}
+    )
+    for(let i=0; i<3;i++){
+      topRankingdb.push(allRankingDb.ranks[i]);
+    }
+    res.json({data: topRankingdb});
+  } catch(err){
     console.error(err);
     res.status(400).json({ message: err.message });
   }
