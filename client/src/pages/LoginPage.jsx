@@ -1,9 +1,8 @@
-import React, { useState, useContext } from "react";
+import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
 import { toast } from "react-toastify";
 import axios from "axios";
 
-import { AuthContext } from "../context/AuthContext";
 import CustomInput from "../components/CustomInput";
 import "../styles/style.css";
 
@@ -42,7 +41,6 @@ const theme = createTheme();
 const LoginPage = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const { setMe, setRecord } = useContext(AuthContext);
   const history = useHistory();
 
   const loginHandler = async (e) => {
@@ -50,13 +48,7 @@ const LoginPage = () => {
       e.preventDefault();
       if (username.length < 3 || password.length < 6)
         throw new Error("입력하신 정보가 올바르지 않습니다.");
-      const { data } = await axios.patch("/user/login", { username, password });
-      setMe({
-        userId: data.userId,
-        sessionId: data.sessionId,
-        name: data.name,
-      });
-      setRecord(data.quizRecord);
+      await axios.patch("/user/login", { username, password });
       history.push("/");
       toast.success("로그인!");
     } catch (err) {

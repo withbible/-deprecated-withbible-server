@@ -1,11 +1,10 @@
-require('dotenv').config();
-const express = require('express');
+const { Router } = require('express');
+const router = Router();
 const axios = require('axios');
 
-const quizRouter = express.Router();
-const User = require("../models/User");
+const logger = require('../log');
 
-SEARCH_URL = process.env.DEV_DOMAIN + "/quiz/_search"
+const SEARCH_URL = process.env.SEARCH_DOMAIN + "/quiz/_search"
 const HEADER_QUERY = { "Content-Type": "application/json" };
 const AGGREGATE_QUERY = {
   "group_by_subject": {
@@ -22,7 +21,7 @@ const AGGREGATE_QUERY = {
   }
 }
 
-quizRouter.get('/', async (req, res) => {
+router.get('/', async (req, res) => {
   await axios.get(SEARCH_URL,
     {
       headers: HEADER_QUERY,
@@ -41,15 +40,17 @@ quizRouter.get('/', async (req, res) => {
     })
     .then(({ data }) => {
       res.json({
-        quizRecord: req.user?.quizRecord ?? "",
+        quizRecord: req.session.user?.quizRecord ?? "",
         quiz: data.aggregations.group_by_subject
       });
     })
     .catch(err => {
+      logger.error(err.message);
       res.status(500).json({ message: err.message });
     })
 })
-quizRouter.get('/:keyword', async (req, res) => {
+
+router.get('/:keyword', async (req, res) => {
   const { keyword } = req.params;
   await axios.get(SEARCH_URL,
     {
@@ -70,18 +71,20 @@ quizRouter.get('/:keyword', async (req, res) => {
         "aggs": AGGREGATE_QUERY
       }
     })
-    .then(result => {
+    .then(({ data }) => {
       res.json({
         keyword,
-        quizRecord: req.user?.quizRecord ?? "",
-        quiz: result.data.aggregations.group_by_subject,
+        quizRecord: req.session.user?.quizRecord ?? "",
+        quiz: data.aggregations.group_by_subject,
       });
     })
     .catch(err => {
+      logger.error(err.message);
       res.status(500).json({ message: err.message });
     })
 })
-quizRouter.get('/content/:chapterid', async (req, res) => {
+
+router.get('/content/:chapterid', async (req, res) => {
   const { chapterid } = req.params;
   await axios.get(SEARCH_URL,
     {
@@ -98,25 +101,13 @@ quizRouter.get('/content/:chapterid', async (req, res) => {
         }
       }
     })
-    .then(result => {
-      res.json({ data: result.data.hits });
+    .then(({ data }) => {
+      res.json({ data: data.hits });
     })
     .catch(err => {
-      res.status(500).json({ message: err.message });
+      logger.error(err.message);
+      res.status(400).json({ message: err.message });
     })
 })
-quizRouter.get('/chart/:chapterid', async (req, res) => {
-  const { chapterid } = req.params;
-  const filter = {}
-  filter[`quizRecord.${chapterid}`] = { "$exists": true }
 
-  await User.find(filter)
-    .then(result => {
-      res.json({ data: result });
-    })
-    .catch(err => {
-      res.status(500).json({ message: err.message });
-    })
-
-})
-module.exports = quizRouter;
+module.exports = router;

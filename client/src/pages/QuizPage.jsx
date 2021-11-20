@@ -31,6 +31,7 @@ const QuizPage = memo((_) => {
   const { record } = useContext(AuthContext);
 
   const [quizInstruction, setQuizInstruction] = useState("");
+  const [quizSample, setQuizSample] = useState("");
   const [quizNum, setQuizNum] = useState(0);
   const [quizTable, setQuizTable] = useState({});
   const [shuffleAnswerKeys, setShuffleAnswerKeys] = useState({});
@@ -40,7 +41,6 @@ const QuizPage = memo((_) => {
   const [isNotSubmit, setIsNotSubmit] = useState(true);
   const isFirstRender = useRef(true);
 
-  // Need Map use size
   const quizLength = Object.keys(quizTable).length;
   const minMove = quizNum === 0;
   const maxMove = quizNum + 1 === quizLength;
@@ -79,31 +79,31 @@ const QuizPage = memo((_) => {
         isFirstRender.current = false;
         return;
       }
-      if (!selectedValue && quizTable[quizNum]["cache"])
-        setSelectedValue(quizTable[quizNum]["cache"]);
-      else if (
+      setQuizInstruction(quizTable[quizNum]["_source"]["instruction"]);
+      setQuizSample(quizTable[quizNum]["_source"]["sample"]);
+      if (!selectedValue) setSelectedValue(quizTable[quizNum]["cache"]);
+      if (
         !selectedValue &&
         record &&
         record[chapterId] &&
         record[chapterId][quizNum]
-      )
+      ) {
         setSelectedValue(
-          shuffleAnswerKeys[quizNum].findIndex(
-            (element) => element === "answer"
-          )
+          shuffleAnswerKeys[quizNum]
+            .findIndex((element) => element === "answer")
+            .toString()
         );
+      }
 
-      setQuizInstruction(quizTable[quizNum]["_source"]["instruction"]);
       setShuffleAnswerUI([
         ...shuffleAnswerKeys[quizNum].map((value, index) => {
           return (
             <div key={index}>
-              {/* 체크해제 가능한가 */}
               <Checkbox
-                checked={selectedValue === index}
+                checked={selectedValue === index.toString()}
                 value={index}
                 onChange={(e) => {
-                  setSelectedValue(parseInt(e.target.value));
+                  setSelectedValue(e.target.value);
                 }}
               />
               {quizTable[quizNum]["_source"][value]}
@@ -154,7 +154,7 @@ const QuizPage = memo((_) => {
       shuffleAnswerKeys[quizNum][selectedValue]
     );
     await axios({
-      url: `/user/record/${chapterId}`,
+      url: `/user/myscore/${chapterId}`,
       method: "patch",
       data: makeSubmitableSheet(Object.values(quizTable)),
     })
@@ -166,11 +166,6 @@ const QuizPage = memo((_) => {
       });
   };
 
-  if (isNotSubmit) {
-    window.onbeforeunload = () => true;
-  } else {
-    window.onbeforeunload = undefined;
-  }
   return (
     <>
       <Prompt
@@ -185,10 +180,9 @@ const QuizPage = memo((_) => {
           Question # {quizNum + 1} / {Object.keys(quizTable).length}
         </span>
       </div>
-      {/* Paper에 패딩값 필요 */}
       <Paper elevation={4}>
         <h3>{quizInstruction}</h3>
-
+        {quizSample && <p className="quiz-sample">{quizSample}</p>}
         {shuffleAnswerUI}
         <div className="button-container">
           <Button
