@@ -21,14 +21,42 @@ const patchMyChapterScore = async (req, res) => {
   try {
     const { chapterid } = req.params;
     const { sheet } = req.body;
-    const { username } = req.session.user;    
-    const result = await User.findOneAndUpdate(
+    const { name, username } = req.session.user;
+
+    const user = await User.findOneAndUpdate(
       { username },
       {
         '$set': {
           [`quizRecord.${chapterid}`]: sheet[chapterid]
         }
-      }
+      },
+      { new: true }
+    )
+
+    const totalPercentage = Object.entries(user.quizRecord)
+      .filter(([chapterId, _]) =>
+        chapterId.substring(0, 2) === chapterid.substring(0, 2)
+      )
+      .map(([_, chapterRecord]) =>
+        chapterRecord
+          .filter(each => each).length / chapterRecord.length
+      )
+      .reduce((acc, cur) => acc += cur, 0)
+
+    const result = await Rank.findOneAndUpdate(
+      {
+        'subjectId': chapterid.substring(0, 2),
+        ranks: {
+          '$elemMatch': { name }
+        },
+      },
+      {
+        '$set': {
+          'ranks.$.name': name,
+          'ranks.$.correctAnswerRate': totalPercentage
+        }
+      },
+      { new: true }
     );
     res.json({
       message: `${chapterid} is updated`,
