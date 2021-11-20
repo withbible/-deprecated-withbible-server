@@ -1,4 +1,5 @@
 const User = require('../models/User');
+const Rank = require("../models/Rank");
 
 const SUBJECT_CODE_RECORDS = require("../utils/quiz");
 const DefaultDict = require('../utils/collection');
@@ -20,16 +21,19 @@ const patchMyChapterScore = async (req, res) => {
   try {
     const { chapterid } = req.params;
     const { sheet } = req.body;
-    const { username } = req.session.user;
-    await User.updateOne(
+    const { username } = req.session.user;    
+    const result = await User.findOneAndUpdate(
       { username },
       {
         '$set': {
           [`quizRecord.${chapterid}`]: sheet[chapterid]
         }
-      },
+      }
     );
-    res.json({ message: `${chapterid} is updated` });
+    res.json({
+      message: `${chapterid} is updated`,
+      data: result
+    });
   } catch (err) {
     logger.error(err.message);
     res.status(400).json({ message: err.message });
@@ -65,4 +69,22 @@ const getMyScoreAll = async (req, res) => {
   }
 }
 
-module.exports = { getChapterScore, patchMyChapterScore, getMyScoreAll };
+const getSubjectRank = async (req, res) => {
+  try {
+    const { subjectId } = req.params;
+    const allRank = await Rank.findOne(
+      { subjectId: subjectId }
+    );
+    res.json({ data: allRank.ranks.slice(0, 3) });
+  } catch (err) {
+    logger.error(err.message);
+    res.status(400).json({ message: err.message });
+  }
+}
+
+module.exports = {
+  getChapterScore,
+  patchMyChapterScore,
+  getMyScoreAll,
+  getSubjectRank
+};

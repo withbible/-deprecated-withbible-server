@@ -4,8 +4,6 @@ const router = Router();
 const User = require("../models/User");
 const Rank = require("../models/Rank");
 
-const { SUBJECT_CODE } = require("../utils/quiz");
-const DefaultDict = require('../utils/collection');
 const authenticate = require('../middleware/authentication');
 const authController = require('../controller/auth');
 const recordController = require('../controller/record');
@@ -22,68 +20,56 @@ router.get('/me', authController.keepLogin);
 
 router.patch("/record/:chapterid", async (req, res) => {
   try {
-    
-    if (!req.user)
-      throw new Error("권한이 없습니다.");
-    const { name, quizRecord } = req.user;
+    const { name, username } = req.session.user;
     const { chapterid } = req.params;
-    const users = await User.findByIdAndUpdate(req.user.id,
+    const user = await User.findOneAndUpdate(
+      { username },
       {
         "$set": {
           [`quizRecord.${chapterid}`]: req.body.sheet[chapterid]
         }
       },
-    );
-
-    const scorePercentage = [];//그 챕터의 정답률 배열
-    for(var key in users.quizRecord){
-      if(key.substring(0,2) == chapterid.substring(0,2)){
-        scorePercentage.push(users.quizRecord[key].filter(each => each === true).length/users.quizRecord[key].length);
+      { new: true }
+    )
+    const scorePercentage = [];
+    for (var key in user.quizRecord) {
+      if (key.substring(0, 2) == chapterid.substring(0, 2)) {
+        scorePercentage.push(user.quizRecord[key].filter(each => each === true).length / user.quizRecord[key].length);
       }
     }
-    const totalPercentage = scorePercentage.reduce((acc,cur)=>{return acc+= cur},0);//총 정답률의 합
-    
-
-    await Rank.findOneAndUpdate(
-      {subjectId : chapterid.substring(0,2)},
+    const totalPercentage = scorePercentage.reduce((acc, cur) => acc += cur, 0);
+    console.log(totalPercentage, chapterid);
+    const result = await Rank.findOneAndUpdate(
       {
-        $push:{
-          ranks:{
-            $each : [{ 
-              name : name,
-              correctAnswerRate : totalPercentage
-              }],
-            $sort : {correctAnswerRate : -1},
+        'subjectId': chapterid.substring(0, 2),
+        ranks: {
+          '$elemMatch': {
+            name
           }
+        },
+      },
+      {
+        '$set': {
+          'ranks.$.name': name,
+          'ranks.$.correctAnswerRate': totalPercentage
         }
-      }
-    ).exec();
-    res.json({ message: `${chapterid} is updated` });
+        // '$sort': { correctAnswerRate: -1 }
+      },
+      { new: true }
+    );
+    // .exec();
+    res.json({
+      message: `${chapterid} is updated`,
+      data: result
+    });
   } catch (err) {
     res.status(400).json({ message: err.message });
   }
 });
 
-router.get("/ranking/:subjectId",async(req,res)=>{
-  try{
-    if (!req.user)
-    throw new Error("권한이 없습니다.");
-    const { subjectId } = req.params;//ex : sd
-    const topRankingdb = [];
-    const allRankingDb = await Rank.findOne(
-      {subjectId : subjectId}
-    )
-    for(let i=0; i<3;i++){
-      topRankingdb.push(allRankingDb.ranks[i]);
-    }
-    res.json({data: topRankingdb});
-  } catch(err){
-    console.error(err);
-    res.status(400).json({ message: err.message });
-  }
-})
+router.get("/ranking/:subjectId", recordController.getSubjectRank);
 
-router.get('/totalscore/:chapterid', recordController.getChapterScore)
+router.get('/totalscore/:chapterid', recordController.getChapterScore);
 
 router.patch('/myscore/:chapterid', recordController.patchMyChapterScore);
 
