@@ -51,7 +51,7 @@ const LoginPage = () => {
       await axios.patch("/user/login", { username, password });
       history.push("/");
       toast.success("로그인!");
-    } catch (err) {
+    } catch (err) {      
       toast.error(err.response.data.message);
     }
   };

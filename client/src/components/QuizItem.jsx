@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 
 import { Grid, Paper, Tooltip } from "@mui/material";
 
-import { AuthContext } from "../context/AuthContext";
+import { RecordContext } from "../context/RecordContext";
 import "./QuizList.css";
 import "../styles/style.css";
 import { ProceedType, EndType } from "../utils/type";
@@ -16,7 +16,7 @@ const checkProgress = (record, chapterId, action) =>
     : "";
 
 const QuizItem = ({ chapterId }) => {
-  const { record } = useContext(AuthContext);
+  const { record } = useContext(RecordContext);
 
   return (
     <Grid className="item-grid">
