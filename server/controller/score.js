@@ -5,6 +5,19 @@ const SUBJECT_CODE_RECORDS = require("../utils/quiz");
 const DefaultDict = require('../utils/collection');
 const logger = require('../log');
 
+const getSubjectRank = async (req, res) => {
+  try {
+    const { subjectId } = req.params;
+    const allRank = await Rank.findOne(
+      { subjectId: subjectId }
+    );
+    res.json({ data: allRank.ranks.slice(0, 3) });
+  } catch (err) {
+    logger.error(err.message);
+    res.status(400).json({ message: err.message });
+  }
+}
+
 const getChapterScore = async (req, res) => {
   try {
     const { chapterid } = req.params;
@@ -15,7 +28,7 @@ const getChapterScore = async (req, res) => {
     logger.error(err.message);
     res.status(400).json({ message: err.message });
   }
-}
+};
 
 const patchMyChapterScore = async (req, res) => {
   try {
@@ -66,9 +79,23 @@ const patchMyChapterScore = async (req, res) => {
     logger.error(err.message);
     res.status(400).json({ message: err.message });
   }
-}
+};
 
-const getMyScoreAll = async (req, res) => {
+const getMyScoreRaw = (req, res) => {
+  try {
+    const { name, quizRecord } = req.session.user;
+    res.json({
+      message: 'keep logined',
+      name,
+      quizRecord
+    });
+  } catch (err) {
+    logger.error(err);
+    res.status(401).json({ message: err.message });
+  }
+};
+
+const getMyScoreDetail = async (req, res) => {
   try {
     const { name, quizRecord } = req.session.user;
     const result = new DefaultDict(_ => []);
@@ -95,24 +122,12 @@ const getMyScoreAll = async (req, res) => {
     logger.error(err.message);
     res.status(500).json({ message: err.message });
   }
-}
-
-const getSubjectRank = async (req, res) => {
-  try {
-    const { subjectId } = req.params;
-    const allRank = await Rank.findOne(
-      { subjectId: subjectId }
-    );
-    res.json({ data: allRank.ranks.slice(0, 3) });
-  } catch (err) {
-    logger.error(err.message);
-    res.status(400).json({ message: err.message });
-  }
-}
+};
 
 module.exports = {
+  getSubjectRank,
   getChapterScore,
   patchMyChapterScore,
-  getMyScoreAll,
-  getSubjectRank
+  getMyScoreRaw,
+  getMyScoreDetail
 };

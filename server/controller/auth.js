@@ -19,11 +19,11 @@ const login = async (req, res) => {
     const user = await authService.login(username, password);
 
     req.session.user = user;
-    logger.info(`${username} login!`)
-    res.sendStatus(204);
+    logger.info(`${user.username} 로그인`)
+    res.sendStatus(201);
   } catch (err) {
     logger.error(err);
-    res.status(401).json(err);
+    res.status(401).json(err.message);
   }
 }
 
@@ -37,18 +37,4 @@ const logout = (req, res) => {
   }
 }
 
-const keepLogin = (req, res) => {
-  try {
-    const { name, quizRecord } = req.session.user;
-    res.json({
-      message: 'keep logined',
-      name,
-      quizRecord
-    });
-  } catch (err) {
-    logger.error(err);
-    res.status(401).json({ message: err.message });
-  }
-}
-
-module.exports = { register, login, logout, keepLogin }
+module.exports = { register, login, logout }
