@@ -20,9 +20,9 @@ const getSubjectRank = async (req, res) => {
 
 const getChapterScore = async (req, res) => {
   try {
-    const { chapterid } = req.params;
+    const { chapterId } = req.params;
     res.json(await User.find({
-      [`quizRecord.${chapterid}`]: { "$exists": true }
+      [`quizRecord.${chapterId}`]: { "$exists": true }
     }));
   } catch (err) {
     logger.error(err.message);
@@ -32,7 +32,7 @@ const getChapterScore = async (req, res) => {
 
 const patchMyChapterScore = async (req, res) => {
   try {
-    const { chapterid } = req.params;
+    const { chapterId } = req.params;
     const { sheet } = req.body;
     const { name, username } = req.session.user;
 
@@ -40,7 +40,7 @@ const patchMyChapterScore = async (req, res) => {
       { username },
       {
         '$set': {
-          [`quizRecord.${chapterid}`]: sheet[chapterid]
+          [`quizRecord.${chapterId}`]: sheet[chapterId]
         }
       },
       { new: true }
@@ -48,17 +48,17 @@ const patchMyChapterScore = async (req, res) => {
 
     const totalPercentage = Object.entries(user.quizRecord)
       .filter(([chapterId, _]) =>
-        chapterId.substring(0, 2) === chapterid.substring(0, 2)
+        chapterId.substring(0, 2) === chapterId.substring(0, 2)
       )
       .map(([_, chapterRecord]) =>
         chapterRecord
           .filter(each => each).length / chapterRecord.length
       )
-      .reduce((acc, cur) => acc += cur, 0)
+      .reduce((acc, cur) => acc += cur, 0);
 
     const result = await Rank.findOneAndUpdate(
       {
-        'subjectId': chapterid.substring(0, 2),
+        'subjectId': chapterId.substring(0, 2),
         ranks: {
           '$elemMatch': { name }
         },
@@ -72,7 +72,7 @@ const patchMyChapterScore = async (req, res) => {
       { new: true }
     );
     res.json({
-      message: `${chapterid} is updated`,
+      message: `${chapterId} is updated`,
       data: result
     });
   } catch (err) {

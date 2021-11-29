@@ -3,7 +3,7 @@ const router = Router();
 
 const searchController = require("../controller/search");
 
-router.get('/:keyword', searchController.getChapterByKeyword);
+router.get('/keyword', searchController.getChapterByKeyword);
 
 // +++ Hashtag keyword API
 

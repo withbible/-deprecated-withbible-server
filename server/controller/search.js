@@ -83,7 +83,7 @@ const getChapterByKeyword = async (req, res) => {
 };
 
 const getQuiz = async (req, res) => {
-  const { chapterid } = req.params;
+  const { chapterId } = req.params;
   await axios.get(SEARCH_URL,
     {
       headers: { "Content-Type": "application/json" },
@@ -92,7 +92,7 @@ const getQuiz = async (req, res) => {
           "bool": {
             "should": [
               {
-                "match": { "chapter_category": chapterid }
+                "match": { "chapter_category": chapterId }
               }
             ]
           }

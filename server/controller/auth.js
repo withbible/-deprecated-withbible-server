@@ -20,7 +20,7 @@ const login = async (req, res) => {
 
     req.session.user = user;
     logger.info(`${user.username} 로그인`)
-    res.sendStatus(201);
+    res.status(200).json({ name: user.name });
   } catch (err) {
     logger.error(err);
     res.status(401).json(err.message);

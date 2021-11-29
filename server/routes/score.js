@@ -6,11 +6,11 @@ const scoreController = require('../controller/score');
 
 router.get("/totalscore/rank/:subjectId", scoreController.getSubjectRank);
 
-router.get('/totalscore/:chapterid', scoreController.getChapterScore);
+router.get('/totalscore/:chapterId', scoreController.getChapterScore);
 
 router.use(authenticate);
 
-router.patch('/myscore/:chapterid', scoreController.patchMyChapterScore);
+router.patch('/myscore/:chapterId', scoreController.patchMyChapterScore);
 
 router.get('/myscore/raw', scoreController.getMyScoreRaw);
 
