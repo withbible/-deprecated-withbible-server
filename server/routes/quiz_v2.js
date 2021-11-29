@@ -2,7 +2,7 @@ const { Router } = require('express');
 const router = Router();
 const axios = require('axios');
 
-const multiSearchdata = require("../utils/multiSearch");
+const synonymdata = require("../utils/synonym");
 const logger = require('../log');
 
 const SEARCH_URL = process.env.SEARCH_DOMAIN + "/quiz/_search"
@@ -85,9 +85,9 @@ router.get('/:keyword', async (req, res) => {
     })
 })
 
-router.get('/sample/:examplekeyword', async (req, res) => {
-  const { examplekeyword } = req.params;
-  const exampleArrayData = multiSearchdata[examplekeyword];
+router.get('/sample/:synonnym', async (req, res) => {
+  const { synonnym } = req.params;
+  const smapleArrayData = synonymdata[synonnym];
   await axios.get(SEARCH_URL,
     {
       headers: HEADER_QUERY,
@@ -96,10 +96,10 @@ router.get('/sample/:examplekeyword', async (req, res) => {
           "bool": {
             "should": [
               {
-                "terms": { "answer": exampleArrayData },
+                "terms": { "answer": smapleArrayData },
               },
               {
-                "terms": { "message.nori": exampleArrayData }
+                "terms": { "message.nori": smapleArrayData }
               }
             ]
           }
@@ -109,7 +109,7 @@ router.get('/sample/:examplekeyword', async (req, res) => {
     })
     .then(({ data }) => {
       res.json({
-        exampleArrayData,
+        smapleArrayData,
         quizRecord: req.session.user?.quizRecord ?? "",
         quiz: data.aggregations.group_by_subject,
       });
