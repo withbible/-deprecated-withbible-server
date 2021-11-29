@@ -14,7 +14,7 @@ const MainPage = (_) => {
   const [subjects, setSubjects] = useState([]);
   const [searchKeyword, setSearchKeyword] = useState("");
   const [hashTagData] = useState([
-    { key: 0, label: "#공학" },
+    { key: 0, label: "#디자인패턴" },
     { key: 1, label: "#다이어그램" },
   ]);
 
@@ -42,7 +42,7 @@ const MainPage = (_) => {
 
   const searchHashTag = (hashTagLabel) => async () => {
     await axios
-      .get(`/quiz/v2/${hashTagLabel.label.substring(1)}`)
+      .get(`/quiz/v2/sample/${hashTagLabel.label.substring(1)}`)
       .then(({ data }) => {
         setSubjects(data.quiz.buckets);
         setRecord(data.quizRecord);

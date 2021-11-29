@@ -2,6 +2,7 @@ const { Router } = require('express');
 const router = Router();
 const axios = require('axios');
 
+const multiSearchdata = require("../utils/multiSearch");
 const logger = require('../log');
 
 const SEARCH_URL = process.env.SEARCH_DOMAIN + "/quiz/_search"
@@ -74,6 +75,41 @@ router.get('/:keyword', async (req, res) => {
     .then(({ data }) => {
       res.json({
         keyword,
+        quizRecord: req.session.user?.quizRecord ?? "",
+        quiz: data.aggregations.group_by_subject,
+      });
+    })
+    .catch(err => {
+      logger.error(err.message);
+      res.status(500).json({ message: err.message });
+    })
+})
+
+router.get('/sample/:examplekeyword', async (req, res) => {
+  const { examplekeyword } = req.params;
+  const exampleArrayData = multiSearchdata[examplekeyword];
+  await axios.get(SEARCH_URL,
+    {
+      headers: HEADER_QUERY,
+      data: {
+        "query": {
+          "bool": {
+            "should": [
+              {
+                "terms": { "answer": exampleArrayData },
+              },
+              {
+                "terms": { "message.nori": exampleArrayData }
+              }
+            ]
+          }
+        },
+        "aggs": AGGREGATE_QUERY
+      }
+    })
+    .then(({ data }) => {
+      res.json({
+        exampleArrayData,
         quizRecord: req.session.user?.quizRecord ?? "",
         quiz: data.aggregations.group_by_subject,
       });
