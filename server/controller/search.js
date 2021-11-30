@@ -1,6 +1,6 @@
 const axios = require('axios');
 
-const synonymdata = require("../utils/synonym");
+const SYNONYM_RECORDS = require("../utils/synonym");
 const logger = require('../log');
 
 const SEARCH_URL = process.env.SEARCH_DOMAIN + "/quiz/_search"
@@ -84,8 +84,8 @@ const getChapterByKeyword = async (req, res) => {
 };
 
 const getChapterBySynonymKeyword = async (req, res) => {
-  const { synonnym } = req.params;
-  const smapleArrayData = synonymdata[synonnym];
+  const { keyword } = req.params;
+  const synonymData = SYNONYM_RECORDS[keyword];
   await axios.get(SEARCH_URL,
     {
       headers: HEADER_QUERY,
@@ -94,10 +94,10 @@ const getChapterBySynonymKeyword = async (req, res) => {
           "bool": {
             "should": [
               {
-                "terms": { "answer": smapleArrayData },
+                "terms": { "answer": synonymData },
               },
               {
-                "terms": { "message.nori": smapleArrayData }
+                "terms": { "message.nori": synonymData }
               }
             ]
           }

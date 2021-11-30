@@ -28,20 +28,21 @@ const MainPage = (_) => {
     [setRecord]
   );
 
-  const onChange = (e) => {
-    setSearchKeyword(e.target.value);
-  };
+  const onChange = (e) => setSearchKeyword(e.target.value);
+
   const onSubmit = async (e) => {
     e.preventDefault();
-    await axios.get(`/search/${searchKeyword}`).then(({ data }) => {
-      setSubjects(data.quiz.buckets);
-      setRecord(data.quizRecord);
-    });
+    await axios
+      .get(searchKeyword ? `/search/${searchKeyword}` : "/quiz")
+      .then(({ data }) => {
+        setSubjects(data.quiz.buckets);
+        setRecord(data.quizRecord);
+      });
   };
 
   const searchHashTag = (hashTagLabel) => async () => {
     await axios
-      .get(`/search/${hashTagLabel.label.substring(1)}`)
+      .get(`/search/sample/${hashTagLabel.label.substring(1)}`)
       .then(({ data }) => {
         setSubjects(data.quiz.buckets);
         setRecord(data.quizRecord);

@@ -3,8 +3,8 @@ const router = Router();
 
 const searchController = require("../controller/search");
 
-router.get('/keyword', searchController.getChapterByKeyword);
+router.get('/synonym/:keyword', searchController.getChapterBySynonymKeyword);
 
-router.get('/sample/:synonnym', searchController.getChapterBySynonymKeyword);
+router.get('/:keyword', searchController.getChapterByKeyword);
 
 module.exports = router;
