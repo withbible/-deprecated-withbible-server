@@ -5,6 +5,6 @@ const searchController = require("../controller/search");
 
 router.get('/keyword', searchController.getChapterByKeyword);
 
-// +++ Hashtag keyword API
+router.get('/sample/:synonnym', searchController.getChapterBySynonymKeyword);
 
 module.exports = router;

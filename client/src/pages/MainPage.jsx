@@ -14,7 +14,7 @@ const MainPage = (_) => {
   const [subjects, setSubjects] = useState([]);
   const [searchKeyword, setSearchKeyword] = useState("");
   const [hashTagData] = useState([
-    { key: 0, label: "#공학" },
+    { key: 0, label: "#디자인패턴" },
     { key: 1, label: "#다이어그램" },
   ]);
 
