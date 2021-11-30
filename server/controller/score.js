@@ -35,6 +35,9 @@ const patchMyChapterScore = async (req, res) => {
     const { chapterId } = req.params;
     const { sheet } = req.body;
     const { name, username } = req.session.user;
+    
+    if(!sheet[chapterId] || !sheet[chapterId].length)
+      throw new Error("invalid data");
 
     const user = await User.findOneAndUpdate(
       { username },
@@ -45,7 +48,7 @@ const patchMyChapterScore = async (req, res) => {
       },
       { new: true }
     )
-
+        
     const totalPercentage = Object.entries(user.quizRecord)
       .filter(([chapterId, _]) =>
         chapterId.substring(0, 2) === chapterId.substring(0, 2)
@@ -54,14 +57,12 @@ const patchMyChapterScore = async (req, res) => {
         chapterRecord
           .filter(each => each).length / chapterRecord.length
       )
-      .reduce((acc, cur) => acc += cur, 0);
-
+      .reduce((acc, cur) => acc += cur, 0);  
+        
     const result = await Rank.findOneAndUpdate(
-      {
+      { 
         'subjectId': chapterId.substring(0, 2),
-        ranks: {
-          '$elemMatch': { name }
-        },
+        ranks: { '$elemMatch': { name } },
       },
       {
         '$set': {
@@ -69,10 +70,14 @@ const patchMyChapterScore = async (req, res) => {
           'ranks.$.correctAnswerRate': totalPercentage
         }
       },
-      { new: true }
+      {
+        upsert: true,
+        new: true,  
+      }
     );
+
     res.json({
-      message: `${chapterId} is updated`,
+      message: `${result.subjectId} / ${chapterId} is updated`,
       data: result
     });
   } catch (err) {
