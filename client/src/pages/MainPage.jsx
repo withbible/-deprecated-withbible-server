@@ -4,13 +4,13 @@ import axios from "axios";
 import { Paper, InputBase, IconButton, Chip } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 
-import { AuthContext } from "../context/AuthContext";
+import { RecordContext } from "../context/RecordContext";
 import QuizList from "../components/QuizList";
 import logoImg from "../image/logo.gif";
 import "./MainPage.css";
 
 const MainPage = (_) => {
-  const { setRecord } = useContext(AuthContext);
+  const { setRecord } = useContext(RecordContext);
   const [subjects, setSubjects] = useState([]);
   const [searchKeyword, setSearchKeyword] = useState("");
   const [hashTagData] = useState([
@@ -20,8 +20,7 @@ const MainPage = (_) => {
 
   useEffect(
     (_) => {
-      console.log("am i render");
-      axios.get("/quiz/v2").then(({ data }) => {
+      axios.get("/quiz").then(({ data }) => {
         setSubjects(data.quiz.buckets);
         setRecord(data.quizRecord);
       });
@@ -34,7 +33,7 @@ const MainPage = (_) => {
   };
   const onSubmit = async (e) => {
     e.preventDefault();
-    await axios.get(`/quiz/v2/${searchKeyword}`).then(({ data }) => {
+    await axios.get(`/search/${searchKeyword}`).then(({ data }) => {
       setSubjects(data.quiz.buckets);
       setRecord(data.quizRecord);
     });
@@ -42,7 +41,7 @@ const MainPage = (_) => {
 
   const searchHashTag = (hashTagLabel) => async () => {
     await axios
-      .get(`/quiz/v2/sample/${hashTagLabel.label.substring(1)}`)
+      .get(`/search/${hashTagLabel.label.substring(1)}`)
       .then(({ data }) => {
         setSubjects(data.quiz.buckets);
         setRecord(data.quizRecord);

@@ -14,11 +14,11 @@ import {
 const MyScorePage = () => {
   const [scores, setScores] = useState({});
   const [name, setName] = useState("");
-  const [error, setError] = useState(false);  
+  const [error, setError] = useState(false);
 
   useMemo(() => {
     axios
-      .get("/user/myscore")
+      .get("/score/myscore/detail")
       .then(({ data }) => {
         setScores(data.data);
         setName(data.name);

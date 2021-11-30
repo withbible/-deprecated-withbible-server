@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import axios from "axios";
 
-import { AuthContext } from "../context/AuthContext";
+import { RecordContext } from "../context/RecordContext";
 import "./CustomToolBar.css";
 import "../styles/style.css";
 
@@ -21,7 +21,7 @@ import LogoutIcon from "@mui/icons-material/Logout";
 import AccountBoxIcon from "@mui/icons-material/AccountBox";
 
 const CustomToolBar = () => {
-  const { name, setName, setRecord } = useContext(AuthContext);
+  const { name, setName, setRecord } = useContext(RecordContext);
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
 

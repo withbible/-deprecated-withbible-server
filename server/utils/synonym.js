@@ -3,6 +3,4 @@ const synonym = {
   "다이어그램" : ["다이어그램", "UML", "클래스다이어그램","유스케이스다이어그램"],
 }
 
-
-
 module.exports = synonym;

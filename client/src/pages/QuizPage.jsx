@@ -12,7 +12,7 @@ import axios from "axios";
 import { Button, Checkbox, Paper } from "@mui/material";
 
 import { QuizContext } from "../context/QuizContext";
-import { AuthContext } from "../context/AuthContext";
+import { RecordContext } from "../context/RecordContext";
 import "./QuizPage.css";
 
 let CANDIDATE = ["answer", "wrong_1", "wrong_2", "wrong_3"];
@@ -28,7 +28,7 @@ const fisherYatesShuffle = (arr) => {
 const QuizPage = memo((_) => {
   const { chapterId } = useParams();
   const { quizTitle, setQuizTitle } = useContext(QuizContext);
-  const { record } = useContext(AuthContext);
+  const { record } = useContext(RecordContext);
 
   const [quizInstruction, setQuizInstruction] = useState("");
   const [quizSample, setQuizSample] = useState("");
@@ -60,7 +60,7 @@ const QuizPage = memo((_) => {
   useMemo(
     (_) => {
       axios
-        .get(`/quiz/v2/content/${chapterId}`)
+        .get(`/quiz/${chapterId}`)
         .then(({ data }) => {
           if (isFirstRender.current) {
             isFirstRender.current = false;
@@ -153,6 +153,7 @@ const QuizPage = memo((_) => {
     quizTable[quizNum]["correct"] = enterAnswerSheet(
       shuffleAnswerKeys[quizNum][selectedValue]
     );
+
     await axios({
       url: `/user/myscore/${chapterId}`,
       method: "patch",

@@ -1,8 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { useHistory } from "react-router-dom";
-import { toast } from "react-toastify";
 import axios from "axios";
 
+import { RecordContext } from "../context/RecordContext";
 import CustomInput from "../components/CustomInput";
 import "../styles/style.css";
 
@@ -39,6 +39,7 @@ function Copyright(props) {
 const theme = createTheme();
 
 const LoginPage = () => {
+  const { setName } = useContext(RecordContext);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const history = useHistory();
@@ -48,11 +49,14 @@ const LoginPage = () => {
       e.preventDefault();
       if (username.length < 3 || password.length < 6)
         throw new Error("입력하신 정보가 올바르지 않습니다.");
-      await axios.patch("/user/login", { username, password });
-      history.push("/");
-      toast.success("로그인!");
+      await axios
+        .patch("/user/login", { username, password })
+        .then(({ data }) => {
+          setName(data.name);
+          history.push("/");
+        });
     } catch (err) {
-      toast.error(err.response.data.message);
+      console.error(err);
     }
   };
   return (

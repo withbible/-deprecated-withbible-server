@@ -16,8 +16,10 @@ app.use(
     require('./middleware/cors'),
     require('./middleware/session')
 );
-app.use('/quiz/v2', require('./routes/quiz_v2'))
 app.use('/user', require('./routes/user'));
+app.use('/quiz', require('./routes/quiz'));
+app.use('/score', require('./routes/score'));
+app.use('/search', require('./routes/search'));
 
 app.use((req, res, next) => {
     const error = new Error(`${req.method} ${req.url} 라우터가 없습니다.`);

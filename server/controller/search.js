@@ -1,5 +1,3 @@
-const { Router } = require('express');
-const router = Router();
 const axios = require('axios');
 
 const synonymdata = require("../utils/synonym");
@@ -22,7 +20,7 @@ const AGGREGATE_QUERY = {
   }
 }
 
-router.get('/', async (req, res) => {
+const getChapter = async (req, res) => {
   await axios.get(SEARCH_URL,
     {
       headers: HEADER_QUERY,
@@ -49,9 +47,9 @@ router.get('/', async (req, res) => {
       logger.error(err.message);
       res.status(500).json({ message: err.message });
     })
-})
+};
 
-router.get('/:keyword', async (req, res) => {
+const getChapterByKeyword = async (req, res) => {
   const { keyword } = req.params;
   await axios.get(SEARCH_URL,
     {
@@ -83,9 +81,9 @@ router.get('/:keyword', async (req, res) => {
       logger.error(err.message);
       res.status(500).json({ message: err.message });
     })
-})
+};
 
-router.get('/sample/:synonnym', async (req, res) => {
+const getChapterBySynonymKeyword = async (req, res) => {
   const { synonnym } = req.params;
   const smapleArrayData = synonymdata[synonnym];
   await axios.get(SEARCH_URL,
@@ -118,10 +116,10 @@ router.get('/sample/:synonnym', async (req, res) => {
       logger.error(err.message);
       res.status(500).json({ message: err.message });
     })
-})
+};
 
-router.get('/content/:chapterid', async (req, res) => {
-  const { chapterid } = req.params;
+const getQuiz = async (req, res) => {
+  const { chapterId } = req.params;
   await axios.get(SEARCH_URL,
     {
       headers: { "Content-Type": "application/json" },
@@ -130,7 +128,7 @@ router.get('/content/:chapterid', async (req, res) => {
           "bool": {
             "should": [
               {
-                "match": { "chapter_category": chapterid }
+                "match": { "chapter_category": chapterId }
               }
             ]
           }
@@ -144,6 +142,11 @@ router.get('/content/:chapterid', async (req, res) => {
       logger.error(err.message);
       res.status(400).json({ message: err.message });
     })
-})
+};
 
-module.exports = router;
+module.exports = {
+  getChapter,
+  getChapterByKeyword,
+  getChapterBySynonymKeyword,
+  getQuiz
+};

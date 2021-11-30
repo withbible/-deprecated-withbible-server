@@ -5,50 +5,64 @@ const SUBJECT_CODE_RECORDS = require("../utils/quiz");
 const DefaultDict = require('../utils/collection');
 const logger = require('../log');
 
-const getChapterScore = async (req, res) => {
+const getSubjectRank = async (req, res) => {
   try {
-    const { chapterid } = req.params;
-    res.json(await User.find({
-      [`quizRecord.${chapterid}`]: { "$exists": true }
-    }));
+    const { subjectId } = req.params;
+    const allRank = await Rank.findOne(
+      { subjectId: subjectId }
+    );
+    res.json({ data: allRank.ranks.slice(0, 3) });
   } catch (err) {
     logger.error(err.message);
     res.status(400).json({ message: err.message });
   }
 }
 
+const getChapterScore = async (req, res) => {
+  try {
+    const { chapterId } = req.params;
+    res.json(await User.find({
+      [`quizRecord.${chapterId}`]: { "$exists": true }
+    }));
+  } catch (err) {
+    logger.error(err.message);
+    res.status(400).json({ message: err.message });
+  }
+};
+
 const patchMyChapterScore = async (req, res) => {
   try {
-    const { chapterid } = req.params;
+    const { chapterId } = req.params;
     const { sheet } = req.body;
     const { name, username } = req.session.user;
+    
+    if(!sheet[chapterId] || !sheet[chapterId].length)
+      throw new Error("invalid data");
 
     const user = await User.findOneAndUpdate(
       { username },
       {
         '$set': {
-          [`quizRecord.${chapterid}`]: sheet[chapterid]
+          [`quizRecord.${chapterId}`]: sheet[chapterId]
         }
       },
       { new: true }
     )
-
+        
     const totalPercentage = Object.entries(user.quizRecord)
       .filter(([chapterId, _]) =>
-        chapterId.substring(0, 2) === chapterid.substring(0, 2)
+        chapterId.substring(0, 2) === chapterId.substring(0, 2)
       )
       .map(([_, chapterRecord]) =>
         chapterRecord
           .filter(each => each).length / chapterRecord.length
       )
-      .reduce((acc, cur) => acc += cur, 0)
-
+      .reduce((acc, cur) => acc += cur, 0);  
+        
     const result = await Rank.findOneAndUpdate(
-      {
-        'subjectId': chapterid.substring(0, 2),
-        ranks: {
-          '$elemMatch': { name }
-        },
+      { 
+        'subjectId': chapterId.substring(0, 2),
+        ranks: { '$elemMatch': { name } },
       },
       {
         '$set': {
@@ -56,19 +70,37 @@ const patchMyChapterScore = async (req, res) => {
           'ranks.$.correctAnswerRate': totalPercentage
         }
       },
-      { new: true }
+      {
+        upsert: true,
+        new: true,  
+      }
     );
+
     res.json({
-      message: `${chapterid} is updated`,
+      message: `${result.subjectId} / ${chapterId} is updated`,
       data: result
     });
   } catch (err) {
     logger.error(err.message);
     res.status(400).json({ message: err.message });
   }
-}
+};
 
-const getMyScoreAll = async (req, res) => {
+const getMyScoreRaw = (req, res) => {
+  try {
+    const { name, quizRecord } = req.session.user;
+    res.json({
+      message: 'keep logined',
+      name,
+      quizRecord
+    });
+  } catch (err) {
+    logger.error(err);
+    res.status(401).json({ message: err.message });
+  }
+};
+
+const getMyScoreDetail = async (req, res) => {
   try {
     const { name, quizRecord } = req.session.user;
     const result = new DefaultDict(_ => []);
@@ -95,24 +127,12 @@ const getMyScoreAll = async (req, res) => {
     logger.error(err.message);
     res.status(500).json({ message: err.message });
   }
-}
-
-const getSubjectRank = async (req, res) => {
-  try {
-    const { subjectId } = req.params;
-    const allRank = await Rank.findOne(
-      { subjectId: subjectId }
-    );
-    res.json({ data: allRank.ranks.slice(0, 3) });
-  } catch (err) {
-    logger.error(err.message);
-    res.status(400).json({ message: err.message });
-  }
-}
+};
 
 module.exports = {
+  getSubjectRank,
   getChapterScore,
   patchMyChapterScore,
-  getMyScoreAll,
-  getSubjectRank
+  getMyScoreRaw,
+  getMyScoreDetail
 };

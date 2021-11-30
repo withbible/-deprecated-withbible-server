@@ -34,7 +34,7 @@ const QuizList = ({ quizInfo }) => {
 
   const handleOpen = async () => {
     await axios
-      .get(`/user/ranking/${SUBJECT_CODE_RECORDS[quizInfo.key]}`)
+      .get(`/score/totalscore/rank/${SUBJECT_CODE_RECORDS[quizInfo.key]}`)
       .then(({ data }) => {
         setRankData(data);
         setOpen(true);
