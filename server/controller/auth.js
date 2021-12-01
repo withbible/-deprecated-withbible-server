@@ -9,6 +9,7 @@ const register = async (req, res) => {
     req.session.user = user;
     res.sendStatus(201);
   } catch (err) {
+    logger.error(err.message);
     res.status(401).json(err);
   }
 }
@@ -19,7 +20,7 @@ const login = async (req, res) => {
     const user = await authService.login(username, password);
 
     req.session.user = user;
-    logger.info(`${user.username} 로그인`)
+    logger.info(`${user.username} 로그인`);
     res.status(200).json({ name: user.name });
   } catch (err) {
     logger.error(err);

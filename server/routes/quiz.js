@@ -1,10 +1,10 @@
 const { Router } = require('express');
 const router = Router();
 
-const searchController = require("../controller/search");
+const queryDSLController = require("../controller/queryDSL");
 
-router.get('/:chapterId', searchController.getQuiz);
+router.get('/:chapterId', queryDSLController.getQuiz);
 
-router.get('/', searchController.getChapter);
+router.get('/', queryDSLController.getChapter);
 
 module.exports = router;

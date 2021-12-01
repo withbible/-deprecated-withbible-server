@@ -7,7 +7,7 @@ class DefaultDict extends Object {
     }
 
     return new Proxy(this, {
-      get: function(target, key) {
+      get: function (target, key) {
         if (!Reflect.has(target, key)) {
           Reflect.set(target, key, getDefaultValue(key));
         }

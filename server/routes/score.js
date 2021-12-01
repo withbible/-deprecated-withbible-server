@@ -4,18 +4,17 @@ const router = Router();
 const authenticate = require('../middleware/authentication');
 const scoreController = require('../controller/score');
 
-router.get("/totalscore/rank/:subjectId", scoreController.getSubjectRank);
+router.get("/aggregate/all/rank/:subjectId", scoreController.getRankBySubject);
 
-router.get('/totalscore/:chapterId', scoreController.getChapterScore);
+router.get('/raw/all/:chapterId', scoreController.getQuizScoreByChapter);
 
 router.use(authenticate);
 
-router.patch('/myscore/:chapterId', scoreController.patchMyChapterScore);
+router.get('/aggregate/me', scoreController.getMyQuizScoreDetail);
 
-router.get('/myscore/raw', scoreController.getMyScoreRaw);
+router.patch('/raw/me/:chapterId', scoreController.patchMyQuizScoreWithRank);
 
-router.get('/myscore/detail', scoreController.getMyScoreDetail);
+router.get('/raw/me', scoreController.getMyQuizScore);
 
-// +++ Delete Quiz API
 
 module.exports = router;
