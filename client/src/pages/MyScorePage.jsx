@@ -18,7 +18,7 @@ const MyScorePage = () => {
 
   useMemo(() => {
     axios
-      .get("/score/myscore/detail")
+      .get("/score/aggregate/me")
       .then(({ data }) => {
         setScores(data.data);
         setName(data.name);

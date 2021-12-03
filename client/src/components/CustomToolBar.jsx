@@ -1,6 +1,5 @@
 import React, { useContext } from "react";
 import { Link } from "react-router-dom";
-import { toast } from "react-toastify";
 import axios from "axios";
 
 import { RecordContext } from "../context/RecordContext";
@@ -34,14 +33,12 @@ const CustomToolBar = () => {
 
   const logOutHandler = async () => {
     try {
-      await axios.patch("/user/logout");
-      setName();
-      setRecord(null);
-      toast.success("로그아웃!");
-      window.location.replace("/");
+      await axios.patch("/user/logout").then((_) => {
+        setName("");
+        setRecord(null);
+      });
     } catch (err) {
       console.error(err);
-      toast.error(err.message);
     }
   };
   return (

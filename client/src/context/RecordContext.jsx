@@ -5,12 +5,12 @@ export const RecordContext = createContext();
 
 export const RecordProvider = ({ children }) => {
   const [name, setName] = useState("");
-  const [record, setRecord] = useState(null);  
+  const [record, setRecord] = useState(null);
 
   axios.defaults.headers.common["Content-Type"] = "application/json";
   useEffect(() => {
     axios
-      .get("/score/myscore/raw", { withCredentials: true })
+      .get("/score/raw/me", { withCredentials: true })
       .then(({ data }) => {
         setName(data.name);
         setRecord(data.quizRecord);

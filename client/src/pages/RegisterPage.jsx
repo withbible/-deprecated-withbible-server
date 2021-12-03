@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
-import { toast } from "react-toastify";
 import axios from "axios";
 
 import CustomInput from "../components/CustomInput";
@@ -58,10 +57,9 @@ const RegisterPage = () => {
         username,
         password,
       });
-      history.push("/");
-      toast.success("회원가입 성공!");
+      history.push("/");      
     } catch (err) {
-      toast.error(err);
+      console.error(err);
     }
   };
   return (

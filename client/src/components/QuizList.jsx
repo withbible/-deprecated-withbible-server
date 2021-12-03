@@ -1,9 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import axios from "axios";
 import { ScrollMenu } from "react-horizontal-scrolling-menu";
 
 import { Box, Typography, Modal } from "@mui/material";
 
+import { RecordContext } from "../context/RecordContext";
 import chatImg from "../image/ul-comment-message.png";
 import rankImg from "../image/ranking.png";
 import "./QuizList.css";
@@ -28,13 +29,14 @@ const style = {
 
 // quizInfo memorize해서 넘기기
 const QuizList = ({ quizInfo }) => {
+  const { name } = useContext(RecordContext);
   const chapters = quizInfo && quizInfo.group_by_chapter.buckets;
   const [open, setOpen] = useState(false);
   const [rankData, setRankData] = useState([]);
 
   const handleOpen = async () => {
     await axios
-      .get(`/score/totalscore/rank/${SUBJECT_CODE_RECORDS[quizInfo.key]}`)
+      .get(`/score/aggregate/all/rank/${SUBJECT_CODE_RECORDS[quizInfo.key]}`)
       .then(({ data }) => {
         setRankData(data);
         setOpen(true);
@@ -70,7 +72,7 @@ const QuizList = ({ quizInfo }) => {
         </Modal>
 
         <a
-          href={`${chatServerDomain}/?room=${
+          href={`${chatServerDomain}/?name=${name}&room=${
             SUBJECT_CODE_RECORDS[quizInfo.key]
           }`}
           target="_blank"

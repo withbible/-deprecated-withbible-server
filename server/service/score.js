@@ -88,6 +88,7 @@ const getScore = (quizRecord) => {
         : (b.chapterId > a.chapterId) ? -1
           : 0);
   }
+  return result;
 };
 
 module.exports = {

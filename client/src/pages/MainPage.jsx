@@ -21,7 +21,7 @@ const MainPage = (_) => {
   useEffect(
     (_) => {
       axios.get("/quiz").then(({ data }) => {
-        setSubjects(data.quiz.buckets);
+        setSubjects(data.data.buckets);
         setRecord(data.quizRecord);
       });
     },
