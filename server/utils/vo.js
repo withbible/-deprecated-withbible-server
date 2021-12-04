@@ -5,12 +5,12 @@ const SUBJECT_CODE_RECORDS = {
   "im": "정보시스템 구축관리"
 }
 
-const SYNONUM_RECORDS = {
+const SYNONYM_RECORDS = {
   "디자인패턴": ["디자인패턴", "패턴", "싱글톤", "팩토리", "퍼사드", "데코레이터", "컴퍼지트", "전략", "옵저버", "템플릿"],
   "다이어그램": ["다이어그램", "UML", "클래스다이어그램", "유스케이스다이어그램"],
 }
 
 module.exports = {
   SUBJECT_CODE_RECORDS,
-  SYNONUM_RECORDS
+  SYNONYM_RECORDS
 }

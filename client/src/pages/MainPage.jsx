@@ -42,9 +42,9 @@ const MainPage = (_) => {
 
   const searchHashTag = (hashTagLabel) => async () => {
     await axios
-      .get(`/search/sample/${hashTagLabel.label.substring(1)}`)
+      .get(`/search/synonym/${hashTagLabel.label.substring(1)}`)
       .then(({ data }) => {
-        setSubjects(data.quiz.buckets);
+        setSubjects(data.data.buckets);
         setRecord(data.quizRecord);
       });
   };
