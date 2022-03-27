@@ -28,4 +28,10 @@ app.use((req, res, next) => {
 })
 app.use((err, req, res, next) => logger.error(err.message));
 
-app.listen(PORT, _ => logger.info(`app listening on port ${PORT}!`));
+app.listen(PORT, () => logger.info(
+    `
+##############################################
+    🛡️  Server listening on port: ${PORT} 🛡️
+##############################################
+    `
+));
