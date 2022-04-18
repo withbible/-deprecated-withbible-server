@@ -1,10 +1,17 @@
 const { Router } = require('express');
 const router = Router();
 
-const queryDSLController = require("../controller/queryDSL");
+const queryController = require("../controller/quiz");
 
-router.get('/:chapterId', queryDSLController.getQuiz);
+// +++ For EndUser API
+router.get('/category/:categoryId', queryController.getQuizCategory);
 
-router.get('/', queryDSLController.getChapter);
+
+// +++ For Admin API
+router.put('/', queryController.putQuiz);
+
+router.put('/category', queryController.putQuizCategory);
+
+router.patch('/question', queryController.patchQuizQuestion);
 
 module.exports = router;

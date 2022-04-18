@@ -4,13 +4,7 @@ const logger = require('../log');
 
 mongoose.Promise = global.Promise;
 mongoose.connect(
-  process.env.MONGO_URL,
-  {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-    useCreateIndex: true,
-    useFindAndModify: false
-  }
+  process.env.MONGODB_URL,
 )
   .then(() => logger.info('MongoDB Connected'))
   .catch(err => logger.error(err));

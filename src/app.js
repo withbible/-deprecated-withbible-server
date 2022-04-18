@@ -1,20 +1,16 @@
 const express = require('express');
 
-const logger = require('./log')
+const config = require('../config');
+require('./database/atlas');
 
-require('dotenv/config');
-require('./db/atlas');
-const { PORT } = process.env;
+const PORT = config.port;
 
 const app = express();
 app.set('trust proxy', 1);
 
 app.use(
-    require('./middleware/morgan'),
     express.json(),
     express.urlencoded({ extended: false }),
-    require('./middleware/cors'),
-    require('./middleware/session')
 );
 app.use('/user', require('./routes/user'));
 app.use('/quiz', require('./routes/quiz'));
@@ -26,9 +22,9 @@ app.use((req, res, next) => {
     error.status = 404;
     next(error);
 })
-app.use((err, req, res, next) => logger.error(err.message));
+app.use((err, req, res, next) => console.error(err.message));
 
-app.listen(PORT, () => logger.info(
+app.listen(PORT, () => console.log(
     `
 ##############################################
     🛡️  Server listening on port: ${PORT} 🛡️
