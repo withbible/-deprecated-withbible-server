@@ -1,17 +1,19 @@
 const { Router } = require('express');
 const router = Router();
 
-const queryController = require("../controller/quiz");
+const { quizController } = require("../controllers");
 
 // +++ For EndUser API
-router.get('/category/:categoryId', queryController.getQuizCategory);
+router.get('/category/:categoryId', quizController.getQuizCategory);
 
 
 // +++ For Admin API
-router.put('/', queryController.putQuiz);
+router.put('/', quizController.putQuiz);
 
-router.put('/category', queryController.putQuizCategory);
+router.put('/chapter', quizController.putQuizChapter);
 
-router.patch('/question', queryController.patchQuizQuestion);
+router.post('/question', quizController.postQuizQuestion);
+
+router.delete('/question', quizController.deleteQuizQuestion);
 
 module.exports = router;
