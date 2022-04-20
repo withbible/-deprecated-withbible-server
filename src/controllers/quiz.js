@@ -106,27 +106,29 @@ const deleteQuizQuestion = async (req, res) => {
   }
 };
 
-// +++ Task
 const patchQuizQuestionTitle = async (req, res) => {
   try {
-    const { categoryId, title, questionId, newTitle } = req.body;
+    const { questionId, newText } = req.body;
 
     const data = await Quiz.findOneAndUpdate(
+      { 'questions._id': questionId },
       {
-        $and: [
-          { categoryId },
-          { title },
-          { 'questions._id': questionId }
-        ]
+        $set: {
+          'questions.$.text': newText
+        }
       },
       {
-        $set: { 'questions.$.text': newTitle }
-      },
-      { new: true }
+        upsert: true,
+        new: true
+      }
     );
 
     data
-      ? res.json(data)
+      ? res.json({
+        message: `${data.title} 챕터 퀴즈 지문 변경 완료`,
+        size: data.questions.length,
+        questions: data.questions,
+      })
       : res.status(400).json({ message: "Invalid query" });
   } catch (err) {
     res.status(500).json({ message: err.message });
@@ -135,25 +137,29 @@ const patchQuizQuestionTitle = async (req, res) => {
 
 const patchQuizQuestionOptionTitle = async (req, res) => {
   try {
-    const { categoryId, title, questionId, optionId, newTitle } = req.body;
+    const { optionId, newText } = req.body;
 
     const data = await Quiz.findOneAndUpdate(
       {
-        $and: [
-          { categoryId },
-          { title },
-          { 'questions._id': questionId },
-          { 'questions.options._id': optionId }
-        ]
+        questions: { $elemMatch: { 'options._id': optionId } }
       },
       {
-        $set: { 'questions.options.$.text': newTitle }
+        $setOnInsert: {          
+          $elemMatch: {'questions.options.$.text': newText }          
+        }
       },
-      { new: true }
+      {
+        upsert: true,
+        new: true
+      }
     );
 
     data
-      ? res.json(data)
+      ? res.json({
+        message: `${data.title} 챕터 퀴즈옵션 지문 변경 완료`,
+        size: data.questions.length,
+        questions: data.questions,
+      })
       : res.status(400).json({ message: "Invalid query" });
   } catch (err) {
     res.status(500).json({ message: err.message });
@@ -165,7 +171,7 @@ module.exports = {
   getQuizCategory,
   putQuizChapter,
   postQuizQuestion,
-  patchQuizQuestionTitle,
   deleteQuizQuestion,
+  patchQuizQuestionTitle,
   patchQuizQuestionOptionTitle
 };
