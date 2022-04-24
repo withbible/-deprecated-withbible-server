@@ -11,6 +11,7 @@ app.use(
     require('./middleware/morgan'),
     express.json(),
     express.urlencoded({ extended: false }),    
+    require('./middleware/cors')
 );
 app.use('/quiz', require('./routes/quiz'));
 
