@@ -10,11 +10,12 @@ const app = express();
 app.use(
     require('./middleware/morgan'),
     express.json(),
-    express.urlencoded({ extended: false }),    
+    express.urlencoded({ extended: false }),
     require('./middleware/cors')
 );
 app.use('/quiz', require('./routes/quiz'));
 app.use('/history', require('./routes/history'));
+app.use('/leaderBoard', require('./routes/leaderBoard'));
 
 app.use((req, res, next) => {
     const error = new Error(`${req.method} ${req.url} 라우터가 없습니다.`);
