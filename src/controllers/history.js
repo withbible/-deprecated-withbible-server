@@ -1,5 +1,10 @@
 const logger = require('../log');
 const History = require('../models/History');
+const LeaderBoard = require('../models/LeaderBoard');
+
+const options = {
+  new: true
+}
 
 const putHistory = async (req, res) => {
   try {
@@ -56,12 +61,7 @@ const updateHistory = async (req, res) => {
     const { name, title, answerSheet, score, timeTaken, date } = req.body;
 
     const data = await History.findOneAndUpdate(
-      {
-        $and: [
-          { name },
-          { title }
-        ]
-      },
+      { $and: [{ name }, { title }] },
       {
         $set: {
           answerSheet,
@@ -70,10 +70,9 @@ const updateHistory = async (req, res) => {
           date,
         }
       },
-      {
-        upsert: true,
-        new: true
-      }
+      options
+    ).select(
+      'name title answerSheet score timeTaken date status'
     );
 
     data
@@ -89,8 +88,49 @@ const updateHistory = async (req, res) => {
   }
 }
 
+const getScore = async (req, res) => {
+  try {
+    const { name } = req.query;
+    const historyList = await History.find({ name });
+
+    if (!historyList.length)
+      throw new Error("데이터가 존재하지 않습니다.")
+
+    const scoreMap = new Map();
+    let totalScore = 0;
+
+    historyList.forEach(history => {
+      const { categoryId, status } = history;
+
+      if (!scoreMap.has(categoryId))
+        scoreMap.set(categoryId, 0);
+
+      if (status === "score") {
+        const prevScore = scoreMap.get(categoryId);
+        scoreMap.set(categoryId, prevScore + 100);
+
+        totalScore += 100;
+      }
+    });
+
+    res.json({
+      message: `점수 조회 완료`,
+      size: scoreMap.size,
+      data: {
+        totalScore,
+        scoreByCategory: Object.fromEntries(scoreMap)
+      }
+    })
+
+  } catch (err) {
+    logger.error(err);
+    res.status(500).json({ message: err.message });
+  }
+}
+
 module.exports = {
   putHistory,
   getHistory,
-  updateHistory
+  updateHistory,
+  getScore,
 }

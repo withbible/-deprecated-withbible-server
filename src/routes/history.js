@@ -9,4 +9,6 @@ router.get('/', historyController.getHistory);
 
 router.post('/', historyController.updateHistory);
 
+router.get('/score', historyController.getScore);
+
 module.exports = router;

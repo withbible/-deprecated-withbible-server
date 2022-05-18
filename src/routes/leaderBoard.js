@@ -3,8 +3,10 @@ const router = Router();
 
 const { leaderBoardController } = require('../controllers');
 
-router.put('/', leaderBoardController.putLeaderBoard);
-
+// +++ For EndUser API
 router.get('/', leaderBoardController.getLeaderBoard);
+
+// +++ For Admin API
+router.put('/', leaderBoardController.putLeaderBoard);
 
 module.exports = router;
