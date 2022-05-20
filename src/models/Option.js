@@ -2,9 +2,9 @@ const mongoose = require('mongoose');
 
 const OptionSchema = new mongoose.Schema(
   {
-    code: { type: String, require: true },
-    text: { type: String, require: true },
-    isCorrect: { type: Boolean, require: true }
+    code: { type: String, required: true },
+    text: { type: String, required: true },
+    isCorrect: { type: Boolean, required: true }
   }
 );
 
