@@ -1,6 +1,6 @@
 const logger = require('../log');
 const Quiz = require('../models/Quiz');
-const categoryCode = require('../modules/categoryCode');
+const categoryCode = require('../constants/categoryCode');
 const { quizService } = require('../services');
 
 const putQuiz = async (req, res) => {
