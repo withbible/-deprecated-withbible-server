@@ -1,5 +1,5 @@
 const express = require('express');
-
+const logger = require('./log');
 const config = require('../config');
 require('./database/atlas');
 
@@ -11,8 +11,10 @@ app.use(
     require('./middleware/morgan'),
     express.json(),
     express.urlencoded({ extended: false }),
-    require('./middleware/cors')
+    require('./middleware/cors'),
+    require('./middleware/session')
 );
+app.use('/user', require('./routes/user'));
 app.use('/quiz', require('./routes/quiz'));
 app.use('/history', require('./routes/history'));
 app.use('/leaderBoard', require('./routes/leaderBoard'));
@@ -22,9 +24,9 @@ app.use((req, res, next) => {
     error.status = 404;
     next(error);
 })
-app.use((err, req, res, next) => console.error(err.message));
+app.use((err, req, res, next) => logger.error(err.message));
 
-app.listen(PORT, () => console.log(
+app.listen(PORT, () => logger.info(
     `
 ##############################################
     🛡️  Server listening on port: ${PORT} 🛡️
