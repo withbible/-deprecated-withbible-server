@@ -11,3 +11,6 @@ combined.log
 
 # development
 etc/
+
+# deployment
+.deta/
