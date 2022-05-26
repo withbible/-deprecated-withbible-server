@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-
 const logger = require('../log');
 
 mongoose.Promise = global.Promise;

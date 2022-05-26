@@ -2,8 +2,13 @@ const { Router } = require('express');
 const router = Router();
 
 const authenticate = require('../middleware/authentication');
-const authController = require('../controllers/auth');
+const { authController, userController } = require('../controllers');
 
+// +++ For Admin API
+router.get('/', userController.getAllUser)
+
+
+// +++ For EndUser API
 router.post('/register', authController.register);
 
 router.patch('/login', authController.login);

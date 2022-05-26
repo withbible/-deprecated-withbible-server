@@ -2,8 +2,6 @@ const express = require('express');
 const logger = require('./log');
 require('./database/atlas');
 
-const PORT = process.env.PORT;
-
 const app = express();
 
 app.use(
@@ -25,14 +23,4 @@ app.use((req, res, next) => {
 })
 app.use((err, req, res, next) => logger.error(err.message));
 
-// +++ Dev
-app.listen(PORT, () => logger.info(
-    `
-##############################################
-    🛡️  Server listening on port: ${PORT} 🛡️
-##############################################
-    `
-));
-
-// +++ Production
 module.exports = app;
