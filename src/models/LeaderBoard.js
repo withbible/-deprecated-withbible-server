@@ -1,11 +1,14 @@
 const mongoose = require("mongoose")
 const ObjectId = mongoose.Schema.Types.ObjectId;
 
-const LeaderBoardSchema = new mongoose.Schema({  
-  name: { type: String, required: true },
-  username: { type: String, required: true, unique: true },
-  photoPath: { type: String },
+const LeaderBoardSchema = new mongoose.Schema({
+  photoPath: { type: String, unique: true },
   score: { type: Number, required: true },
-}, { timestamps: true })
+  user: {
+    type: ObjectId,
+    ref: "users",
+    index: { unique: true }
+  }
+});
 
 module.exports = mongoose.model("leaderboards", LeaderBoardSchema);

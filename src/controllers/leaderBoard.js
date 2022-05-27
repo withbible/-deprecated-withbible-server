@@ -1,18 +1,21 @@
 const { StatusCodes } = require('http-status-codes');
 const logger = require('../log');
+const User = require('../models/User');
 const LeaderBoard = require('../models/LeaderBoard');
 
 const photoURL = 'https://avatars.dicebear.com/api/micah'
 
 const putLeaderBoard = async (req, res) => {
-  const { username } = req.body;
+  const { username, score } = req.body;
 
   try {
     const photoPath = `${photoURL}/${username}.svg`;
 
+    const user = await User.findOne({ username });
     const data = await LeaderBoard.create({
       photoPath,
-      ...req.body
+      score,
+      user: user._id
     });
 
     res.status(StatusCodes.OK).json({
@@ -31,9 +34,13 @@ const putLeaderBoard = async (req, res) => {
 const getLeaderBoard = async (_, res) => {
   try {
     const data = await LeaderBoard.find()
-      .sort({score: 'desc', username: 'asc'})
+      .populate({
+        path: 'user',
+        select: 'name username'
+      })
+      .sort({ score: 'desc' })
       .limit(10)
-      .select('name username photoPath score');
+      .select('user photoPath score');
 
     if (!data.length)
       return res.status(StatusCodes.BAD_REQUEST).json({
