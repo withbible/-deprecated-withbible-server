@@ -3,7 +3,7 @@ const ObjectId = mongoose.Schema.Types.ObjectId;
 
 const LeaderBoardSchema = new mongoose.Schema({
   photoPath: { type: String, unique: true },
-  score: { type: Number, required: true },
+  totalScore: { type: Number, required: true },
   user: {
     type: ObjectId,
     ref: "users",

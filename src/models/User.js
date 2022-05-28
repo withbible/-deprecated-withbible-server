@@ -5,7 +5,7 @@ const UserSchema = new mongoose.Schema({
   name: { type: String, required: true },
   username: { type: String, required: true, unique: true },
   hashedPassword: { type: String, required: true },
-  leaderBoard: { type: ObjectId, ref: "leaderboards" }
+  histories: [{ type: ObjectId, ref: "histories" }]
 });
 
 module.exports = mongoose.model("users", UserSchema);

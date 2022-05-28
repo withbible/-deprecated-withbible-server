@@ -6,7 +6,7 @@ const LeaderBoard = require('../models/LeaderBoard');
 const photoURL = 'https://avatars.dicebear.com/api/micah'
 
 const putLeaderBoard = async (req, res) => {
-  const { username, score } = req.body;
+  const { username, totalScore } = req.body;
 
   try {
     const photoPath = `${photoURL}/${username}.svg`;
@@ -14,7 +14,7 @@ const putLeaderBoard = async (req, res) => {
     const user = await User.findOne({ username });
     const data = await LeaderBoard.create({
       photoPath,
-      score,
+      totalScore,
       user: user._id
     });
 
@@ -40,13 +40,12 @@ const getLeaderBoard = async (_, res) => {
       })
       .sort({ score: 'desc' })
       .limit(10)
-      .select('user photoPath score');
+      .select('user photoPath totalScore');
 
     if (!data.length)
       return res.status(StatusCodes.BAD_REQUEST).json({
         message: "Invalid query"
       });
-
 
     res.status(StatusCodes.OK).json({
       message: `리더보드 조회 완료`,

@@ -2,6 +2,7 @@ const { StatusCodes } = require('http-status-codes');
 const logger = require('../log');
 const History = require('../models/History');
 const LeaderBoard = require('../models/LeaderBoard');
+const User = require("../models/User");
 
 const options = {
   new: true
@@ -28,16 +29,22 @@ const makeTotalScore = (scoreList) => {
   return { scoreMap, totalScore };
 }
 
-
 const putHistory = async (req, res) => {
+  const { name } = req.body;
+  
   try {
     // +++ Need validate multiple username, unique title
     const data = await History.create(
       req.body
     );
 
+    await User.findOneAndUpdate(
+      { name },
+      { $push: { histories: data._id } }
+    );
+
     res.status(StatusCodes.OK).json({
-      message: `기록 등록 완료`,      
+      message: `기록 등록 완료`,
       data
     });
 
@@ -91,29 +98,32 @@ const updateHistory = async (req, res) => {
       'name title answerSheet score timeTaken date status'
     );
 
-    const historyList = await History.find({ name })
-      .select(
-        'name categoryId status'
-      );
+    const user = await User.findOne({ name })
+      .populate({
+        path: 'histories',
+        select: 'score status'
+      })
+      .select('histories');    
 
-    if (!updatedHistory || !historyList.length)
+    if (!updatedHistory || !user.histories.length)
       return res.status(StatusCodes.BAD_REQUEST).json({
         message: "Invalid query"
       });
 
-    const { _, totalScore } = makeTotalScore(historyList);
+    const { _, totalScore } = makeTotalScore(user.histories);
+
     const leaderBoard = await LeaderBoard.findOneAndUpdate(
-      { name },     // +++ Need change username
-      { $set: { score, } },
+      { user: user._id },             // +++ Need change username after auth
+      { $set: { totalScore, } },
     ).select(
-      'username score'
+      'score'
     );
 
     res.status(StatusCodes.OK).json({
       message: `기록 및 순위표 업데이트 완료`,
       data: {
         updatedHistory,
-        prevTotalScore: leaderBoard.score,
+        prevTotalScore: leaderBoard.totalScore,
         totalScore
       }
     });
