@@ -1,10 +1,10 @@
 const { pool } = require('../../config/database');
 const dao = require('./dao');
 
-exports.usernameCheck = async function (username) {
+exports.userIDCheck = async function (userID) {
   const connection = await pool.getConnection(async (conn) => conn);
-  const result = await dao.selectUsername(connection, username);
+  const result = await dao.selectUserID(connection, userID);
   connection.release();
 
   return result;
-}
+};
