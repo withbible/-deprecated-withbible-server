@@ -1,13 +1,19 @@
 const session = require('express-session');
+const FileStore = require('session-file-store')(session);
 
 module.exports = session({
-  resave: false,
-  saveUninitialized: false,
+  key: 'loginData',
   secret: process.env.COOKIE_SECRET,
-  name: 'session-cookie',
+  resave: false,
+  saveUninitialized: false,     // [default] true
+  store: new FileStore({
+    
+    // TODO: 만료된 세션 백그라운드에서 자동 삭제 (해당 옵션 원하는 데로 작동하지 않음)
+    reapAsync: true
+  }),
   cookie: {
     httpOnly: true,
-    secure: false,
-    maxAge: 60 * 60 * 3 * 1000
+    secure: false,              // [recommended] true
+    maxAge: 20 * 1000
   }
-})
+});

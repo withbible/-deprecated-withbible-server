@@ -6,10 +6,8 @@ package-lock.json
 .env
 
 # log
+sessions/
 combined.log
-
-# development
-etc/
 
 # deployment
 .deta/
