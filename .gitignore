@@ -5,9 +5,11 @@ package-lock.json
 # conf
 .env
 
+# etc
+etc/
+
 # log
 sessions/
-combined.log
 
 # deployment
 .deta/
