@@ -3,6 +3,7 @@ const router = Router();
 
 const { historyController } = require('../controllers');
 
+// +++ For EndUser API
 router.put('/', historyController.putHistory);
 
 router.get('/', historyController.getHistory);
