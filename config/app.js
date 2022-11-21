@@ -18,6 +18,7 @@ module.exports = function () {
     // TODO: 도메인을 추가할 경우 이곳에 Route를 추가하세요.
     require('../src/User/route')(app);
     require('../src/Quiz/route')(app);
+    require('../src/History/route')(app);    
 
     app.use((req, res, next) => {
         const err = new Error(`${req.method} ${req.url} 라우터가 없습니다.`);
