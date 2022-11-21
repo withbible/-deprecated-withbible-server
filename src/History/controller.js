@@ -14,12 +14,27 @@ exports.getHistory = async function (req, res) {
 exports.postHistory = async function (req, res) {
   const { questionID, selectOptionID, userID } = req.body;
 
-  try{
+  try {
     const result = await service.postHistory(questionID, selectOptionID, userID);
-    res.status(StatusCodes.CREATED);
-    res.json(response(null, result));
 
-  }catch(err){
+    res.status(StatusCodes.CREATED);
+    res.json(response("퀴즈기록 생성 완료", result));
+
+  } catch (err) {
+    logger.error(err.message);
+    res.status(err.status);
+    res.json(errResponse(err.message));
+  }
+};
+
+exports.putHistory = async function (req, res) {
+  const { questionID, selectOptionID, userID } = req.body;
+
+  try {
+    const result = await service.putHistory(questionID, selectOptionID, userID);
+    res.json(response("퀴즈기록 수정 완료", result));
+
+  } catch (err) {
     logger.error(err.message);
     res.status(err.status);
     res.json(errResponse(err.message));

@@ -8,5 +8,5 @@ module.exports = function (app) {
   app.post('/histories', history.postHistory);
 
   // 사용자별 퀴즈기록 수정 API
-  // app.put('/histories', history.putHistory);
+  app.put('/histories', history.putHistory);  
 };

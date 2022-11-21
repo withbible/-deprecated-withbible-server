@@ -10,3 +10,13 @@ exports.getHistory = async function (questionID, userID) {
 
   return result;
 };
+
+exports.optionCheck = async function (questionID, optionID) {
+  const connection = await pool.getConnection(async (conn) => conn);
+
+  const selectOptionParams = [questionID, optionID];
+  const result = await dao.selectOptionID(connection, selectOptionParams);
+  connection.release();
+
+  return result;
+};
