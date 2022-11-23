@@ -2,14 +2,14 @@ module.exports = function (app) {
   const user = require('./controller');
 
   // 유저 생성 (회원가입) API
-  app.post('/users', user.postUsers);
+  app.post('/user', user.postUser);
 
   // 로그인 API
-  app.patch('/users/login', user.login);
+  app.patch('/user/login', user.login);
 
   // 자동로그인 API
-  app.get('/users/loginCheck', user.loginCheck);
+  app.get('/user/loginCheck', user.loginCheck);
 
   // 로그아웃 API
-  app.patch('/users/logout', user.logout);
+  app.patch('/user/logout', user.logout);
 };

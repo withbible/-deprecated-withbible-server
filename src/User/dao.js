@@ -1,8 +1,8 @@
 exports.selectUserID = async function (connection, userID) {
   const query = `
     SELECT 
-      userID,
-      hashedPassword
+      user_id,
+      hashed_password
     FROM user
     WHERE userID = ?;
   `;
@@ -14,7 +14,7 @@ exports.selectUserID = async function (connection, userID) {
 exports.insertUser = async function (connection, insertUserParams) {
   const query = `
     INSERT INTO user 
-      (userID, hashedPassword, name)
+      (user_id, hashed_password, user_name)
     VALUES 
       (?, ?, ?);
   `;

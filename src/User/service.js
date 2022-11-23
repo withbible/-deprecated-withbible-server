@@ -4,7 +4,7 @@ const { pool } = require('../../config/database');
 const provider = require('./provider');
 const dao = require('./dao');
 
-exports.postUser = async function (userID, password, name) {
+exports.postUser = async function (userID, password, userName) {
   const userIDRows = await provider.userIDCheck(userID);
 
   if (userIDRows.length > 0) {
@@ -16,14 +16,14 @@ exports.postUser = async function (userID, password, name) {
   const saltRounds = 10;
   const hashedPassword = await bcypt.hash(password, saltRounds);
 
-  const insertUserParams = [userID, hashedPassword, name];
+  const insertUserParams = [userID, hashedPassword, userName];
   const connection = await pool.getConnection(async (conn) => conn);
   await dao.insertUser(connection, insertUserParams);  
   connection.release();
 
   return {    
     userID,
-    name
+    userName
   };
 };
 

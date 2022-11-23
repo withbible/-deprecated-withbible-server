@@ -1,40 +1,41 @@
 const { pool } = require("../../config/database");
 const dao = require('./dao');
 
-exports.getCategory = async function () {
+exports.getCategories = async function () {
   const connection = await pool.getConnection(async (conn) => conn);
-  const result = await dao.selectCategory(connection);
+  const result = await dao.selectCategories(connection);
   connection.release();
 
   return result;
 };
 
-exports.getChapter = async function (categoryID) {
+exports.getMaxChapter = async function (categorySeq) {
   const connection = await pool.getConnection(async (conn) => conn);
 
-  if (categoryID)
-    result = await dao.searchChapter(connection, categoryID);
+  if (categorySeq)
+    result = await dao.searchMaxChapter(connection, categorySeq);
   else
-    result = await dao.selectChapter(connection);
+    result = await dao.selectMaxChapter(connection);
 
   connection.release();
 
   return result;
 };
 
-exports.getQuestion = async function (categoryID, chapter) {
+exports.getQuestions = async function (categorySeq, chapterNum) {
   const connection = await pool.getConnection(async (conn) => conn);
 
-  const selectQuestionParams = [categoryID, chapter];
-  const result = await dao.selectQuestion(connection, selectQuestionParams);
+  const offset = chapterNum * 3;
+  const selectQuestionParams = [categorySeq, offset];
+  const result = await dao.selectQuestions(connection, selectQuestionParams);
   connection.release();
 
   return result;
 };
 
-exports.getOption = async function (questionID) {
+exports.getOptions = async function (questionSeq) {
   const connection = await pool.getConnection(async (conn) => conn);
-  const result = await dao.selectQption(connection, questionID);
+  const result = await dao.selectQptions(connection, questionSeq);
   connection.release();
 
   return result;

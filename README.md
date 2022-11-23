@@ -66,6 +66,10 @@
         service.js
 ```
 
+## [ERD](https://www.erdcloud.com/p/vzY38iExRFRMcLYNv)
+
+링크를 확인해주세요.
+
 ## Setup
 
 Download [Node.js](https://nodejs.org/ko/download/).

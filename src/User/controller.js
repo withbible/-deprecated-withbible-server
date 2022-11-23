@@ -3,11 +3,11 @@ const { logger } = require('../../config/logger');
 const { errResponse, response } = require('../modules/response');
 const service = require('./service');
 
-exports.postUsers = async function (req, res) {
-  const { userID, password, name } = req.body;
+exports.postUser = async function (req, res) {
+  const { userID, password, userName } = req.body;
 
   try {
-    const result = await service.postUser(userID, password, name);
+    const result = await service.postUser(userID, password, userName);
 
     const message = `추가된 회원 : ${result.userID}`;
     logger.info(message);

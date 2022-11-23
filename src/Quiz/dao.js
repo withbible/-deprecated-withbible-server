@@ -1,7 +1,7 @@
-exports.selectCategory = async function (connection) {
+exports.selectCategories = async function (connection) {
   const query = `
     SELECT
-      CONCAT('/images/category/', category_id, '.svg') AS image,
+      CONCAT('/images/category/', category_seq, '.svg') AS image,
       category
     FROM quiz_category;
   `;
@@ -10,68 +10,67 @@ exports.selectCategory = async function (connection) {
   return rows;
 };
 
-exports.selectChapter = async function (connection) {
+exports.selectMaxChapter = async function (connection) {
   const query = `
     SELECT
       c.category,
-      COUNT(q.question_id) AS category_questions,
-      FLOOR(COUNT(q.question_id) / 3) AS max_chapter
-    FROM quiz_question AS q
-    INNER JOIN quiz_category AS c
-      ON q.category_id = c.category_id    
+      COUNT(q.question_seq) AS category_questions,
+      FLOOR(COUNT(q.question_seq) / 3) + 1 AS max_chapter
+    FROM quiz_category AS c
+    INNER JOIN quiz_question AS q
+      ON c.category_seq = q.category_seq
     GROUP BY
-      c.category_id;
+      c.category_seq;
   `;
 
   const [rows] = await connection.query(query);
   return rows;
 };
 
-exports.searchChapter = async function (connection, categoryID) {
-  const query = `
+exports.searchMaxChapter = async function (connection, categorySeq) {
+  const query = `    
     SELECT
       c.category,
-      COUNT(q.question_id) AS category_questions,
-      FLOOR(COUNT(q.question_id) / 3) AS max_chapter
-    FROM quiz_question AS q
-    INNER JOIN quiz_category AS c
-      ON q.category_id = c.category_id
-      AND q.category_id = ?
+      COUNT(q.question_seq) AS category_questions,
+      FLOOR(COUNT(q.question_seq) / 3) + 1 AS max_chapter
+    FROM quiz_category AS c
+    INNER JOIN quiz_question AS q
+      ON c.category_seq = q.category_seq
     GROUP BY
-      c.category_id;
+      c.category_seq
+    HAVING c.category_seq = ?;
   `;
 
-  const [rows] = await connection.query(query, categoryID);
+  const [rows] = await connection.query(query, categorySeq);
   return rows;
 };
 
-exports.selectQuestion = async function (connection, selectQuestionParams) {
+exports.selectQuestions = async function (connection, selectQuestionsParams) {
   const query = `
     SELECT
-      category_id,
-      question_id 
-    FROM
-      quiz_question
-    WHERE category_id = ?
+      category_seq,
+      question_seq      
+    FROM quiz_question
+    WHERE category_seq = ?
     LIMIT ?, 3;
   `;
 
-  const [rows] = await connection.query(query, selectQuestionParams);
+  const [rows] = await connection.query(query, selectQuestionsParams);
   return rows;
 };
 
-exports.selectQption = async function (connection, questionID) {
+exports.selectQptions = async function (connection, questionSeq) {
   const query = `
     SELECT
       q.question,
       o.question_option,
-      o.is_correct 
+      o.answer_yn 
     FROM quiz_question AS q
     INNER JOIN quiz_question_option AS o
-      ON q.question_id = o.question_id
-      AND q.question_id = ?;
+      ON q.question_seq = o.question_seq
+    WHERE q.question_seq = ?;
   `;
 
-  const [rows] = await connection.query(query, questionID);
+  const [rows] = await connection.query(query, questionSeq);
   return rows;
 };

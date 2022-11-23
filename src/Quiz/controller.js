@@ -1,28 +1,28 @@
 const { response } = require('../modules/response');
 const provider = require('./provider');
 
-exports.getCategory = async function (req, res) {
-  const result = await provider.getCategory();
+exports.getCategories = async function (req, res) {
+  const result = await provider.getCategories();
   res.json(response(null, result));
 };
 
-exports.getChapter = async function (req, res) {
-  const { categoryID } = req.query;
+exports.getMaxChapter = async function (req, res) {
+  const { categorySeq } = req.query;
 
-  const result = await provider.getChapter(categoryID);
+  const result = await provider.getMaxChapter(categorySeq);
   res.json(response(null, result));
 };
 
-exports.getQuestion = async function (req, res) {
-  const { categoryID, chapter } = req.query;
+exports.getQuestions = async function (req, res) {
+  const { categorySeq, chapterNum } = req.query;
 
-  const result = await provider.getQuestion(categoryID, parseInt(chapter));
+  const result = await provider.getQuestions(categorySeq, chapterNum);
   res.json(response(null, result));
 };
 
-exports.getOption = async function (req, res) {
-  const { questionID } = req.query;
+exports.getOptions = async function (req, res) {
+  const { questionSeq } = req.query;
 
-  const result = await provider.getOption(questionID);
+  const result = await provider.getOptions(questionSeq);
   res.json(response(null, result));
 };

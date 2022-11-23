@@ -22,12 +22,13 @@ module.exports = function () {
 
     app.use((req, res, next) => {
         const err = new Error(`${req.method} ${req.url} 라우터가 없습니다.`);
+        err.status = StatusCodes.NOT_FOUND;
         next(err);
     });
 
     app.use((err, req, res, next) => {
         logger.error(err.message);
-        res.status(StatusCodes.NOT_FOUND);
+        res.status(err.status);
         res.json(errResponse(err.message));
     });
 
