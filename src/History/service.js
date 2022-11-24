@@ -55,18 +55,3 @@ exports.putUserOption = async function (questionSeq, selectOptionSeq, userID) {
 
   return Promise.resolve();
 };
-
-exports.getHitCount = async function (categorySeq) {
-  const quizRows = await quizProvider.getMaxChapter(categorySeq);
-
-  if (!quizRows.length) {
-    const err = new Error("해당 기록이 존재하지 않습니다.");
-    err.status = StatusCodes.BAD_REQUEST;
-    return Promise.reject(err);
-  }
-
-  const maxChapterNum = quizRows[0]['max_chapter'];
-  const historyRows = await provider.getHitCount(categorySeq, maxChapterNum);
-
-  return historyRows;
-};

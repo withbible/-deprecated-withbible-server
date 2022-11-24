@@ -21,11 +21,10 @@ exports.optionCheck = async function (questionSeq, optionSeq) {
   return result;
 };
 
-exports.getHitCount = async function (categorySeq, maxChapterNum) {
+exports.getHitCount = async function (userID) {
   const connection = await pool.getConnection(async (conn) => conn);
 
-  const selectHitCountParams = [categorySeq, maxChapterNum];
-  const result = await dao.selectHitCount(connection, selectHitCountParams);
+  const result = await dao.selectHitCount(connection, userID);
   connection.release();
 
   return result;

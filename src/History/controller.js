@@ -38,22 +38,21 @@ exports.putUserOption = async function (req, res) {
   } catch (err) {
     logger.error(err.message);
     res.status(err.status);
-
     res.json(errResponse(err.message));
   }
 };
 
 exports.getHitCount = async function (req, res) {
-  const { categorySeq } = req.query;
+  // TODO: 세션에서 추출
+  const userID = req.get('userID');  
 
   try {
-    const result = await service.getHitCount(categorySeq);
+    const result = await provider.getHitCount(userID);
     res.json(response(null, result));
 
   } catch (err) {
     logger.error(err.message);
     res.status(err.status);
-
     res.json(errResponse(err.message));
   }
 };

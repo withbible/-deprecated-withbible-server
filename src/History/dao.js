@@ -51,22 +51,26 @@ exports.updateUserOption = async function (connection, updateUserOptionParams) {
   return await connection.query(query, updateUserOptionParams);
 };
 
-exports.selectHitCount = async function (connection, selectHitCountParams) {
+exports.selectHitCount = async function (connection, userID) {
   const query = `
-    SELECT
-      q.category_seq,
-      q.rn AS chapter_seq 	
-    FROM (
-          SELECT 
-            category_seq,
-            question_seq,
-            ROW_NUMBER() OVER(PARTITION BY category_seq) AS rn		
-          FROM quiz_question
-          WHERE category_seq = ?	
-        ) q
-    WHERE q.rn <= ?;
+    SELECT 
+      q.category_seq,	
+      q.chapter_seq,
+      COUNT(q.question_seq) AS hit_count
+    FROM quiz_question AS q
+    INNER JOIN quiz_question_option AS qo
+      ON q.question_seq = qo.question_seq
+    INNER JOIN quiz_user_option AS uo
+      ON qo.question_option_seq = uo.question_option_seq
+    INNER JOIN user AS u
+      ON u.user_seq = uo.user_seq
+    WHERE qo.answer_yn = 1
+      AND u.user_id = ?
+    GROUP BY 
+      q.category_seq,	
+      q.chapter_seq;
   `;
 
-  const [rows] = await connection.query(query, selectHitCountParams);
+  const [rows] = await connection.query(query, userID);
   return rows;
 };

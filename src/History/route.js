@@ -18,8 +18,8 @@ module.exports = function (app) {
    */
   // 한 질문의 선택기록 전체조회 API
 
-  // 한 챕터의 맞힌갯수 조회 API
-  app.get('/history/chapter/hit-count', history.getHitCount);
+  // 챕터별 맞힌갯수 조회 API
+  app.get('/history/chapters/hit-count', history.getHitCount);
 
   // 한 챕터의 맞힌갯수 생성 API  
   
