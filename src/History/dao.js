@@ -1,51 +1,72 @@
-exports.selectHistory = async function (connection, selectHistoryParams) {
+exports.selectUserOption = async function (connection, selectUserOptionParams) {
   const query = `
     SELECT
-      a.user_id,
-      a.question_id,
+      a.user_seq,
+      o.question_seq,
       o.question_option,
-      o.is_correct 
-    FROM quiz_user_answer AS a
-    INNER JOIN quiz_question_option AS o
-      ON a.question_option_id = o.question_option_id
-    WHERE a.question_id = ?
-      AND a.user_id = ?;
+      o.answer_yn
+    FROM quiz_question_option AS o
+    INNER JOIN quiz_user_option AS a
+      ON o.question_option_seq = a.question_option_seq
+    WHERE o.question_seq = ?
+      AND a.user_seq = ?;
   `;
 
-  const [rows] = await connection.query(query, selectHistoryParams);
+  const [rows] = await connection.query(query, selectUserOptionParams);
   return rows;
 };
 
-exports.selectOptionID = async function (connection, selectOptionParams) {
+exports.selectOptionSeq = async function (connection, selectOptionParams) {
   const query = `
     SELECT
-      question_option_id,
+      question_option_seq,
       question_option
     FROM quiz_question_option
-    WHERE question_id = ?
-      AND question_option_id = ?;
+    WHERE question_seq = ?
+      AND question_option_seq = ?;
   `;
 
   const [rows] = await connection.query(query, selectOptionParams);
   return rows;
 };
 
-exports.insertHistory = async function (connection, insertHistoryParams) {
+exports.insertUserOption = async function (connection, insertUserOptionParams) {
   const query = `
-    INSERT INTO quiz_user_answer
-      (question_id, question_option_id, user_id)
+    INSERT INTO quiz_user_option
+      (question_seq, question_option_seq, user_seq)
     VALUES
       (?, ?, ?);
   `;
-  return await connection.query(query, insertHistoryParams);
+  return await connection.query(query, insertUserOptionParams);
 };
 
-exports.updateHistory = async function (connection, updateHistoryParams) {
+exports.updateUserOption = async function (connection, updateUserOptionParams) {
   const query = `
-    UPDATE quiz_user_answer 
-    SET question_option_id = ?
-    WHERE question_id = ?
-      AND user_id = ?;
+    UPDATE quiz_user_option 
+    SET 
+      question_option_seq = ?
+    WHERE question_seq = ?
+      AND user_seq = ?;
   `;
-  return await connection.query(query, updateHistoryParams);
+  return await connection.query(query, updateUserOptionParams);
+};
+
+exports.selectHitCount = async function (connection, selectHitCountParams) {
+  const query = `
+    SELECT
+      q.category_seq,
+      q.rn AS chapter_seq 	
+    FROM (
+          SELECT 
+            category_seq,
+            question_seq,
+            ROW_NUMBER() OVER(PARTITION BY category_seq) AS rn		
+          FROM quiz_question
+          WHERE category_seq = ?	
+        ) q
+    WHERE q.rn <= ?;
+  `;
+
+  const [rows] = await connection.query(query, selectHitCountParams);
+  return rows;
 };

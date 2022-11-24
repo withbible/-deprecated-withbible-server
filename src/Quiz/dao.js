@@ -15,7 +15,7 @@ exports.selectMaxChapter = async function (connection) {
     SELECT
       c.category,
       COUNT(q.question_seq) AS category_questions,
-      FLOOR(COUNT(q.question_seq) / 3) + 1 AS max_chapter
+      CEIL(COUNT(q.question_seq) / 3) AS max_chapter
     FROM quiz_category AS c
     INNER JOIN quiz_question AS q
       ON c.category_seq = q.category_seq
@@ -32,7 +32,7 @@ exports.searchMaxChapter = async function (connection, categorySeq) {
     SELECT
       c.category,
       COUNT(q.question_seq) AS category_questions,
-      FLOOR(COUNT(q.question_seq) / 3) + 1 AS max_chapter
+      CEIL(COUNT(q.question_seq) / 3) AS max_chapter
     FROM quiz_category AS c
     INNER JOIN quiz_question AS q
       ON c.category_seq = q.category_seq
