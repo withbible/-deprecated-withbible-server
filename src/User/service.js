@@ -36,11 +36,11 @@ exports.login = async function (userID, password) {
     return Promise.reject(err);
   }
 
-  const selectUserID = userIDRows[0].userID;
+  const selectUserID = userIDRows[0]['user_id'];
 
   const isValidPassword = await bcypt.compare(
     password,
-    userIDRows[0].hashedPassword
+    userIDRows[0]['hashed_password']
   );
 
   if (!isValidPassword) {
@@ -50,6 +50,7 @@ exports.login = async function (userID, password) {
   }
 
   return {
+    'userSeq': userIDRows[0]['user_seq'],
     'userID': selectUserID
   };
 };

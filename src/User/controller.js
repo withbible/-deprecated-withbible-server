@@ -27,7 +27,10 @@ exports.login = async function (req, res) {
   try {
     const result = await service.login(userID, password);
 
-    req.session.isLogined = true;
+    req.session.user = {
+      ...result,
+      isLogined: true
+    };
 
     const message = `${userID} 로그인`;
     logger.info(message);
@@ -41,7 +44,7 @@ exports.login = async function (req, res) {
 };
 
 exports.loginCheck = async function (req, res) {
-  if (req.session.isLogined) {
+  if (req.session.user.isLogined) {
     // TODO: 세션 만료 시간 업데이트
     res.json(response("세션이 유효합니다."));
 
@@ -52,7 +55,7 @@ exports.loginCheck = async function (req, res) {
 };
 
 exports.logout = async function (req, res) {
-  if (!req.session.isLogined) {
+  if (!req.session.user.isLogined) {
     return res.json(response("세션이 존재하지 않습니다."));
   }
 
@@ -62,7 +65,7 @@ exports.logout = async function (req, res) {
       res.status(StatusCodes.INTERNAL_SERVER_ERROR);
       res.json(errResponse(err.message));
 
-    } else {      
+    } else {
       res.json(response("로그아웃 되었습니다."));
     }
   })

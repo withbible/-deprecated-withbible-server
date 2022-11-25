@@ -1,16 +1,6 @@
 const { pool } = require('../../config/database');
 const dao = require('./dao');
 
-exports.getUserOption = async function (questionSeq, userID) {
-  const connection = await pool.getConnection(async (conn) => conn);
-
-  const selectHistoryParams = [questionSeq, userID];
-  const result = await dao.selectUserOption(connection, selectHistoryParams);
-  connection.release();
-
-  return result;
-};
-
 exports.optionCheck = async function (questionSeq, optionSeq) {
   const connection = await pool.getConnection(async (conn) => conn);
 
@@ -25,6 +15,16 @@ exports.getHitCount = async function (userID) {
   const connection = await pool.getConnection(async (conn) => conn);
 
   const result = await dao.selectHitCount(connection, userID);
+  connection.release();
+
+  return result;
+};
+
+exports.getUserOptionBulk = async function (categorySeq, chapterSeq, userSeq) {
+  const connection = await pool.getConnection(async (conn) => conn);
+
+  const selectUserOptionBulkParams = [categorySeq, chapterSeq, userSeq];
+  const result = await dao.selectUserOptionBulk(connection, selectUserOptionBulkParams);
   connection.release();
 
   return result;
