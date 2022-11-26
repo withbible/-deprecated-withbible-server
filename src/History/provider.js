@@ -1,3 +1,4 @@
+const { StatusCodes } = require("http-status-codes");
 const { pool } = require('../../config/database');
 const dao = require('./dao');
 
@@ -24,7 +25,14 @@ exports.getUserOptionBulk = async function (categorySeq, chapterSeq, userSeq) {
   const connection = await pool.getConnection(async (conn) => conn);
 
   const selectUserOptionBulkParams = [categorySeq, chapterSeq, userSeq];
-  const result = await dao.selectUserOptionBulk(connection, selectUserOptionBulkParams);
+  const rows = await dao.selectUserOptionBulk(connection, selectUserOptionBulkParams);
+
+  if (!rows.length) {
+    const err = new Error("해당 기록이 존재하지 않습니다.");
+    err.status = StatusCodes.BAD_REQUEST;
+    return Promise.reject(err);
+  }
+
   connection.release();
 
   return result;

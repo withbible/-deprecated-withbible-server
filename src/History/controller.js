@@ -6,7 +6,7 @@ const service = require('./service');
 
 exports.getHitCount = async function (req, res) {
   // TODO: 세션에서 추출
-  const userID = req.get('userID');  
+  const userID = req.get('userID');
 
   try {
     const result = await provider.getHitCount(userID);
@@ -23,19 +23,26 @@ exports.getUserOptionBulk = async function (req, res) {
   const { categorySeq, chapterSeq } = req.body;
   const { userSeq } = req.session.user;
 
-  const result = await provider.getUserOptionBulk(categorySeq, chapterSeq, userSeq);
-  res.json(response(null, result));
+  try {
+    const result = await provider.getUserOptionBulk(categorySeq, chapterSeq, userSeq);
+    res.json(response("선택기록 조회 완료", result));
+
+  } catch (err) {
+    logger.error(err.message);
+    res.status(err.status);
+    res.json(errResponse(err.message));
+  }
 };
 
 exports.postUserOptionBulk = async function (req, res) {
-  const { categorySeq, chapterSeq, bulk} = req.body;
+  const { categorySeq, chapterSeq, bulk } = req.body;
   const { userSeq } = req.session.user;
 
-  try {    
+  try {
     const result = await service.postUserOptionBulk(categorySeq, chapterSeq, userSeq, bulk);
 
     res.status(StatusCodes.CREATED);
-    res.json(response("퀴즈기록 생성 완료", result));
+    res.json(response("선택기록 생성 완료", result));
 
   } catch (err) {
     logger.error(err.message);
@@ -45,12 +52,12 @@ exports.postUserOptionBulk = async function (req, res) {
 };
 
 exports.putUserOptionBulk = async function (req, res) {
-  const { categorySeq, chapterSeq, bulk} = req.body;
+  const { categorySeq, chapterSeq, bulk } = req.body;
   const { userSeq } = req.session.user;
 
   try {
     const result = await service.putUserOptionBulk(categorySeq, chapterSeq, userSeq, bulk);
-    res.json(response("퀴즈기록 수정 완료", result));
+    res.json(response("선택기록 수정 완료", result));
 
   } catch (err) {
     logger.error(err.message);

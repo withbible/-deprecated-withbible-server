@@ -87,7 +87,7 @@ exports.updateUserOptionBulk = async function (connection, bulk, userSeq) {
   const arr = [];
 
   for (const [key, value] of Object.entries(bulk))
-    arr.push(`${key}, ${userSeq}, ${value}`);
+    arr.push(`(${key}, ${userSeq}, ${value})`);
 
   query += arr.join();
   query += `
@@ -96,8 +96,6 @@ exports.updateUserOptionBulk = async function (connection, bulk, userSeq) {
       user_seq = VALUES(user_seq),
       question_option_seq = VALUES(question_option_seq);
   `;
-
-  console.log(query);
 
   return await connection.query(query, bulk, userSeq);
 };
