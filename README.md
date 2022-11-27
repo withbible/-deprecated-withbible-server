@@ -20,13 +20,22 @@
 
 </div>
 
+- [KBU BibleGraduationExam QuizApp API Server](#kbu-biblegraduationexam-quizapp-api-server)
+  - [소개](#소개)
+  - [`src` 폴더 구조](#src-폴더-구조)
+  - [ERD](#erd)
+  - [순서도](#순서도)
+  - [Setup (dev)](#setup-dev)
+  - [참고문헌](#참고문헌)
+
+
 ## 소개
 
 한국성서대학교 재학생들의 성경 졸업 고사를 사전에 대비하고자 만든 퀴즈 형태의 모바일 애플리케이션입니다. 2주 안팎에 준비해야한다는 조급함과 낮은 합격률은 학습에 거부감을 생기게하는데 이를 해결합니다.
 
 <img src="./public/images/intro.png"/>
 
-## src 폴더 구조
+## `src` 폴더 구조
 
 ```bash
 +---History
@@ -70,11 +79,25 @@
 
 링크를 확인해주세요.
 
-## Setup
+## 순서도
+
+<details open>
+<summary>퀴즈 순서도</summary>
+
+<img src="public/images/flowChart/quiz.drawio.svg">
+
+</details>
+
+<details>
+<summary>오답노트 순서도</summary>
+
+<img src="public/images/flowChart/review.drawio.svg">
+
+</details>
+
+## Setup (dev)
 
 Download [Node.js](https://nodejs.org/ko/download/).
-
-### dev
 
 ```bash
 # Install dependencies (only the first time)
