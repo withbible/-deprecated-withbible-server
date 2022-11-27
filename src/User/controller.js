@@ -66,6 +66,7 @@ exports.logout = async function (req, res) {
       res.json(errResponse(err.message));
 
     } else {
+      res.clearCookie('loginData');
       res.json(response("로그아웃 되었습니다."));
     }
   })

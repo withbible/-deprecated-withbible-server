@@ -12,7 +12,7 @@ exports.selectOptionSeq = async function (connection, selectOptionParams) {
   return rows;
 };
 
-exports.selectHitCount = async function (connection, userID) {
+exports.selectHitCount = async function (connection, userSeq) {
   const query = `
     SELECT 
       q.category_seq,	
@@ -22,17 +22,15 @@ exports.selectHitCount = async function (connection, userID) {
     INNER JOIN quiz_question_option AS qo
       ON q.question_seq = qo.question_seq
     INNER JOIN quiz_user_option AS uo
-      ON qo.question_option_seq = uo.question_option_seq
-    INNER JOIN user AS u
-      ON u.user_seq = uo.user_seq
+      ON qo.question_option_seq = uo.question_option_seq    
     WHERE qo.answer_yn = 1
-      AND u.user_id = ?
+      AND uo.user_seq = ?
     GROUP BY 
       q.category_seq,	
       q.chapter_seq;
   `;
 
-  const [rows] = await connection.query(query, userID);
+  const [rows] = await connection.query(query, userSeq);
   return rows;
 };
 

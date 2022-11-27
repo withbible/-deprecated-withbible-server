@@ -12,4 +12,5 @@ etc/
 sessions/
 
 # deployment
+.vscode/
 .deta/

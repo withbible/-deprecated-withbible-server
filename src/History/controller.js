@@ -5,12 +5,11 @@ const provider = require('./provider');
 const service = require('./service');
 
 exports.getHitCount = async function (req, res) {
-  // TODO: 세션에서 추출
-  const userID = req.get('userID');
+  const { userSeq } = req.session.user;
 
   try {
-    const result = await provider.getHitCount(userID);
-    res.json(response(null, result));
+    const result = await provider.getHitCount(userSeq);
+    res.json(response("맞힌갯수 조회 완료", result));
 
   } catch (err) {
     logger.error(err.message);
