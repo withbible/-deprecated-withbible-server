@@ -1,3 +1,5 @@
+const authenticate = require('../middleware/authentication');
+
 module.exports = function (app) {
   const user = require('./controller');
 
@@ -8,7 +10,7 @@ module.exports = function (app) {
   app.patch('/user/login', user.login);
 
   // 자동로그인 API
-  app.get('/user/loginCheck', user.loginCheck);
+  app.get('/user/loginCheck', authenticate, user.loginCheck);
 
   // 로그아웃 API
   app.patch('/user/logout', user.logout);
