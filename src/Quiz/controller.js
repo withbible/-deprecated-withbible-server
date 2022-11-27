@@ -13,6 +13,13 @@ exports.getMaxChapter = async function (req, res) {
   res.json(response(null, result));
 };
 
+exports.getChapter = async function (req, res) {
+  const { keyword } = req.query;
+
+  const result = await provider.getChapter(keyword);
+  res.json(response(null, result));
+};
+
 exports.getQuestions = async function (req, res) {
   const { categorySeq, chapterNum } = req.query;
 

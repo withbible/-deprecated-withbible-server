@@ -35,5 +35,5 @@ exports.getUserOptionBulk = async function (categorySeq, chapterSeq, userSeq) {
 
   connection.release();
 
-  return result;
+  return rows;
 };

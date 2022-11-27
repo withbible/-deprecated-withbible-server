@@ -45,6 +45,45 @@ exports.searchMaxChapter = async function (connection, categorySeq) {
   return rows;
 };
 
+exports.selectChapter = async function (connection) {
+  const query = `
+    SELECT 
+      q.category_seq,	
+      q.chapter_seq,
+      COUNT(q.question_seq) AS question_count
+    FROM quiz_question AS q
+    GROUP BY 
+      q.category_seq,	
+      q.chapter_seq
+    ORDER BY
+      q.category_seq;
+  `;  
+
+  const [rows] = await connection.query(query);
+  return rows;
+};
+
+exports.searchChapter = async function (connection, keyword) {
+  const query = `
+    SELECT 
+      q.category_seq,	
+      q.chapter_seq,
+      COUNT(q.question_seq) AS question_count
+    FROM quiz_question AS q
+    WHERE q.question LIKE '%?%'
+    GROUP BY 
+      q.category_seq,	
+      q.chapter_seq
+    ORDER BY
+      q.category_seq;
+  `;
+
+  console.log(query);
+
+  const [rows] = await connection.query(query, keyword);
+  return rows;
+};
+
 exports.selectQuestions = async function (connection, selectQuestionsParams) {
   const query = `
     SELECT

@@ -22,6 +22,19 @@ exports.getMaxChapter = async function (categorySeq) {
   return result;
 };
 
+exports.getChapter = async function (keyword) {
+  const connection = await pool.getConnection(async (conn) => conn);
+
+  if(keyword)
+    result = await dao.searchChapter(connection, keyword);
+  else
+    result = await dao.selectChapter(connection);
+
+  connection.release();
+
+  return result;
+};
+
 exports.getQuestions = async function (categorySeq, chapterNum) {
   const connection = await pool.getConnection(async (conn) => conn);
 
