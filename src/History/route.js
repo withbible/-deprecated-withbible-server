@@ -1,9 +1,5 @@
-const authenticate = require('../middleware/authentication');
-
 module.exports = function (app) {
-  const history = require('./controller');
-
-  app.use(authenticate);
+  const history = require('./controller');  
 
   // 챕터별 맞힌갯수 조회 API
   app.get('/history/chapters/hit-count', history.getHitCount);
