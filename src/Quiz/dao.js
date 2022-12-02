@@ -13,9 +13,10 @@ exports.selectCategories = async function (connection) {
 exports.selectMaxChapter = async function (connection) {
   const query = `
     SELECT
+    c.category_seq,
       c.category,
-      COUNT(q.question_seq) AS category_questions,
-      CEIL(COUNT(q.question_seq) / 3) AS max_chapter
+      COUNT(q.question_seq) AS question_count,
+      CAST(CEIL(COUNT(q.question_seq) / 3) AS SIGNED) AS max_chapter
     FROM quiz_category AS c
     INNER JOIN quiz_question AS q
       ON c.category_seq = q.category_seq
@@ -30,9 +31,10 @@ exports.selectMaxChapter = async function (connection) {
 exports.searchMaxChapter = async function (connection, categorySeq) {
   const query = `    
     SELECT
+      c.category_seq,
       c.category,
-      COUNT(q.question_seq) AS category_questions,
-      CEIL(COUNT(q.question_seq) / 3) AS max_chapter
+      COUNT(q.question_seq) AS question_count,
+      CAST(CEIL(COUNT(q.question_seq) / 3) AS SIGNED) AS max_chapter
     FROM quiz_category AS c
     INNER JOIN quiz_question AS q
       ON c.category_seq = q.category_seq
@@ -57,30 +59,29 @@ exports.selectChapter = async function (connection) {
       q.chapter_seq
     ORDER BY
       q.category_seq;
-  `;  
+  `;
 
   const [rows] = await connection.query(query);
   return rows;
 };
 
 exports.searchChapter = async function (connection, keyword) {
+  const symbol = `%${keyword}%`;
+
   const query = `
-    SELECT 
-      q.category_seq,	
-      q.chapter_seq,
-      COUNT(q.question_seq) AS question_count
+    SELECT
+      c.category,
+      q.category_seq,
+      JSON_ARRAYAGG(q.chapter_seq) AS chapter_seq_array
     FROM quiz_question AS q
-    WHERE q.question LIKE '%?%'
+    INNER JOIN quiz_category as c
+      ON q.category_seq = c.category_seq
+    WHERE q.question LIKE ?
     GROUP BY 
-      q.category_seq,	
-      q.chapter_seq
-    ORDER BY
       q.category_seq;
   `;
 
-  console.log(query);
-
-  const [rows] = await connection.query(query, keyword);
+  const [rows] = await connection.query(query, symbol);
   return rows;
 };
 
