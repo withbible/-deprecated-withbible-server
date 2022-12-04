@@ -1,5 +1,8 @@
+const { StatusCodes } = require("http-status-codes");
+
+//INTERNAL IMPORT
 const { pool } = require("../../config/database");
-const dao = require('./dao');
+const dao = require("./dao");
 
 exports.getCategories = async function () {
   const connection = await pool.getConnection(async (conn) => conn);
@@ -25,12 +28,22 @@ exports.getMaxChapter = async function (categorySeq) {
 exports.getChapter = async function (keyword) {
   const connection = await pool.getConnection(async (conn) => conn);
 
-  if(keyword)
+  if (keyword)
     result = await dao.searchChapter(connection, keyword);
-  else
+  else 
     result = await dao.selectChapter(connection);
 
   connection.release();
+
+  if (!result.length) {
+    const err = new Error("데이터가 존재하지 않습니다.");
+    err.status = StatusCodes.NOT_FOUND;
+    return Promise.reject(err);
+  }
+
+  // TODO: JSON_ARRAYAGG 집계시 중복 제거도 해온다면 best
+  for (const each of result)
+    each["chapter_seq_array"] = [...new Set(each["chapter_seq_array"])];
 
   return result;
 };

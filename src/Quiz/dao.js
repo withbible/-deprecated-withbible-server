@@ -49,14 +49,15 @@ exports.searchMaxChapter = async function (connection, categorySeq) {
 
 exports.selectChapter = async function (connection) {
   const query = `
-    SELECT 
-      q.category_seq,	
-      q.chapter_seq,
-      COUNT(q.question_seq) AS question_count
+    SELECT
+      c.category,
+      q.category_seq,
+      JSON_ARRAYAGG(q.chapter_seq) AS chapter_seq_array
     FROM quiz_question AS q
+    INNER JOIN quiz_category as c
+      ON q.category_seq = c.category_seq
     GROUP BY 
-      q.category_seq,	
-      q.chapter_seq
+      q.category_seq      
     ORDER BY
       q.category_seq;
   `;
