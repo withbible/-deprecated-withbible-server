@@ -86,32 +86,27 @@ exports.searchChapter = async function (connection, keyword) {
   return rows;
 };
 
-exports.selectQuestions = async function (connection, selectQuestionsParams) {
+exports.selectQuiz = async function (connection, selectQuizParams) {
   const query = `
-    SELECT
-      category_seq,
-      question_seq      
-    FROM quiz_question
-    WHERE category_seq = ?
-    LIMIT ?, 3;
-  `;
-
-  const [rows] = await connection.query(query, selectQuestionsParams);
-  return rows;
-};
-
-exports.selectQptions = async function (connection, questionSeq) {
-  const query = `
-    SELECT
+    SELECT	
+      q.question_seq,
       q.question,
-      o.question_option,
-      o.answer_yn 
+      JSON_ARRAYAGG(
+        JSON_OBJECT(
+          "question_option_seq", o.question_option_seq,
+          "question_option", o.question_option,
+          "answer_yn", o.answer_yn
+        )
+      ) option_array
     FROM quiz_question AS q
     INNER JOIN quiz_question_option AS o
       ON q.question_seq = o.question_seq
-    WHERE q.question_seq = ?;
+    WHERE category_seq = ?
+      AND chapter_seq = ?
+    GROUP BY 
+      q.question_seq;
   `;
 
-  const [rows] = await connection.query(query, questionSeq);
+  const [rows] = await connection.query(query, selectQuizParams);
   return rows;
 };

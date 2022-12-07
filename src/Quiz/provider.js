@@ -15,10 +15,11 @@ exports.getCategories = async function () {
 exports.getMaxChapter = async function (categorySeq) {
   const connection = await pool.getConnection(async (conn) => conn);
 
-  if (categorySeq)
+  if (categorySeq) {
     result = await dao.searchMaxChapter(connection, categorySeq);
-  else
+  } else {
     result = await dao.selectMaxChapter(connection);
+  }
 
   connection.release();
 
@@ -28,10 +29,11 @@ exports.getMaxChapter = async function (categorySeq) {
 exports.getChapter = async function (keyword) {
   const connection = await pool.getConnection(async (conn) => conn);
 
-  if (keyword)
+  if (keyword) {
     result = await dao.searchChapter(connection, keyword);
-  else 
+  } else {
     result = await dao.selectChapter(connection);
+  }
 
   connection.release();
 
@@ -48,21 +50,18 @@ exports.getChapter = async function (keyword) {
   return result;
 };
 
-exports.getQuestions = async function (categorySeq, chapterNum) {
+exports.getQuiz = async function (categorySeq, chapterSeq) {
   const connection = await pool.getConnection(async (conn) => conn);
 
-  const offset = chapterNum * 3;
-  const selectQuestionParams = [categorySeq, offset];
-  const result = await dao.selectQuestions(connection, selectQuestionParams);
+  const selectQuizParams = [categorySeq, chapterSeq];
+  const result = await dao.selectQuiz(connection, selectQuizParams);
   connection.release();
 
-  return result;
-};
-
-exports.getOptions = async function (questionSeq) {
-  const connection = await pool.getConnection(async (conn) => conn);
-  const result = await dao.selectQptions(connection, questionSeq);
-  connection.release();
+  if (!result.length) {
+    const err = new Error("데이터가 존재하지 않습니다.");
+    err.status = StatusCodes.NOT_FOUND;
+    return Promise.reject(err);
+  }
 
   return result;
 };
