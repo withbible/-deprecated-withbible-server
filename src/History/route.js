@@ -1,8 +1,8 @@
 module.exports = function (app) {
   const history = require('./controller');  
 
-  // 챕터별 맞힌갯수 조회 API
-  app.get('/history/chapters/hit-count', history.getHitCount);
+  // 한 챕터의 맞힌갯수 조회 API
+  app.get('/history/chapter/hit-count', history.getHitCount);
 
   // 한 챕터의 선택기록 전체조회 API
   app.get('/history/chapter/user-option', history.getUserOptionBulk);

@@ -1,47 +1,54 @@
-exports.selectOptionSeq = async function (connection, selectOptionParams) {
+exports.selectHitCount = async function (connection, selectHitCountParams) {
   const query = `
     SELECT
-      question_option_seq,
-      question_option
-    FROM quiz_question_option
-    WHERE question_seq = ?
-      AND question_option_seq = ?;
+      S1.category_seq,
+      S1.chapter_seq,	
+      S2.hit_count,
+      S1.question_count
+    FROM(
+      SELECT
+        category_seq,
+        chapter_seq,
+        COUNT(question_seq) AS question_count  
+      FROM quiz_question
+      WHERE category_seq = ?
+        AND chapter_seq = ?
+      GROUP BY
+        category_seq,	
+        chapter_seq
+      ) AS S1
+    JOIN(
+      SELECT 
+        q.category_seq,	
+        q.chapter_seq,  
+        COUNT(q.question_seq) AS hit_count
+      FROM quiz_question AS q
+      LEFT JOIN quiz_question_option AS qo
+        ON q.question_seq = qo.question_seq
+      INNER JOIN quiz_user_option AS uo
+        ON qo.question_option_seq = uo.question_option_seq    
+      WHERE qo.answer_yn = 1
+        AND q.category_seq = ?
+        AND q.chapter_seq = ?
+        AND uo.user_seq = ?
+      GROUP BY 
+        q.category_seq,	
+        q.chapter_seq
+      ) AS S2;
   `;
 
-  const [rows] = await connection.query(query, selectOptionParams);
+  const [rows] = await connection.query(query, selectHitCountParams);
   return rows;
 };
 
-exports.selectHitCount = async function (connection, userSeq) {
+exports.selectUserOptionBulk = async function (
+  connection,
+  selectUserOptionBulkParams
+) {
   const query = `
-    SELECT 
-      q.category_seq,	
-      q.chapter_seq,
-      COUNT(q.question_seq) AS hit_count
-    FROM quiz_question AS q
-    INNER JOIN quiz_question_option AS qo
-      ON q.question_seq = qo.question_seq
-    INNER JOIN quiz_user_option AS uo
-      ON qo.question_option_seq = uo.question_option_seq    
-    WHERE qo.answer_yn = 1
-      AND uo.user_seq = ?
-    GROUP BY 
-      q.category_seq,	
-      q.chapter_seq;
-  `;
-
-  const [rows] = await connection.query(query, userSeq);
-  return rows;
-};
-
-exports.selectUserOptionBulk = async function (connection, selectUserOptionBulkParams) {
-  const query = `
-    SELECT 
-      q.category_seq,
-      q.chapter_seq,
+    SELECT       
       q.question_seq,
-      uo.question_option_seq,
-      qo.question_option,
+      uo.question_option_seq,      
       qo.answer_yn
     FROM quiz_question AS q
     INNER JOIN quiz_question_option AS qo
@@ -70,7 +77,7 @@ exports.insertUserOptionBulk = async function (connection, bulk, userSeq) {
     arr.push(`(${key}, ${userSeq}, ${value})`);
 
   query += arr.join();
-  query += ';';
+  query += ";";
 
   return await connection.query(query, bulk);
 };
