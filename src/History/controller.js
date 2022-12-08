@@ -78,3 +78,17 @@ exports.putUserOptionBulk = async function (req, res) {
     res.json(errResponse(err.message));
   }
 };
+
+exports.getActiveCount = async function (req, res) {
+  const { categorySeq } = req.query;
+  // const { userSeq } = req.session.user;
+
+  try {
+    const result = await provider.getActiveCount(categorySeq, userSeq);
+    res.json(response("활성화된 챕터갯수 조회 완료", result));
+  } catch (err) {
+    logger.error(err.message);
+    res.status(err.status);
+    res.json(errResponse(err.message));
+  }
+};

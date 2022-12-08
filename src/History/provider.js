@@ -32,3 +32,16 @@ exports.getUserOptionBulk = async function (categorySeq, chapterSeq, userSeq) {
 
   return result;
 };
+
+exports.getActiveCount = async function (categorySeq, userSeq) {
+  const connection = await pool.getConnection(async (conn) => conn);
+
+  const selectActiveCountParams = [categorySeq, userSeq, categorySeq];
+  const [result] = await dao.selectActiveCount(
+    connection,
+    selectActiveCountParams
+  );
+  connection.release();
+
+  return result;
+};

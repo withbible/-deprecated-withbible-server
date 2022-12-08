@@ -104,3 +104,41 @@ exports.updateUserOptionBulk = async function (connection, bulk, userSeq) {
 
   return await connection.query(query, bulk, userSeq);
 };
+
+exports.selectActiveCount = async function (
+  connection,
+  selectActiveCountParams
+) {
+  const query = `
+    SELECT 
+      S1.category_seq,
+      S2.active_chapter_count,
+      S1.max_chapter
+    FROM(
+      SELECT
+        c.category_seq,  
+        CAST(CEIL(COUNT(q.question_seq) / 3) AS SIGNED) AS max_chapter
+      FROM quiz_category AS c
+      LEFT JOIN quiz_question AS q
+        ON c.category_seq = q.category_seq
+      GROUP BY
+        c.category_seq  
+      HAVING c.category_seq = ?
+      ) AS S1
+    JOIN(
+      SELECT
+        c.category_seq,
+        COUNT(DISTINCT q.chapter_seq) AS active_chapter_count
+      FROM quiz_category AS c
+      LEFT JOIN quiz_question AS q
+        ON c.category_seq = q.category_seq
+      INNER JOIN quiz_user_option AS uo
+        ON q.question_seq = uo.question_seq
+      WHERE uo.user_seq = ?
+        AND c.category_seq = ?
+      ) AS S2;
+  `;
+
+  const [rows] = await connection.query(query, selectActiveCountParams);
+  return rows;
+};
