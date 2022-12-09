@@ -105,9 +105,9 @@ exports.updateUserOptionBulk = async function (connection, bulk, userSeq) {
   return await connection.query(query, bulk, userSeq);
 };
 
-exports.selectActiveCount = async function (
+exports.selectActiveChapterCount = async function (
   connection,
-  selectActiveCountParams
+  selectActiveChapterCountParams
 ) {
   const query = `
     SELECT 
@@ -139,6 +139,29 @@ exports.selectActiveCount = async function (
       ) AS S2;
   `;
 
-  const [rows] = await connection.query(query, selectActiveCountParams);
+  const [rows] = await connection.query(query, selectActiveChapterCountParams);
+  return rows;
+};
+
+exports.selectActiveChapter = async function (
+  connection,
+  userSeq
+) {
+  const query = `
+    SELECT
+      c.category,
+      q.category_seq,  
+      JSON_ARRAYAGG(q.chapter_seq) AS chapter_seq_array
+    FROM quiz_category AS c
+    LEFT JOIN quiz_question AS q
+      ON c.category_seq = q.category_seq
+    INNER JOIN quiz_user_option AS uo
+      ON q.question_seq = uo.question_seq
+    WHERE uo.user_seq = ?
+    GROUP BY 
+      q.category_seq;
+  `;
+
+  const [rows] = await connection.query(query, userSeq);
   return rows;
 };

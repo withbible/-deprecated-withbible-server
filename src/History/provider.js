@@ -33,15 +33,33 @@ exports.getUserOptionBulk = async function (categorySeq, chapterSeq, userSeq) {
   return result;
 };
 
-exports.getActiveCount = async function (categorySeq, userSeq) {
+exports.getActiveChapterCount = async function (categorySeq, userSeq) {
   const connection = await pool.getConnection(async (conn) => conn);
 
-  const selectActiveCountParams = [categorySeq, userSeq, categorySeq];
-  const [result] = await dao.selectActiveCount(
+  const selectActiveChapterCountParams = [categorySeq, userSeq, categorySeq];
+  const [result] = await dao.selectActiveChapterCount(
     connection,
-    selectActiveCountParams
+    selectActiveChapterCountParams
   );
   connection.release();
+
+  return result;
+};
+
+exports.getActiveChapter = async function (userSeq) {
+  const connection = await pool.getConnection(async (conn) => conn);
+
+  const result = await dao.selectActiveChapter(connection, userSeq);
+  connection.release();
+
+  if (!result.length) {
+    const err = new Error("데이터가 존재하지 않습니다.");
+    err.status = StatusCodes.NOT_FOUND;
+    return Promise.reject(err);
+  }
+
+  for (const each of result)
+    each["chapter_seq_array"] = [...new Set(each["chapter_seq_array"])];
 
   return result;
 };

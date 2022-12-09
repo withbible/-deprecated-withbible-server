@@ -14,5 +14,8 @@ module.exports = function (app) {
   app.put('/history/chapter/user-option', history.putUserOptionBulk);
 
   // 한 카테고리의 활성화된 챕터갯수 조회 API
-  app.get('/history/category/active-count', history.getActiveCount)
+  app.get('/history/category/active-chapter-count', history.getActiveChapterCount);
+
+  // 카테고리별 활성화된 챕터 조회 API
+  app.get('/history/categories/active-chapter', history.getActiveChapter);
 };
