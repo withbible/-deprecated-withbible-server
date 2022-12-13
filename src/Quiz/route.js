@@ -4,9 +4,9 @@ module.exports = function (app) {
   // 카테고리 전체조회 API
   app.get("/quiz/categories", quiz.getCategories);
 
-  // 한 카테고리의 챕터수 조회 API (+ 카테고리별 전체조회)
+  // 카테고리별 챕터수 조회 API
   // TODO: FLOOR함수 리턴값 문자열 이슈
-  app.get("/quiz/category/max-chapter", quiz.getMaxChapter);
+  app.get("/quiz/categories/max-chapter", quiz.getMaxChapter);
 
   // 카테고리별 검색어를 포함한 챕터수 조회 API
   app.get("/quiz/categories/chapter", quiz.getChapter);

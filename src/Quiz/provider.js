@@ -12,15 +12,9 @@ exports.getCategories = async function () {
   return result;
 };
 
-exports.getMaxChapter = async function (categorySeq) {
+exports.getMaxChapter = async function () {
   const connection = await pool.getConnection(async (conn) => conn);
-
-  if (categorySeq) {
-    result = await dao.searchMaxChapter(connection, categorySeq);
-  } else {
-    result = await dao.selectMaxChapter(connection);
-  }
-
+  const result = await dao.selectMaxChapter(connection);
   connection.release();
 
   return result;
@@ -50,10 +44,10 @@ exports.getChapter = async function (keyword) {
   return result;
 };
 
-exports.getQuiz = async function (categorySeq, chapterSeq) {
+exports.getQuiz = async function (categorySeq, chapterNum) {
   const connection = await pool.getConnection(async (conn) => conn);
 
-  const selectQuizParams = [categorySeq, chapterSeq];
+  const selectQuizParams = [categorySeq, chapterNum];
   const result = await dao.selectQuiz(connection, selectQuizParams);
   connection.release();
 
@@ -62,6 +56,16 @@ exports.getQuiz = async function (categorySeq, chapterSeq) {
     err.status = StatusCodes.NOT_FOUND;
     return Promise.reject(err);
   }
+
+  return result;
+};
+
+exports.getChapterSeq = async function(categorySeq, chapterNum){
+  const connection = await pool.getConnection(async (conn) => conn);
+
+  const selectChapterSeqParams = [categorySeq, chapterNum];
+  const [result] = await dao.selectChapterSeq(connection, selectChapterSeqParams);
+  connection.release();
 
   return result;
 };

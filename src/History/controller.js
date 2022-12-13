@@ -4,15 +4,12 @@ const { response, errResponse } = require("../modules/response");
 const provider = require("./provider");
 const service = require("./service");
 
-// TODO: 화면단에서 인증구현 이후 접근시 해제
-const userSeq = 1;
-
 exports.getHitCount = async function (req, res) {
-  const { categorySeq, chapterSeq } = req.query;
-  // const { userSeq } = req.session.user;
+  const { categorySeq, chapterNum } = req.query;
+  const { userSeq } = req.session.user;
 
   try {
-    const result = await provider.getHitCount(categorySeq, chapterSeq, userSeq);
+    const result = await provider.getHitCount(categorySeq, chapterNum, userSeq);
     res.json(response("맞힌갯수 조회 완료", result));
   } catch (err) {
     logger.error(err.message);
@@ -22,13 +19,13 @@ exports.getHitCount = async function (req, res) {
 };
 
 exports.getUserOptionBulk = async function (req, res) {
-  const { categorySeq, chapterSeq } = req.query;
-  // const { userSeq } = req.session.user;
+  const { categorySeq, chapterNum } = req.query;
+  const { userSeq } = req.session.user;
 
   try {
     const result = await service.getUserOptionBulk(
       categorySeq,
-      chapterSeq,
+      chapterNum,
       userSeq
     );
     res.json(response("선택기록 조회 완료", result));
@@ -40,13 +37,13 @@ exports.getUserOptionBulk = async function (req, res) {
 };
 
 exports.postUserOptionBulk = async function (req, res) {
-  const { categorySeq, chapterSeq, bulk } = req.body;
-  // const { userSeq } = req.session.user;
+  const { categorySeq, chapterNum, bulk } = req.body;
+  const { userSeq } = req.session.user;
 
   try {
     const result = await service.postUserOptionBulk(
       categorySeq,
-      chapterSeq,
+      chapterNum,
       userSeq,
       bulk
     );
@@ -61,13 +58,13 @@ exports.postUserOptionBulk = async function (req, res) {
 };
 
 exports.putUserOptionBulk = async function (req, res) {
-  const { categorySeq, chapterSeq, bulk } = req.body;
-  // const { userSeq } = req.session.user;
+  const { categorySeq, chapterNum, bulk } = req.body;
+  const { userSeq } = req.session.user;
 
   try {
     const result = await service.putUserOptionBulk(
       categorySeq,
-      chapterSeq,
+      chapterNum,
       userSeq,
       bulk
     );
@@ -81,7 +78,7 @@ exports.putUserOptionBulk = async function (req, res) {
 
 exports.getActiveChapterCount = async function (req, res) {
   const { categorySeq } = req.query;
-  // const { userSeq } = req.session.user;
+  const { userSeq } = req.session.user;
 
   try {
     const result = await provider.getActiveChapterCount(categorySeq, userSeq);
@@ -94,7 +91,7 @@ exports.getActiveChapterCount = async function (req, res) {
 };
 
 exports.getActiveChapter = async function (req, res) {
-  // const { userSeq } = req.session.user;
+  const { userSeq } = req.session.user;
 
   try {
     const result = await provider.getActiveChapter(userSeq);

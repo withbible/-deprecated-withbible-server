@@ -4,26 +4,20 @@ const { StatusCodes } = require("http-status-codes");
 const { pool } = require("../../config/database");
 const dao = require("./dao");
 
-exports.getHitCount = async function (categorySeq, chapterSeq, userSeq) {
+exports.getHitCount = async function (categorySeq, chapterNum, userSeq) {
   const connection = await pool.getConnection(async (conn) => conn);
 
-  const selectHitCountParams = [
-    categorySeq,
-    chapterSeq,
-    categorySeq,
-    chapterSeq,
-    userSeq,
-  ];
+  const selectHitCountParams = [categorySeq, chapterNum, userSeq];
   const [result] = await dao.selectHitCount(connection, selectHitCountParams);
   connection.release();
 
   return result;
 };
 
-exports.getUserOptionBulk = async function (categorySeq, chapterSeq, userSeq) {
+exports.getUserOptionBulk = async function (categorySeq, chapterNum, userSeq) {
   const connection = await pool.getConnection(async (conn) => conn);
 
-  const selectUserOptionBulkParams = [categorySeq, chapterSeq, userSeq];
+  const selectUserOptionBulkParams = [categorySeq, chapterNum, userSeq];
   const result = await dao.selectUserOptionBulk(
     connection,
     selectUserOptionBulkParams
@@ -36,7 +30,7 @@ exports.getUserOptionBulk = async function (categorySeq, chapterSeq, userSeq) {
 exports.getActiveChapterCount = async function (categorySeq, userSeq) {
   const connection = await pool.getConnection(async (conn) => conn);
 
-  const selectActiveChapterCountParams = [categorySeq, userSeq, categorySeq];
+  const selectActiveChapterCountParams = [userSeq, categorySeq];
   const [result] = await dao.selectActiveChapterCount(
     connection,
     selectActiveChapterCountParams
@@ -57,9 +51,6 @@ exports.getActiveChapter = async function (userSeq) {
     err.status = StatusCodes.NOT_FOUND;
     return Promise.reject(err);
   }
-
-  for (const each of result)
-    each["chapter_seq_array"] = [...new Set(each["chapter_seq_array"])];
 
   return result;
 };

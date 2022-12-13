@@ -13,13 +13,12 @@ exports.selectCategories = async function (connection) {
 exports.selectMaxChapter = async function (connection) {
   const query = `
     SELECT
-    c.category_seq,
       c.category,
-      COUNT(q.question_seq) AS question_count,
-      CAST(CEIL(COUNT(q.question_seq) / 3) AS SIGNED) AS max_chapter
+      c.category_seq,    
+      MAX(qc.chapter_num) AS max_chapter
     FROM quiz_category AS c
-    INNER JOIN quiz_question AS q
-      ON c.category_seq = q.category_seq
+    INNER JOIN quiz_chapter AS qc
+      ON c.category_seq = qc.category_seq
     GROUP BY
       c.category_seq;
   `;
@@ -28,38 +27,19 @@ exports.selectMaxChapter = async function (connection) {
   return rows;
 };
 
-exports.searchMaxChapter = async function (connection, categorySeq) {
-  const query = `    
-    SELECT
-      c.category_seq,
-      c.category,
-      COUNT(q.question_seq) AS question_count,
-      CAST(CEIL(COUNT(q.question_seq) / 3) AS SIGNED) AS max_chapter
-    FROM quiz_category AS c
-    INNER JOIN quiz_question AS q
-      ON c.category_seq = q.category_seq
-    GROUP BY
-      c.category_seq
-    HAVING c.category_seq = ?;
-  `;
-
-  const [rows] = await connection.query(query, categorySeq);
-  return rows;
-};
-
 exports.selectChapter = async function (connection) {
   const query = `
     SELECT
       c.category,
-      q.category_seq,
-      JSON_ARRAYAGG(q.chapter_seq) AS chapter_seq_array
-    FROM quiz_question AS q
-    INNER JOIN quiz_category as c
-      ON q.category_seq = c.category_seq
+      c.category_seq,
+      JSON_ARRAYAGG(qc.chapter_num) AS chapter_seq_array
+    FROM quiz_category AS c
+    INNER JOIN quiz_chapter AS qc
+      ON c.category_seq = qc.category_seq
     GROUP BY 
-      q.category_seq      
+      c.category_seq
     ORDER BY
-      q.category_seq;
+      c.category_seq;
   `;
 
   const [rows] = await connection.query(query);
@@ -72,14 +52,18 @@ exports.searchChapter = async function (connection, keyword) {
   const query = `
     SELECT
       c.category,
-      q.category_seq,
-      JSON_ARRAYAGG(q.chapter_seq) AS chapter_seq_array
-    FROM quiz_question AS q
-    INNER JOIN quiz_category as c
-      ON q.category_seq = c.category_seq
+      c.category_seq,
+      JSON_ARRAYAGG(qc.chapter_num) AS chapter_seq_array
+    FROM quiz_category AS c
+    INNER JOIN quiz_chapter AS qc
+      ON c.category_seq = qc.category_seq
+    INNER JOIN quiz_question AS q
+      ON qc.chapter_seq = q.chapter_seq 
     WHERE q.question LIKE ?
     GROUP BY 
-      q.category_seq;
+      c.category_seq
+    ORDER BY
+      c.category_seq;
   `;
 
   const [rows] = await connection.query(query, symbol);
@@ -93,20 +77,35 @@ exports.selectQuiz = async function (connection, selectQuizParams) {
       q.question,
       JSON_ARRAYAGG(
         JSON_OBJECT(
-          "question_option_seq", o.question_option_seq,
-          "question_option", o.question_option,
-          "answer_yn", o.answer_yn
+          "question_option_seq", qo.question_option_seq,
+          "question_option", qo.question_option,
+          "answer_yn", qo.answer_yn
         )
       ) option_array
-    FROM quiz_question AS q
-    INNER JOIN quiz_question_option AS o
-      ON q.question_seq = o.question_seq
-    WHERE category_seq = ?
-      AND chapter_seq = ?
+    FROM quiz_chapter AS qc
+    LEFT JOIN quiz_question AS q
+      ON qc.chapter_seq  = q.chapter_seq 
+    INNER JOIN quiz_question_option AS qo
+      ON q.question_seq = qo.question_seq
+    WHERE qc.category_seq = ?
+      AND qc.chapter_num = ?
     GROUP BY 
       q.question_seq;
   `;
 
   const [rows] = await connection.query(query, selectQuizParams);
+  return rows;
+};
+
+exports.selectChapterSeq = async function(connection, selectChapterSeqParams){
+  const query = `
+    SELECT
+      chapter_seq
+    FROM 
+      quiz_chapter
+    WHERE category_seq = ?
+      AND chapter_num = ?;
+  `;
+  const [rows] = await connection.query(query, selectChapterSeqParams);
   return rows;
 };

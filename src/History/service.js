@@ -3,12 +3,13 @@ const { StatusCodes } = require("http-status-codes");
 //INTERNAL IMPORT
 const { pool } = require("../../config/database");
 const provider = require("./provider");
+const quizProvider = require("../Quiz/provider");
 const dao = require("./dao");
 
-exports.getUserOptionBulk = async function (categorySeq, chapterSeq, userSeq) {
+exports.getUserOptionBulk = async function (categorySeq, chapterNum, userSeq) {
   const rows = await provider.getUserOptionBulk(
     categorySeq,
-    chapterSeq,
+    chapterNum,
     userSeq
   );
 
@@ -23,24 +24,24 @@ exports.getUserOptionBulk = async function (categorySeq, chapterSeq, userSeq) {
 
 exports.postUserOptionBulk = async function (
   categorySeq,
-  chapterSeq,
+  chapterNum,
   userSeq,
   bulk
 ) {
-  const rows = await provider.getUserOptionBulk(
-    categorySeq,
-    chapterSeq,
-    userSeq
-  );
+  const [userOptionRows, chapterSeqRow] = await Promise.all([
+    await provider.getUserOptionBulk(categorySeq, chapterNum, userSeq),
+    await quizProvider.getChapterSeq(categorySeq, chapterNum),
+  ]);
 
-  if (rows.length > 0) {
+  if (userOptionRows.length > 0) {
     const err = new Error("중복된 기록입니다.");
     err.status = StatusCodes.METHOD_NOT_ALLOWED;
     return Promise.reject(err);
   }
 
   const connection = await pool.getConnection(async (conn) => conn);
-  await dao.insertUserOptionBulk(connection, bulk, userSeq);
+  const chapterSeq = chapterSeqRow["chapter_seq"];
+  await dao.insertUserOptionBulk(connection, bulk, userSeq, chapterSeq);
   connection.release();
 
   return Promise.resolve();
@@ -48,13 +49,13 @@ exports.postUserOptionBulk = async function (
 
 exports.putUserOptionBulk = async function (
   categorySeq,
-  chapterSeq,
+  chapterNum,
   userSeq,
   bulk
 ) {
   const rows = await provider.getUserOptionBulk(
     categorySeq,
-    chapterSeq,
+    chapterNum,
     userSeq
   );
 
@@ -65,7 +66,8 @@ exports.putUserOptionBulk = async function (
   }
 
   const connection = await pool.getConnection(async (conn) => conn);
-  await dao.updateUserOptionBulk(connection, bulk, userSeq);
+  const chapterSeq = rows[0]["chapter_seq"];
+  await dao.updateUserOptionBulk(connection, bulk, userSeq, chapterSeq);
   connection.release();
 
   return Promise.resolve();

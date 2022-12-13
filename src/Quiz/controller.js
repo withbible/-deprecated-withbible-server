@@ -8,9 +8,7 @@ exports.getCategories = async function (req, res) {
 };
 
 exports.getMaxChapter = async function (req, res) {
-  const { categorySeq } = req.query;
-
-  const result = await provider.getMaxChapter(categorySeq);
+  const result = await provider.getMaxChapter();
   res.json(response(null, result));
 };
 
@@ -28,10 +26,10 @@ exports.getChapter = async function (req, res) {
 };
 
 exports.getQuiz = async function (req, res) {
-  const { categorySeq, chapterSeq } = req.query;
+  const { categorySeq, chapterNum } = req.query;
 
   try {
-    const result = await provider.getQuiz(categorySeq, chapterSeq);
+    const result = await provider.getQuiz(categorySeq, chapterNum);
     res.json(response(null, result));
   } catch (err) {
     logger.error(err.message);
