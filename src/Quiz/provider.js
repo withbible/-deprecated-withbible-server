@@ -4,22 +4,6 @@ const { StatusCodes } = require("http-status-codes");
 const { pool } = require("../../config/database");
 const dao = require("./dao");
 
-exports.getCategories = async function () {
-  const connection = await pool.getConnection(async (conn) => conn);
-  const result = await dao.selectCategories(connection);
-  connection.release();
-
-  return result;
-};
-
-exports.getMaxChapter = async function () {
-  const connection = await pool.getConnection(async (conn) => conn);
-  const result = await dao.selectMaxChapter(connection);
-  connection.release();
-
-  return result;
-};
-
 exports.getChapter = async function (keyword) {
   const connection = await pool.getConnection(async (conn) => conn);
 
@@ -39,7 +23,7 @@ exports.getChapter = async function (keyword) {
 
   // TODO: JSON_ARRAYAGG 집계시 중복 제거도 해온다면 best
   for (const each of result)
-    each["chapter_seq_array"] = [...new Set(each["chapter_seq_array"])];
+    each["chapter_num_array"] = [...new Set(each["chapter_num_array"])];
 
   return result;
 };
@@ -60,11 +44,22 @@ exports.getQuiz = async function (categorySeq, chapterNum) {
   return result;
 };
 
-exports.getChapterSeq = async function(categorySeq, chapterNum){
+exports.getChapterSeq = async function (categorySeq, chapterNum) {
   const connection = await pool.getConnection(async (conn) => conn);
 
   const selectChapterSeqParams = [categorySeq, chapterNum];
-  const [result] = await dao.selectChapterSeq(connection, selectChapterSeqParams);
+  const [result] = await dao.selectChapterSeq(
+    connection,
+    selectChapterSeqParams
+  );
+  connection.release();
+
+  return result;
+};
+
+exports.getMaxChapterSeq = async function (categorySeq) {
+  const connection = await pool.getConnection(async (conn) => conn);
+  const [result] = await dao.selectMaxChapterSeq(connection, categorySeq);
   connection.release();
 
   return result;

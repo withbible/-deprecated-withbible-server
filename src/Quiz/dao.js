@@ -1,38 +1,9 @@
-exports.selectCategories = async function (connection) {
-  const query = `
-    SELECT
-      CONCAT('/images/category/', category_seq, '.svg') AS image,
-      category
-    FROM quiz_category;
-  `;
-
-  const [rows] = await connection.query(query);
-  return rows;
-};
-
-exports.selectMaxChapter = async function (connection) {
-  const query = `
-    SELECT
-      c.category,
-      c.category_seq,    
-      MAX(qc.chapter_num) AS max_chapter
-    FROM quiz_category AS c
-    INNER JOIN quiz_chapter AS qc
-      ON c.category_seq = qc.category_seq
-    GROUP BY
-      c.category_seq;
-  `;
-
-  const [rows] = await connection.query(query);
-  return rows;
-};
-
 exports.selectChapter = async function (connection) {
   const query = `
     SELECT
       c.category,
       c.category_seq,
-      JSON_ARRAYAGG(qc.chapter_num) AS chapter_seq_array
+      JSON_ARRAYAGG(qc.chapter_num) AS chapter_num_array
     FROM quiz_category AS c
     INNER JOIN quiz_chapter AS qc
       ON c.category_seq = qc.category_seq
@@ -53,7 +24,7 @@ exports.searchChapter = async function (connection, keyword) {
     SELECT
       c.category,
       c.category_seq,
-      JSON_ARRAYAGG(qc.chapter_num) AS chapter_seq_array
+      JSON_ARRAYAGG(qc.chapter_num) AS chapter_num_array
     FROM quiz_category AS c
     INNER JOIN quiz_chapter AS qc
       ON c.category_seq = qc.category_seq
@@ -97,7 +68,7 @@ exports.selectQuiz = async function (connection, selectQuizParams) {
   return rows;
 };
 
-exports.selectChapterSeq = async function(connection, selectChapterSeqParams){
+exports.selectChapterSeq = async function (connection, selectChapterSeqParams) {
   const query = `
     SELECT
       chapter_seq
@@ -107,5 +78,24 @@ exports.selectChapterSeq = async function(connection, selectChapterSeqParams){
       AND chapter_num = ?;
   `;
   const [rows] = await connection.query(query, selectChapterSeqParams);
+  return rows;
+};
+
+exports.selectMaxChapterSeq = async function (connection, categorySeq) {
+  const query = `
+    SELECT
+      chapter_seq,     
+      MAX(chapter_num) AS max_chapter_num,
+      question_count
+    FROM 
+      quiz_chapter
+    WHERE category_seq = ${categorySeq}
+    GROUP BY
+      chapter_seq
+    ORDER BY
+      max_chapter_num DESC
+    LIMIT 1;
+  `;
+  const [rows] = await connection.query(query);
   return rows;
 };
