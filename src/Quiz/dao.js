@@ -68,6 +68,19 @@ exports.selectQuiz = async function (connection, selectQuizParams) {
   return rows;
 };
 
+exports.selectQuestion = async function (connection, question) {
+  const query = `
+    SELECT 
+      question_seq
+    FROM 
+      quiz_question
+    WHERE question = ?
+  `;
+
+  const [rows] = await connection.query(query, question);
+  return rows;
+};
+
 exports.selectChapterSeq = async function (connection, selectChapterSeqParams) {
   const query = `
     SELECT

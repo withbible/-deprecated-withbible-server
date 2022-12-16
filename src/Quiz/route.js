@@ -7,6 +7,6 @@ module.exports = function (app) {
   // 한 챕터의 질문-선택지 전체조회 API
   app.get("/quiz/chapter", quiz.getQuiz);
 
-  // 질문-선택지 생성 API
+  // (관리자) 질문-선택지 생성 API
   app.post('/quiz', quiz.postQuiz);  
 };
