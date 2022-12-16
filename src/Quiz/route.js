@@ -9,4 +9,7 @@ module.exports = function (app) {
 
   // (관리자) 질문-선택지 생성 API
   app.post('/quiz', quiz.postQuiz);  
+
+  // (관리자) 질문-선택지-정답여부 수정 API
+  app.put('/quiz', quiz.putQuiz);
 };

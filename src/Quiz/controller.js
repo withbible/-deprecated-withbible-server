@@ -56,3 +56,30 @@ exports.postQuiz = async function (req, res) {
     res.json(errResponse(err.message));
   }
 };
+
+/**
+ *  "bulk": [
+      {
+        "question_option_seq": 1,
+        "question_option": "",
+        "answer_yn": 1
+      },
+    ]
+ */
+exports.putQuiz = async function (req, res) {
+  const { questionSeq, question, bulk } = req.body;
+
+  try{
+    const result = await service.putQuiz(
+      questionSeq,
+      question,
+      bulk
+    );
+    
+    res.json(response("퀴즈 수정 완료", result));
+  }catch(err){
+    logger.error(err.message);
+    res.status(err.status);
+    res.json(errResponse(err.message));
+  }
+};
