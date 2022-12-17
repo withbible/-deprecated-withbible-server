@@ -6,11 +6,13 @@ const logger = createLogger({
     format.colorize(),
     format.errors({ stack: true }),
     format.printf(
-      info => `${info.timestamp} ${info.level}: ${info.stack || info.message}`
+      info => `${info.timestamp} ｜ ${info.level}: ${info.stack || info.message}`
     )
   ),
   transports: [
-    new transports.Console()
+    new transports.Console({
+      handleExceptions: true,
+    })
   ]
 });
 

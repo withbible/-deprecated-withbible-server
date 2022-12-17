@@ -2,9 +2,11 @@ const express = require("express");
 const { StatusCodes } = require("http-status-codes");
 
 //INTERNAL IMPORT
+const path = require("path");
 const { logger } = require("./logger");
 const { errResponse } = require("../src/modules/response");
 const authenticate = require("../src/middleware/authentication");
+const fileName = path.basename(__filename, ".js");
 
 module.exports = function () {
   const app = express();
@@ -30,7 +32,7 @@ module.exports = function () {
   });
 
   app.use((err, req, res, next) => {
-    logger.error(err.message);
+    logger.error(`[${fileName}]_${err.message}`);
     res.status(err.status);
     res.json(errResponse(err.message));
   });
