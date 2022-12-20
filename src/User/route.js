@@ -1,17 +1,17 @@
-const authenticate = require('../middleware/authentication');
+const authenticate = require("../middleware/authentication");
 
 module.exports = function (app) {
-  const user = require('./controller');
+  const user = require("./controller");
 
   // 유저 생성 (회원가입) API
-  app.post('/user', user.postUser);
+  app.post("/user", user.postUser);
 
   // 로그인 API
-  app.patch('/user/login', user.login);
+  app.patch("/user/login", user.login);
 
   // 자동로그인 API
-  app.get('/user/loginCheck', authenticate, user.loginCheck);
+  app.get("/user/login-check", authenticate, user.loginCheck);
 
   // 로그아웃 API
-  app.patch('/user/logout', user.logout);
+  app.patch("/user/logout", user.logout);
 };

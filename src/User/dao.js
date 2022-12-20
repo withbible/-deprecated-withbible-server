@@ -10,7 +10,7 @@ exports.selectUserID = async function (connection, userID) {
 
   const [rows] = await connection.query(query, userID);
   return rows;
-}
+};
 
 exports.insertUser = async function (connection, insertUserParams) {
   const query = `
@@ -20,5 +20,6 @@ exports.insertUser = async function (connection, insertUserParams) {
       (?, ?, ?);
   `;
 
-  return await connection.query(query, insertUserParams);
-}
+  const [result] = await connection.query(query, insertUserParams);
+  return result;
+};

@@ -1,4 +1,7 @@
-exports.selectLeaderBoard = async function (connection) {
+exports.selectLeaderBoard = async function (
+  connection,
+  selectLeaderBoardParams
+) {
   // TODO: created_at과 updated_at의 타입이 다른 이유 설명
   const query = `
     SELECT
@@ -10,9 +13,22 @@ exports.selectLeaderBoard = async function (connection) {
     FROM user_leaderboard AS ul
     INNER JOIN user AS u
       ON ul.user_seq = u.user_seq
-    ORDER BY ul.quiz_score DESC;
+    ORDER BY ul.quiz_score DESC
+    LIMIT ? OFFSET ?;
+  `;  
+
+  const [rows] = await connection.query(query, selectLeaderBoardParams);
+  return rows;
+};
+
+exports.insertLeaderBoard = async function (connection, userSeq) {
+  const query = `
+    INSERT INTO user_leaderboard
+      (user_seq)
+    VALUES
+      (?);
   `;
 
-  const [rows] = await connection.query(query);
+  const [rows] = await connection.query(query, userSeq);
   return rows;
 };
