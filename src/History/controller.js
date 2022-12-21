@@ -104,11 +104,39 @@ exports.getActiveChapterCount = async function (req, res) {
 };
 
 exports.getActiveChapter = async function (req, res) {
+  const { categorySeq } = req.query;
   const { userSeq } = req.session.user;
 
   try {
-    const result = await provider.getActiveChapter(userSeq);
-    res.json(response("활성화된 챕터 조회 완료", result));
+    const result = await provider.getActiveChapter(categorySeq, userSeq);
+    res.json(response("활성화된 챕터 전체조회 완료", result));
+  } catch (err) {
+    logger.warn(`[${dirName}]_${err.message}`);
+    res.status(err.status);
+    res.json(errResponse(err.message));
+  }
+};
+
+exports.getActiveChapterPage = async function (req, res) {
+  const { limit, page } = req.query;
+  const { userSeq } = req.session.user;
+
+  try {
+    const result = await provider.getActiveChapterPage(limit, page, userSeq);
+    res.json(response("활성화된 챕터 부분조회 완료", result));
+  } catch (err) {
+    logger.warn(`[${dirName}]_${err.message}`);
+    res.status(err.status);
+    res.json(errResponse(err.message));
+  }
+};
+
+exports.getActiveCategory = async function (req, res) {
+  const { userSeq } = req.session.user;
+
+  try {
+    const result = await provider.getActiveCategory(userSeq);
+    res.json(response("활성화된 카테고리 조회 완료", result));
   } catch (err) {
     logger.warn(`[${dirName}]_${err.message}`);
     res.status(err.status);

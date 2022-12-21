@@ -40,10 +40,19 @@ exports.getActiveChapterCount = async function (categorySeq, userSeq) {
   return result;
 };
 
-exports.getActiveChapter = async function (userSeq) {
+exports.getActiveChapter = async function (categorySeq, userSeq) {
   const connection = await pool.getConnection(async (conn) => conn);
 
-  const result = await dao.selectActiveChapter(connection, userSeq);
+  if (!categorySeq) {
+    result = await dao.selectActiveChapter(connection, userSeq);
+  } else {
+    const selectActiveChapterParams = [userSeq, categorySeq];
+    result = await dao.searchActiveChapter(
+      connection,
+      selectActiveChapterParams
+    );
+  }
+
   connection.release();
 
   if (!result.length) {
@@ -52,5 +61,42 @@ exports.getActiveChapter = async function (userSeq) {
     return Promise.reject(err);
   }
 
-  return result;
+  return Promise.resolve(result);
+};
+
+exports.getActiveChapterPage = async function (limit, page, userSeq) {
+  if (!limit || !page) {
+    const err = new Error("해당 기록이 존재하지 않습니다.");
+    err.status = StatusCodes.BAD_REQUEST;
+    return Promise.reject(err);
+  }
+
+  const connection = await pool.getConnection(async (conn) => conn);
+
+  const offset = (page - 1) * limit;
+  const selectActiveChapterPageParams = [userSeq, parseInt(limit), offset];
+
+  const result = await dao.selectActiveChapterPage(
+    connection,
+    selectActiveChapterPageParams
+  );
+
+  connection.release();
+
+  if (!result.length) {
+    const err = new Error("데이터가 존재하지 않습니다.");
+    err.status = StatusCodes.NOT_FOUND;
+    return Promise.reject(err);
+  }
+
+  return Promise.resolve(result);
+};
+
+exports.getActiveCategory = async function (userSeq) {
+  const connection = await pool.getConnection(async (conn) => conn);
+
+  const result = await dao.selectActiveCategory(connection, userSeq);
+  connection.release();
+
+  return Promise.resolve(result);
 };

@@ -40,7 +40,8 @@ exports.postUserOptionBulk = async function (
   }
 
   const connection = await pool.getConnection(async (conn) => conn);
-  const chapterSeq = chapterSeqRow["chapter_seq"];
+  const chapterSeq = chapterSeqRow["chapter_seq"];  
+  
   await dao.insertUserOptionBulk(connection, bulk, userSeq, chapterSeq);
   connection.release();
 
@@ -67,6 +68,7 @@ exports.putUserOptionBulk = async function (
 
   const connection = await pool.getConnection(async (conn) => conn);
   const chapterSeq = rows[0]["chapter_seq"];
+  
   await dao.updateUserOptionBulk(connection, bulk, userSeq, chapterSeq);
   connection.release();
 

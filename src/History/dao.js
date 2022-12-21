@@ -63,7 +63,7 @@ exports.insertUserOptionBulk = async function (
   query += arr.join();
   query += ";";
 
-  return await connection.query(query, bulk);
+  return await connection.query(query);
 };
 
 exports.updateUserOptionBulk = async function (
@@ -92,7 +92,7 @@ exports.updateUserOptionBulk = async function (
       chapter_seq = VALUES(chapter_seq);
   `;
 
-  return await connection.query(query, bulk, userSeq);
+  return await connection.query(query);
 };
 
 exports.selectActiveChapterCount = async function (
@@ -122,10 +122,89 @@ exports.selectActiveChapter = async function (connection, userSeq) {
     SELECT       	
       c.category,
       qc.category_seq,  
-      JSON_ARRAYAGG(qc.chapter_num) AS chapter_seq_array
+      JSON_ARRAYAGG(
+        JSON_OBJECT(
+          "chapter_num", qc.chapter_num,  		
+          "hit_question_count", us.hit_question_count,
+          "question_count", qc.question_count
+        )  	
+      ) AS chapter_num_array
     FROM quiz_category AS c
     LEFT JOIN quiz_chapter AS qc
       ON c.category_seq = qc.category_seq 
+    LEFT JOIN quiz_chapter_user_state AS us
+      ON qc.chapter_seq = us.chapter_seq 
+    WHERE us.user_seq = ?
+    GROUP BY
+      qc.category_seq;    
+  `;
+
+  const [rows] = await connection.query(query, userSeq);
+  return rows;
+};
+
+exports.searchActiveChapter = async function (
+  connection,
+  selectActiveChapterParams
+) {
+  const query = `
+    SELECT       	
+      c.category,
+      qc.category_seq,  
+      JSON_ARRAYAGG(
+        JSON_OBJECT(
+          "chapter_num", qc.chapter_num,  		
+          "hit_question_count", us.hit_question_count,
+          "question_count", qc.question_count
+        )  	
+      ) AS chapter_num_array
+    FROM quiz_category AS c
+    LEFT JOIN quiz_chapter AS qc
+      ON c.category_seq = qc.category_seq 
+    LEFT JOIN quiz_chapter_user_state AS us
+      ON qc.chapter_seq = us.chapter_seq 
+    WHERE us.user_seq = ?
+    GROUP BY
+      qc.category_seq
+    HAVING 
+      qc.category_seq = ?;
+  `;
+
+  const [rows] = await connection.query(query, selectActiveChapterParams);
+  return rows;
+};
+
+exports.selectActiveChapterPage = async function (
+  connection,
+  selectActiveChapterPageParams
+) {
+  const query = `
+    SELECT       	
+      c.category,
+      qc.category_seq,  
+      JSON_OBJECT(
+        "chapter_num", qc.chapter_num,  		
+        "hit_question_count", us.hit_question_count,
+        "question_count", qc.question_count
+      ) AS chapter_detail
+    FROM quiz_category AS c
+    LEFT JOIN quiz_chapter AS qc
+      ON c.category_seq = qc.category_seq 
+    LEFT JOIN quiz_chapter_user_state AS us
+      ON qc.chapter_seq = us.chapter_seq 
+    WHERE us.user_seq = ?
+    LIMIT ? OFFSET ?;
+  `;
+
+  const [rows] = await connection.query(query, selectActiveChapterPageParams);
+  return rows;
+};
+
+exports.selectActiveCategory = async function (connection, userSeq) {
+  const query = `
+    SELECT       		
+      qc.category_seq
+    FROM quiz_chapter AS qc 
     LEFT JOIN quiz_chapter_user_state AS us
       ON qc.chapter_seq = us.chapter_seq 
     WHERE us.user_seq = ?
