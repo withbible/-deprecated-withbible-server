@@ -41,13 +41,15 @@ exports.getUserOptionBulk = async function (req, res) {
 };
 
 /**
- * key(question_seq): value(question_option_seq)
+ *  [bulk 형태]
  * 
  *  "bulk": {
       "7": 13,
       "8": 13,
       "9": 13
-  }
+    }
+  * [key-value 의미] 
+    question_seq: question_option_seq
  */
 exports.postUserOptionBulk = async function (req, res) {
   const { categorySeq, chapterNum, bulk } = req.body;

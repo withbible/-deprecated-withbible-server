@@ -21,11 +21,11 @@ exports.getChapter = async function (keyword) {
     return Promise.reject(err);
   }
 
-  // TODO: JSON_ARRAYAGG 집계시 중복 제거도 해온다면 best
+  // TODO: mariaDB 10.6 이후 개선됨. 현 클라우드 10.5
   for (const each of result)
-    each["chapter_num_array"] = [...new Set(each["chapter_num_array"])];
+    each["chapter_num_array"] = JSON.parse(each["chapter_num_array"]);
 
-  return result;
+  return Promise.resolve(result);
 };
 
 exports.getQuiz = async function (categorySeq, chapterNum) {
@@ -41,7 +41,10 @@ exports.getQuiz = async function (categorySeq, chapterNum) {
     return Promise.reject(err);
   }
 
-  return result;
+  for (const each of result)
+    each["option_array"] = JSON.parse(each["option_array"]);
+
+  return Promise.resolve(result);
 };
 
 exports.getQuestion = async function (question) {
@@ -77,7 +80,7 @@ exports.getChapterSeq = async function (categorySeq, chapterNum) {
 
 exports.getMaxChapterSeq = async function (categorySeq) {
   const connection = await pool.getConnection(async (conn) => conn);
-  
+
   const [result] = await dao.selectMaxChapterSeq(connection, categorySeq);
   connection.release();
 

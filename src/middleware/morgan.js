@@ -29,13 +29,6 @@ morgan.token("status", function (req, res) {
   return color + res.statusCode + colors.endColor;
 });
 
-morgan.token("body", function (req, res) {
-  if (Object.keys(req.body).length)
-    return "Request Body_" + JSON.stringify(req.body);
-
-  return;
-});
-
 const format = `
   :method :url ｜ :status ｜ :response-time ms ｜ :res[content-length] B  
 `;

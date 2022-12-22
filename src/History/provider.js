@@ -11,7 +11,13 @@ exports.getHitCount = async function (categorySeq, chapterNum, userSeq) {
   const [result] = await dao.selectHitCount(connection, selectHitCountParams);
   connection.release();
 
-  return result;
+  if (!result) {
+    const err = new Error("해당 기록이 존재하지 않습니다.");
+    err.status = StatusCodes.BAD_REQUEST;
+    return Promise.reject(err);
+  }
+
+  return Promise.resolve(result);
 };
 
 exports.getUserOptionBulk = async function (categorySeq, chapterNum, userSeq) {
@@ -24,7 +30,7 @@ exports.getUserOptionBulk = async function (categorySeq, chapterNum, userSeq) {
   );
   connection.release();
 
-  return result;
+  return Promise.resolve(result);
 };
 
 exports.getActiveChapterCount = async function (categorySeq, userSeq) {
@@ -37,7 +43,13 @@ exports.getActiveChapterCount = async function (categorySeq, userSeq) {
   );
   connection.release();
 
-  return result;
+  if (!result) {
+    const err = new Error("해당 기록이 존재하지 않습니다.");
+    err.status = StatusCodes.BAD_REQUEST;
+    return Promise.reject(err);
+  }
+
+  return Promise.resolve(result);
 };
 
 exports.getActiveChapter = async function (categorySeq, userSeq) {
@@ -52,7 +64,6 @@ exports.getActiveChapter = async function (categorySeq, userSeq) {
       selectActiveChapterParams
     );
   }
-
   connection.release();
 
   if (!result.length) {
@@ -60,6 +71,9 @@ exports.getActiveChapter = async function (categorySeq, userSeq) {
     err.status = StatusCodes.NOT_FOUND;
     return Promise.reject(err);
   }
+
+  for (const each of result)
+    each["chapter_num_array"] = JSON.parse(each["chapter_num_array"]);
 
   return Promise.resolve(result);
 };
@@ -88,6 +102,9 @@ exports.getActiveChapterPage = async function (limit, page, userSeq) {
     err.status = StatusCodes.NOT_FOUND;
     return Promise.reject(err);
   }
+
+  for (const each of result)
+    each["chapter_detail"] = JSON.parse(each["chapter_detail"]);
 
   return Promise.resolve(result);
 };

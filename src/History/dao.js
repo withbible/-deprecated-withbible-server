@@ -121,13 +121,17 @@ exports.selectActiveChapter = async function (connection, userSeq) {
   const query = `
     SELECT       	
       c.category,
-      qc.category_seq,  
-      JSON_ARRAYAGG(
-        JSON_OBJECT(
-          "chapter_num", qc.chapter_num,  		
-          "hit_question_count", us.hit_question_count,
-          "question_count", qc.question_count
-        )  	
+      qc.category_seq, 
+      CONCAT(
+        '[',
+        GROUP_CONCAT(
+          JSON_OBJECT(
+            "chapter_num", qc.chapter_num,  		
+            "hit_question_count", us.hit_question_count,
+            "question_count", qc.question_count
+          )
+        ),
+        ']'
       ) AS chapter_num_array
     FROM quiz_category AS c
     LEFT JOIN quiz_chapter AS qc
@@ -151,12 +155,16 @@ exports.searchActiveChapter = async function (
     SELECT       	
       c.category,
       qc.category_seq,  
-      JSON_ARRAYAGG(
-        JSON_OBJECT(
-          "chapter_num", qc.chapter_num,  		
-          "hit_question_count", us.hit_question_count,
-          "question_count", qc.question_count
-        )  	
+      CONCAT(
+        '[',
+        GROUP_CONCAT(
+          JSON_OBJECT(
+            "chapter_num", qc.chapter_num,  		
+            "hit_question_count", us.hit_question_count,
+            "question_count", qc.question_count
+          )
+        ),
+        ']'
       ) AS chapter_num_array
     FROM quiz_category AS c
     LEFT JOIN quiz_chapter AS qc
