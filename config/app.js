@@ -12,11 +12,11 @@ module.exports = function () {
   const app = express();
 
   app.use(
-    require("../src/middleware/morgan"),
-    express.json(),
-    express.urlencoded({ extended: false }),
+    require("../src/middleware/session"),
     require("../src/middleware/cors"),
-    require("../src/middleware/session")
+    express.urlencoded({ extended: false }),
+    express.json(),
+    require("../src/middleware/morgan")
   );
 
   require("../src/User/route")(app);

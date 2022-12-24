@@ -1,5 +1,5 @@
-const { StatusCodes } = require('http-status-codes');
-const { errResponse } = require('../modules/response');
+const { StatusCodes } = require("http-status-codes");
+const { errResponse } = require("../modules/response");
 
 const authenticate = (req, res, next) => {
   if (!req.session || !req.session.user) {
@@ -8,6 +8,6 @@ const authenticate = (req, res, next) => {
   }
 
   next();
-}
+};
 
 module.exports = authenticate;
