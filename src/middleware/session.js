@@ -7,7 +7,7 @@ module.exports = session({
   resave: false,
   saveUninitialized: false,
   store: new FileStore({
-    reapInterval: 10 * 60,
+    reapInterval: 10 * 60 * 1000, // [dev] 1H
   }),
   cookie: {
     httpOnly: true,

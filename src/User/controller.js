@@ -21,7 +21,7 @@ exports.postUser = async function (req, res) {
     const message = `추가된 회원 : ${result.userID}`;
     logger.info(message);
     res.status(StatusCodes.CREATED);
-    res.json(response(message, result.userID));
+    res.json(response(message, { userID: req.session.user.userID }));
   } catch (err) {
     logger.warn(`[${dirName}]_${err.message}`);
     res.status(err.status);
@@ -42,7 +42,7 @@ exports.login = async function (req, res) {
 
     const message = `${userID} 로그인`;
     logger.info(message);
-    res.json(response(message, result.userID));
+    res.json(response(message, { userID: req.session.user.userID }));
   } catch (err) {
     logger.warn(`[${dirName}]_${err.message}`);
     res.status(err.status);
@@ -53,7 +53,9 @@ exports.login = async function (req, res) {
 exports.loginCheck = async function (req, res) {
   if (req.session.user.isLogined) {
     // TODO: 세션 만료 시간 업데이트
-    res.json(response("세션이 유효합니다.", req.session.user));
+    res.json(
+      response("세션이 유효합니다.", { userID: req.session.user.userID })
+    );
   } else {
     res.status(StatusCodes.UNAUTHORIZED);
     res.json(errResponse("세션이 만료되었습니다."));

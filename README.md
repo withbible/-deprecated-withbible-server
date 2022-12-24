@@ -3,7 +3,7 @@
 # KBU BibleGraduationExam QuizApp API Server
 
 <a href="https://nodejs.org/ko/download/">
-<img src="https://img.shields.io/badge/Node.js-14-339933?logo=Node.js&logoColor=white"/>
+<img src="https://img.shields.io/badge/Node.js-16-339933?logo=Node.js&logoColor=white"/>
 </a>
 
 <a href="https://mariadb.com/kb/en/introduction-to-relational-databases/">
