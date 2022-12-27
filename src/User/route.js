@@ -9,9 +9,9 @@ module.exports = function (app) {
   // 로그인 API
   app.patch("/user/login", user.login);
 
-  // 자동로그인 API
+  // 로그인여부 확인 API
   app.get("/user/login-check", authenticate, user.loginCheck);
 
   // 로그아웃 API
-  app.patch("/user/logout", user.logout);
+  app.patch("/user/logout", authenticate, user.logout);
 };

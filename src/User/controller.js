@@ -30,7 +30,7 @@ exports.postUser = async function (req, res) {
 };
 
 exports.login = async function (req, res) {
-  const { userID, password } = req.body;
+  const { userID, password, isAutoLogin } = req.body;
 
   try {
     const result = await service.login(userID, password);
@@ -39,6 +39,10 @@ exports.login = async function (req, res) {
       ...result,
       isLogined: true,
     };
+
+    if (isAutoLogin) {
+      req.session.cookie.maxAge = 90 * 24 * 60 * 60 * 1000;
+    }
 
     const message = `${userID} 로그인`;
     logger.info(message);
@@ -51,29 +55,17 @@ exports.login = async function (req, res) {
 };
 
 exports.loginCheck = async function (req, res) {
-  if (req.session.user.isLogined) {
-    // TODO: 세션 만료 시간 업데이트
-    res.json(
-      response("세션이 유효합니다.", { userID: req.session.user.userID })
-    );
-  } else {
-    res.status(StatusCodes.UNAUTHORIZED);
-    res.json(errResponse("세션이 만료되었습니다."));
-  }
+  res.json(response("세션이 유효합니다.", { userID: req.session.user.userID }));
 };
 
 exports.logout = async function (req, res) {
-  if (!req.session.user.isLogined) {
-    return res.json(response("세션이 존재하지 않습니다."));
-  }
-
   req.session.destroy((err) => {
     if (err) {
       logger.warn(`[${dirName}]_${err.message}`);
       res.status(StatusCodes.INTERNAL_SERVER_ERROR);
       res.json(errResponse(err.message));
     } else {
-      res.clearCookie("logInData");
+      res.clearCookie("loginData");
       res.json(response("로그아웃 되었습니다."));
     }
   });
