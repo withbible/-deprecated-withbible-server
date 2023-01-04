@@ -1,5 +1,7 @@
 exports.selectLeaderBoard = async function (connection) {
-  // TODO: created_at과 updated_at의 타입이 다른 이유 설명
+  /**
+   * @todo created_at과 updated_at의 타입이 다른 이유 설명
+   */
   const query = `
     SELECT
       u.user_id,

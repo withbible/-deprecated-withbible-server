@@ -1,13 +1,13 @@
 const bcypt = require("bcrypt");
 const { StatusCodes } = require("http-status-codes");
 
-//INTERNAL IMPORT
+// INTERNAL IMPORT
 const { pool } = require("../../config/database");
 const provider = require("./provider");
 const dao = require("./dao");
 const leaderBoardDao = require("../LeaderBoard/dao");
 
-exports.postUser = async function (userID, password, userName) {
+exports.postUser = async function (userID, password, userName, userEmail) {
   const userIDRows = await provider.userIDCheck(userID);
 
   if (userIDRows.length > 0) {
@@ -19,7 +19,7 @@ exports.postUser = async function (userID, password, userName) {
   const saltRounds = 10;
   const hashedPassword = await bcypt.hash(password, saltRounds);
 
-  const insertUserParams = [userID, hashedPassword, userName];
+  const insertUserParams = [userID, hashedPassword, userName, userEmail];
   const connection = await pool.getConnection(async (conn) => conn);
 
   try {
@@ -53,11 +53,11 @@ exports.login = async function (userID, password) {
     return Promise.reject(err);
   }
 
-  const selectUserID = userIDRows[0]["user_id"];
+  const selectUserID = userIDRows[0].user_id;
 
   const isValidPassword = await bcypt.compare(
     password,
-    userIDRows[0]["hashed_password"]
+    userIDRows[0].hashed_password
   );
 
   if (!isValidPassword) {
@@ -67,7 +67,7 @@ exports.login = async function (userID, password) {
   }
 
   return Promise.resolve({
-    userSeq: userIDRows[0]["user_seq"],
+    userSeq: userIDRows[0].user_seq,
     userID: selectUserID,
   });
 };

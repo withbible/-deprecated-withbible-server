@@ -1,6 +1,6 @@
 const { StatusCodes } = require("http-status-codes");
 
-//INTERNAL IMPORT
+// INTERNAL IMPORT
 const { pool } = require("../../config/database");
 const dao = require("./dao");
 

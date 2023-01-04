@@ -1,6 +1,6 @@
 const cors = require("cors");
 
-//INTERNAL IMPORT
+// INTERNAL IMPORT
 const { LOCAL_GUEST, CLOUD_GUEST } = process.env;
 
 const corsOptions = {

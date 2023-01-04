@@ -52,18 +52,17 @@ exports.insertUserOptionBulk = async function (
   let query = `
     INSERT INTO quiz_user_option
       (question_seq, question_option_seq, user_seq, chapter_seq)
-    VALUES  
+    VALUES
   `;
 
-  const arr = [];
+  const values = Object.entries(bulk).map(
+    ([key, value]) => `(${key}, ${value}, ${userSeq}, ${chapterSeq})`
+  );
 
-  for (const [key, value] of Object.entries(bulk))
-    arr.push(`(${key}, ${value}, ${userSeq}, ${chapterSeq})`);
-
-  query += arr.join();
+  query += values.join();
   query += ";";
 
-  return await connection.query(query);
+  await connection.query(query);
 };
 
 exports.updateUserOptionBulk = async function (
@@ -78,12 +77,11 @@ exports.updateUserOptionBulk = async function (
     VALUES
   `;
 
-  const arr = [];
+  const values = Object.entries(bulk).map(
+    ([key, value]) => `(${key}, ${value}, ${userSeq}, ${chapterSeq})`
+  );
 
-  for (const [key, value] of Object.entries(bulk))
-    arr.push(`(${key}, ${value}, ${userSeq}, ${chapterSeq})`);
-
-  query += arr.join();
+  query += values.join();
   query += `
     ON DUPLICATE KEY UPDATE
       question_seq = VALUES(question_seq),
@@ -92,7 +90,7 @@ exports.updateUserOptionBulk = async function (
       chapter_seq = VALUES(chapter_seq);
   `;
 
-  return await connection.query(query);
+  await connection.query(query);
 };
 
 exports.selectActiveChapterCount = async function (

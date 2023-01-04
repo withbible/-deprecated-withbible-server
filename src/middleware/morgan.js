@@ -1,6 +1,6 @@
 const morgan = require("morgan");
 
-//INTERNAL IMPORT
+// INTERNAL IMPORT
 const { logger } = require("../../config/logger");
 
 const colors = {
@@ -8,22 +8,22 @@ const colors = {
   green: "\x1B[32m",
   yellow: "\x1B[33m",
   cyan: "\x1B[36m",
-  endColor: "\033[0m",
+  endColor: "\x1B[0m",
 };
 
 morgan.token("status", function (req, res) {
   let color;
 
-  if(res.statusCode < 300) {
+  if (res.statusCode < 300) {
     color = colors.green;
-  }else if(res.statusCode < 400){
+  } else if (res.statusCode < 400) {
     color = colors.cyan;
-  }else if(res.statusCode < 500){
+  } else if (res.statusCode < 500) {
     color = colors.yellow;
-  }else if(res.statusCode < 600){
+  } else if (res.statusCode < 600) {
     color = colors.red;
-  }else{
-    color = colors.endColor;      
+  } else {
+    color = colors.endColor;
   }
 
   return color + res.statusCode + colors.endColor;

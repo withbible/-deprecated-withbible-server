@@ -1,4 +1,6 @@
 const { StatusCodes } = require("http-status-codes");
+
+// INTERNAL IMPORT
 const { errResponse } = require("../modules/response");
 
 const authenticate = (req, res, next) => {
@@ -7,7 +9,7 @@ const authenticate = (req, res, next) => {
     return res.json(errResponse("권한이 없습니다."));
   }
 
-  next();
+  return next();
 };
 
 module.exports = authenticate;

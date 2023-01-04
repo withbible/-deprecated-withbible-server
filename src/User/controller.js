@@ -1,17 +1,33 @@
 const { StatusCodes } = require("http-status-codes");
 
-//INTERNAL IMPORT
+// INTERNAL IMPORT
 const path = require("path");
 const { logger } = require("../../config/logger");
 const { errResponse, response } = require("../modules/response");
 const service = require("./service");
+
+// CONSTANT
 const dirName = path.basename(__dirname);
+const AUTO_LOGIN_AGE = 90 * 24 * 60 * 60 * 1000;
+
+// HELPER FUNCTION
+function decodeAuthorization(authorization) {
+  const encoded = authorization.split(" ")[1];
+  const decoded = Buffer.from(encoded, "base64").toString();
+  return decoded.split(":");
+}
 
 exports.postUser = async function (req, res) {
-  const { userID, password, userName } = req.body;
+  const [userID, password] = decodeAuthorization(req.headers.authorization);
+  const { userName, userEmail } = req.body;
 
   try {
-    const result = await service.postUser(userID, password, userName);
+    const result = await service.postUser(
+      userID,
+      password,
+      userName,
+      userEmail
+    );
 
     req.session.user = {
       ...result,
@@ -30,7 +46,8 @@ exports.postUser = async function (req, res) {
 };
 
 exports.login = async function (req, res) {
-  const { userID, password, isAutoLogin } = req.body;
+  const [userID, password] = decodeAuthorization(req.headers.authorization);
+  const { isAutoLogin } = req.body;
 
   try {
     const result = await service.login(userID, password);
@@ -41,7 +58,7 @@ exports.login = async function (req, res) {
     };
 
     if (isAutoLogin) {
-      req.session.cookie.maxAge = 90 * 24 * 60 * 60 * 1000;
+      req.session.cookie.maxAge = AUTO_LOGIN_AGE;
     }
 
     const message = `${userID} 로그인`;

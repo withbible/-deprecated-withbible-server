@@ -9,7 +9,7 @@ module.exports = session({
   rolling: true,
   store: new FileStore({
     /**
-     * number by seconds
+     * @description number by seconds
      *
      * [default] 1H
      */
@@ -21,11 +21,10 @@ module.exports = session({
     secure: false,
 
     /**
-     * number by milliseconds
+     * @description number by milliseconds
      *
      * [default] no maximum
      * [dev] 10H
-     * [prod] 1D
      */
     maxAge: 10 * 60 * 60 * 1000,
   },

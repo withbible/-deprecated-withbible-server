@@ -11,7 +11,11 @@
 </a>
 
 <a href="https://expressjs.com/ko/">
-<img src="https://img.shields.io/badge/Express-000000?logo=Express"/> 
+<img src="https://img.shields.io/badge/Express-4-000000?logo=Express"/> 
+</a>
+
+<a href="https://eslint.org/docs/latest/">
+<img src="https://img.shields.io/badge/ESLint-4B32C3?logo=ESLint&logoColor=white"/>
 </a>
 
 <a href="https://avatars.dicebear.com/">

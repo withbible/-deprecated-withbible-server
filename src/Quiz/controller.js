@@ -1,11 +1,13 @@
 const { StatusCodes } = require("http-status-codes");
 
-//INTERNAL IMPORT
+// INTERNAL IMPORT
 const path = require("path");
 const { logger } = require("../../config/logger");
 const { response, errResponse } = require("../modules/response");
 const provider = require("./provider");
 const service = require("./service");
+
+// CONSTANT
 const dirName = path.basename(__dirname);
 
 exports.getChapter = async function (req, res) {
@@ -35,7 +37,8 @@ exports.getQuiz = async function (req, res) {
 };
 
 /**
- *  "bulk": [
+ * @example
+ * "bulk": [
       {
         "question_option": "",
         "answer_yn": 1
@@ -58,7 +61,8 @@ exports.postQuiz = async function (req, res) {
 };
 
 /**
- *  "bulk": [
+ * @example
+ * "bulk": [
       {
         "question_option_seq": 1,
         "question_option": "",

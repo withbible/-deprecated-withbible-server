@@ -1,11 +1,13 @@
 const { StatusCodes } = require("http-status-codes");
 
-//INTERNAL IMPORT
+// INTERNAL IMPORT
 const path = require("path");
 const { logger } = require("../../config/logger");
 const { response, errResponse } = require("../modules/response");
 const provider = require("./provider");
 const service = require("./service");
+
+// CONSTANT
 const dirName = path.basename(__dirname);
 
 exports.getHitCount = async function (req, res) {
@@ -41,15 +43,15 @@ exports.getUserOptionBulk = async function (req, res) {
 };
 
 /**
- *  [bulk 형태]
+ * @description bulk key의 value object 의미
+ * question_seq: question_option_seq
  * 
- *  "bulk": {
+ * @example
+ * "bulk": {
       "7": 13,
       "8": 13,
       "9": 13
-    }
-  * [key-value 의미] 
-    question_seq: question_option_seq
+    }  
  */
 exports.postUserOptionBulk = async function (req, res) {
   const { categorySeq, chapterNum, bulk } = req.body;

@@ -1,17 +1,15 @@
 const { StatusCodes } = require("http-status-codes");
 
-//INTERNAL IMPORT
+// INTERNAL IMPORT
 const { pool } = require("../../config/database");
 const dao = require("./dao");
 
 exports.getChapter = async function (keyword) {
   const connection = await pool.getConnection(async (conn) => conn);
 
-  if (keyword) {
-    result = await dao.searchChapter(connection, keyword);
-  } else {
-    result = await dao.selectChapter(connection);
-  }
+  const result = keyword
+    ? await dao.searchChapter(connection, keyword)
+    : await dao.selectChapter(connection);
 
   connection.release();
 
@@ -21,9 +19,13 @@ exports.getChapter = async function (keyword) {
     return Promise.reject(err);
   }
 
-  // TODO: mariaDB 10.6 이후 개선됨. 현 클라우드 10.5
-  for (const each of result)
-    each["chapter_num_array"] = JSON.parse(each["chapter_num_array"]);
+  /**
+   * @todo mariaDB 10.6에서 개선됨. 현 클라우드 제공되는 버전은 10.5
+   */
+  result.forEach((each) => {
+    // eslint-disable-next-line no-param-reassign
+    each.chapter_num_array = JSON.parse(each.chapter_num_array);
+  });
 
   return Promise.resolve(result);
 };
@@ -41,8 +43,10 @@ exports.getQuiz = async function (categorySeq, chapterNum) {
     return Promise.reject(err);
   }
 
-  for (const each of result)
-    each["option_array"] = JSON.parse(each["option_array"]);
+  result.forEach((each) => {
+    // eslint-disable-next-line no-param-reassign
+    each.option_array = JSON.parse(each.option_array);
+  });
 
   return Promise.resolve(result);
 };

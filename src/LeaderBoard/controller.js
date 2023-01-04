@@ -1,8 +1,10 @@
-//INTERNAL IMPORT
+// INTERNAL IMPORT
 const path = require("path");
 const { logger } = require("../../config/logger");
 const { response, errResponse } = require("../modules/response");
 const provider = require("./provider");
+
+// CONSTANT
 const dirName = path.basename(__dirname);
 
 exports.getLeaderBoard = async function (req, res) {

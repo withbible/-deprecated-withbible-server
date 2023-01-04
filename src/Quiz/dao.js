@@ -161,19 +161,16 @@ exports.insertOptionBulk = async function (connection, bulk, questionSeq) {
     VALUES
   `;
 
-  const arr = [];
-
-  for (const each of bulk) {
-    arr.push(
+  const values = bulk.map(
+    (each) =>
       `(
-        ${questionSeq}, 
-        "${each["question_option"]}", 
-        ${each["answer_yn"]}
-      )`
-    );
-  }
+      ${questionSeq}, 
+      "${each.question_option}", 
+      ${each.answer_yn}
+    )`
+  );
 
-  query += arr.join();
+  query += values.join();
   query += ";";
 
   const [rows] = await connection.query(query);
@@ -197,20 +194,17 @@ exports.updateOption = async function (connection, bulk, questionSeq) {
     VALUES
   `;
 
-  const arr = [];
-
-  for (const each of bulk) {
-    arr.push(
+  const values = bulk.map(
+    (each) =>
       `(        
-        ${each["question_option_seq"]},
+        ${each.question_option_seq},
         ${questionSeq},
-        "${each["question_option"]}",
-        ${each["answer_yn"]}
+        "${each.question_option}",
+        ${each.answer_yn}
       )`
-    );
-  }
+  );
 
-  query += arr.join();
+  query += values.join();
   query += `
     ON DUPLICATE KEY UPDATE      
       question_option_seq = VALUES(question_option_seq),

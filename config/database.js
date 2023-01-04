@@ -1,8 +1,10 @@
 const mysql = require("mysql2/promise");
 
-//INTERNAL IMPORT
+// INTERNAL IMPORT
 const path = require("path");
 const { logger } = require("./logger");
+
+// CONSTANT
 const fileName = path.basename(__filename, ".js");
 
 const pool = mysql.createPool({
@@ -15,7 +17,7 @@ const pool = mysql.createPool({
 
 pool
   .query("SELECT 1")
-  .then((_) => {
+  .then(() => {
     logger.info("MySQL connected");
   })
   .catch((err) => {

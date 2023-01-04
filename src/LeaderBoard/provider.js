@@ -1,6 +1,6 @@
 const { StatusCodes } = require("http-status-codes");
 
-//INTERNAL IMPORT
+// INTERNAL IMPORT
 const { pool } = require("../../config/database");
 const dao = require("./dao");
 
@@ -29,7 +29,7 @@ exports.getLeaderBoardPage = async function (limit, page) {
   const connection = await pool.getConnection(async (conn) => conn);
 
   const offset = (page - 1) * limit;
-  const selectLeaderBoardParams = [parseInt(limit), offset];
+  const selectLeaderBoardParams = [parseInt(limit, 10), offset];
 
   const result = await dao.searchLeaderBoard(
     connection,

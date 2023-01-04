@@ -2,14 +2,12 @@
 node_modules/
 package-lock.json
 
-# conf
+# env
 .env
 
-# etc
+# assets
 etc/
-
-# log
 sessions/
 
-# deployment
+# development
 .vscode/

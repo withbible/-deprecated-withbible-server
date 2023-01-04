@@ -1,6 +1,6 @@
 const { StatusCodes } = require("http-status-codes");
 
-//INTERNAL IMPORT
+// INTERNAL IMPORT
 const { pool } = require("../../config/database");
 const provider = require("./provider");
 const dao = require("./dao");
@@ -20,14 +20,14 @@ exports.postQuiz = async function (categorySeq, question, bulk) {
 
   // 챕터일련번호 조회
   const maxChapterRow = await provider.getMaxChapterSeq(categorySeq);
-  let chapterSeq = maxChapterRow["chapter_seq"];
+  let chapterSeq = maxChapterRow.chapter_seq;
 
   try {
     await connection.beginTransaction();
 
     // 질문갯수가 초과될 시 +1 채번
-    if (maxChapterRow["question_count"] === MAX_QUESTION_COUNT) {
-      const newChapterNum = maxChapterRow["max_chapter_num"] + 1;
+    if (maxChapterRow.question_count === MAX_QUESTION_COUNT) {
+      const newChapterNum = maxChapterRow.max_chapter_num + 1;
 
       const newChapterRow = await dao.insertChapterSeq(connection, [
         categorySeq,

@@ -15,9 +15,9 @@ exports.selectUserID = async function (connection, userID) {
 exports.insertUser = async function (connection, insertUserParams) {
   const query = `
     INSERT INTO user 
-      (user_id, hashed_password, user_name)
+      (user_id, hashed_password, user_name, user_email)
     VALUES 
-      (?, ?, ?);
+      (?, ?, ?, ?);
   `;
 
   const [result] = await connection.query(query, insertUserParams);

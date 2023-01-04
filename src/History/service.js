@@ -1,12 +1,13 @@
 const { StatusCodes } = require("http-status-codes");
 
-//INTERNAL IMPORT
+// INTERNAL IMPORT
 const { pool } = require("../../config/database");
 const provider = require("./provider");
 const quizProvider = require("../Quiz/provider");
 const dao = require("./dao");
 
 /**
+ * @description
  * Provider 계층의 Read의 데이터가 존재하지 않을시
  * Service 계층의 Read와 Create는 다르게 처리되기 때문에
  * Service 계층에 Read를 두었습니다.
@@ -45,7 +46,7 @@ exports.postUserOptionBulk = async function (
   }
 
   const connection = await pool.getConnection(async (conn) => conn);
-  const chapterSeq = chapterSeqRow["chapter_seq"];
+  const chapterSeq = chapterSeqRow.chapter_seq;
 
   try {
     await dao.insertUserOptionBulk(connection, bulk, userSeq, chapterSeq);
@@ -78,7 +79,7 @@ exports.putUserOptionBulk = async function (
   }
 
   const connection = await pool.getConnection(async (conn) => conn);
-  const chapterSeq = rows[0]["chapter_seq"];
+  const chapterSeq = rows[0].chapter_seq;
 
   await dao.updateUserOptionBulk(connection, bulk, userSeq, chapterSeq);
   connection.release();

@@ -1,5 +1,5 @@
-const { pool } = require('../../config/database');
-const dao = require('./dao');
+const { pool } = require("../../config/database");
+const dao = require("./dao");
 
 exports.userIDCheck = async function (userID) {
   const connection = await pool.getConnection(async (conn) => conn);

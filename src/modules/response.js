@@ -2,13 +2,13 @@ exports.response = function (message, result) {
   return {
     isSuccess: true,
     message,
-    result
-  }
+    result,
+  };
 };
 
 exports.errResponse = function (message) {
   return {
     isSuccess: false,
-    message
-  }
+    message,
+  };
 };
