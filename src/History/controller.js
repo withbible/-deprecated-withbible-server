@@ -4,6 +4,7 @@ const { StatusCodes } = require("http-status-codes");
 const path = require("path");
 const { logger } = require("../../config/logger");
 const { response, errResponse } = require("../modules/response");
+const { CATEGORY } = require("../constants/enum");
 const provider = require("./provider");
 const service = require("./service");
 
@@ -16,7 +17,13 @@ exports.getHitCount = async function (req, res) {
 
   try {
     const result = await provider.getHitCount(categorySeq, chapterNum, userSeq);
-    res.json(response("맞힌갯수 조회 완료", result));
+
+    res.json(
+      response(
+        `${CATEGORY[categorySeq]} ch.${chapterNum} 맞힌갯수 조회 완료`,
+        result
+      )
+    );
   } catch (err) {
     logger.warn(`[${dirName}]_${err.message}`);
     res.status(err.status);
@@ -34,7 +41,13 @@ exports.getUserOptionBulk = async function (req, res) {
       chapterNum,
       userSeq
     );
-    res.json(response("선택기록 조회 완료", result));
+
+    res.json(
+      response(
+        `${CATEGORY[categorySeq]} ch.${chapterNum} 선택기록 조회 완료`,
+        result
+      )
+    );
   } catch (err) {
     logger.warn(`[${dirName}]_${err.message}`);
     res.status(err.status);
@@ -44,7 +57,7 @@ exports.getUserOptionBulk = async function (req, res) {
 
 /**
  * @description bulk key의 value object 의미
- * question_seq: question_option_seq
+ * questionSeq: questionOptionSeq
  * 
  * @example
  * "bulk": {
@@ -54,7 +67,8 @@ exports.getUserOptionBulk = async function (req, res) {
     }  
  */
 exports.postUserOptionBulk = async function (req, res) {
-  const { categorySeq, chapterNum, bulk } = req.body;
+  const { categorySeq, chapterNum } = req.query;
+  const { bulk } = req.body;
   const { userSeq } = req.session.user;
 
   try {
@@ -66,7 +80,12 @@ exports.postUserOptionBulk = async function (req, res) {
     );
 
     res.status(StatusCodes.CREATED);
-    res.json(response("선택기록 생성 완료", result));
+    res.json(
+      response(
+        `${CATEGORY[categorySeq]} ch.${chapterNum} 선택기록 생성 완료`,
+        result
+      )
+    );
   } catch (err) {
     logger.warn(`[${dirName}]_${err.message}`);
     res.status(err.status);
@@ -75,7 +94,8 @@ exports.postUserOptionBulk = async function (req, res) {
 };
 
 exports.putUserOptionBulk = async function (req, res) {
-  const { categorySeq, chapterNum, bulk } = req.body;
+  const { categorySeq, chapterNum } = req.query;
+  const { bulk } = req.body;
   const { userSeq } = req.session.user;
 
   try {
@@ -85,7 +105,13 @@ exports.putUserOptionBulk = async function (req, res) {
       userSeq,
       bulk
     );
-    res.json(response("선택기록 수정 완료", result));
+
+    res.json(
+      response(
+        `${CATEGORY[categorySeq]} ch.${chapterNum} 선택기록 수정 완료`,
+        result
+      )
+    );
   } catch (err) {
     logger.warn(`[${dirName}]_${err.message}`);
     res.status(err.status);
@@ -99,7 +125,10 @@ exports.getActiveChapterCount = async function (req, res) {
 
   try {
     const result = await provider.getActiveChapterCount(categorySeq, userSeq);
-    res.json(response("활성화된 챕터갯수 조회 완료", result));
+
+    res.json(
+      response(`${CATEGORY[categorySeq]} 활성화된 챕터갯수 조회 완료`, result)
+    );
   } catch (err) {
     logger.warn(`[${dirName}]_${err.message}`);
     res.status(err.status);
@@ -113,7 +142,15 @@ exports.getActiveChapter = async function (req, res) {
 
   try {
     const result = await provider.getActiveChapter(categorySeq, userSeq);
-    res.json(response("활성화된 챕터 전체조회 완료", result));
+
+    res.json(
+      response(
+        categorySeq
+          ? `${CATEGORY[categorySeq]} 활성화된 챕터 검색 완료`
+          : "카테고리별 활성화된 챕터 전체조회 완료",
+        result
+      )
+    );
   } catch (err) {
     logger.warn(`[${dirName}]_${err.message}`);
     res.status(err.status);
@@ -127,20 +164,7 @@ exports.getActiveChapterPage = async function (req, res) {
 
   try {
     const result = await provider.getActiveChapterPage(limit, page, userSeq);
-    res.json(response("활성화된 챕터 부분조회 완료", result));
-  } catch (err) {
-    logger.warn(`[${dirName}]_${err.message}`);
-    res.status(err.status);
-    res.json(errResponse(err.message));
-  }
-};
-
-exports.getActiveCategory = async function (req, res) {
-  const { userSeq } = req.session.user;
-
-  try {
-    const result = await provider.getActiveCategory(userSeq);
-    res.json(response("활성화된 카테고리 조회 완료", result));
+    res.json(response("카테고리별 활성화된 챕터 부분조회 완료", result));
   } catch (err) {
     logger.warn(`[${dirName}]_${err.message}`);
     res.status(err.status);
