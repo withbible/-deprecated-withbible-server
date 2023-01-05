@@ -4,6 +4,7 @@ const { StatusCodes } = require("http-status-codes");
 const path = require("path");
 const { logger } = require("../../config/logger");
 const { response, errResponse } = require("../modules/response");
+const { CATEGORY } = require("../constants/enum");
 const provider = require("./provider");
 const service = require("./service");
 
@@ -15,7 +16,13 @@ exports.getChapter = async function (req, res) {
 
   try {
     const result = await provider.getChapter(keyword);
-    res.json(response(null, result));
+    const meta = {
+      count: result.length,
+    };
+
+    res.json(
+      response("카테고리별 검색어를 포함한 챕터수 조회 완료", result, meta)
+    );
   } catch (err) {
     logger.warn(`[${dirName}]_${err.message}`);
     res.status(err.status);
@@ -28,7 +35,13 @@ exports.getQuiz = async function (req, res) {
 
   try {
     const result = await provider.getQuiz(categorySeq, chapterNum);
-    res.json(response(null, result));
+
+    res.json(
+      response(
+        `${CATEGORY[categorySeq]} ch.${chapterNum} 질문-선택지 전체조회 완료`,
+        result
+      )
+    );
   } catch (err) {
     logger.warn(`[${dirName}]_${err.message}`);
     res.status(err.status);
@@ -40,8 +53,8 @@ exports.getQuiz = async function (req, res) {
  * @example
  * "bulk": [
       {
-        "question_option": "",
-        "answer_yn": 1
+        "questionOption": "",
+        "answerYN": 1
       },
     ]
  */
@@ -64,9 +77,9 @@ exports.postQuiz = async function (req, res) {
  * @example
  * "bulk": [
       {
-        "question_option_seq": 1,
-        "question_option": "",
-        "answer_yn": 1
+        "questionOptionSeq": 1,
+        "questionOption": "",
+        "answerYN": 1
       },
     ]
  */
