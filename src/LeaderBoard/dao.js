@@ -1,18 +1,18 @@
 exports.selectLeaderBoard = async function (connection) {
   /**
-   * @todo created_at과 updated_at의 타입이 다른 이유 설명
+   * @todo createdAt과 updatedAt의 타입이 다른 이유 설명
    */
   const query = `
     SELECT
-      u.user_id,
-      u.user_name,
+      u.user_id AS userID,
+      u.user_name AS userName,
       CONCAT('https://avatars.dicebear.com/api/micah/', u.user_id,'.svg') AS image,
-      ul.quiz_score,
-      ul.updated_at
+      ul.quiz_score AS quizScore,
+      ul.updated_at AS updatedAt
     FROM user_leaderboard AS ul
     INNER JOIN user AS u
       ON ul.user_seq = u.user_seq
-    ORDER BY ul.quiz_score DESC;    
+    ORDER BY ul.quiz_score DESC;
   `;
 
   const [rows] = await connection.query(query);
@@ -25,11 +25,11 @@ exports.searchLeaderBoard = async function (
 ) {
   const query = `
     SELECT
-      u.user_id,
-      u.user_name,
+      u.user_id AS userID,
+      u.user_name AS userName,
       CONCAT('https://avatars.dicebear.com/api/micah/', u.user_id,'.svg') AS image,
-      ul.quiz_score,
-      ul.updated_at
+      ul.quiz_score AS quizScore,
+      ul.updated_at AS updatedAt
     FROM user_leaderboard AS ul
     INNER JOIN user AS u
       ON ul.user_seq = u.user_seq

@@ -1,11 +1,12 @@
 exports.selectUserID = async function (connection, userID) {
   const query = `
     SELECT 
-      user_seq,
-      user_id,
-      hashed_password
+      user_seq AS userSeq,
+      user_id AS userID,
+      hashed_password AS hahsedPassword
     FROM user
-    WHERE user_id = ?;
+    WHERE 
+      user_id = ?;
   `;
 
   const [rows] = await connection.query(query, userID);

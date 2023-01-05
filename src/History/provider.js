@@ -7,8 +7,11 @@ const dao = require("./dao");
 exports.getHitCount = async function (categorySeq, chapterNum, userSeq) {
   const connection = await pool.getConnection(async (conn) => conn);
 
-  const selectHitCountParams = [categorySeq, chapterNum, userSeq];
-  const [result] = await dao.selectHitCount(connection, selectHitCountParams);
+  const [result] = await dao.selectHitCount(connection, [
+    categorySeq,
+    chapterNum,
+    userSeq,
+  ]);
   connection.release();
 
   if (!result) {
@@ -23,11 +26,11 @@ exports.getHitCount = async function (categorySeq, chapterNum, userSeq) {
 exports.getUserOptionBulk = async function (categorySeq, chapterNum, userSeq) {
   const connection = await pool.getConnection(async (conn) => conn);
 
-  const selectUserOptionBulkParams = [categorySeq, chapterNum, userSeq];
-  const result = await dao.selectUserOptionBulk(
-    connection,
-    selectUserOptionBulkParams
-  );
+  const result = await dao.selectUserOptionBulk(connection, [
+    categorySeq,
+    chapterNum,
+    userSeq,
+  ]);
   connection.release();
 
   return Promise.resolve(result);
@@ -36,11 +39,10 @@ exports.getUserOptionBulk = async function (categorySeq, chapterNum, userSeq) {
 exports.getActiveChapterCount = async function (categorySeq, userSeq) {
   const connection = await pool.getConnection(async (conn) => conn);
 
-  const selectActiveChapterCountParams = [userSeq, categorySeq];
-  const [result] = await dao.selectActiveChapterCount(
-    connection,
-    selectActiveChapterCountParams
-  );
+  const [result] = await dao.selectActiveChapterCount(connection, [
+    userSeq,
+    categorySeq,
+  ]);
   connection.release();
 
   if (!result) {
@@ -55,25 +57,22 @@ exports.getActiveChapterCount = async function (categorySeq, userSeq) {
 exports.getActiveChapter = async function (categorySeq, userSeq) {
   const connection = await pool.getConnection(async (conn) => conn);
 
-  if (!categorySeq) {
-    result = await dao.selectActiveChapter(connection, userSeq);
-  } else {
-    const selectActiveChapterParams = [userSeq, categorySeq];
-    result = await dao.searchActiveChapter(
-      connection,
-      selectActiveChapterParams
-    );
-  }
+  const result = categorySeq
+    ? await dao.searchActiveChapter(connection, [userSeq, categorySeq])
+    : await dao.selectActiveChapter(connection, userSeq);
+
   connection.release();
 
   if (!result.length) {
-    const err = new Error("데이터가 존재하지 않습니다.");
+    const err = new Error("해당 기록이 존재하지 않습니다.");
     err.status = StatusCodes.NOT_FOUND;
     return Promise.reject(err);
   }
 
-  for (const each of result)
-    each["chapter_num_array"] = JSON.parse(each["chapter_num_array"]);
+  result.forEach((each) => {
+    // eslint-disable-next-line no-param-reassign
+    each.chapterNumArray = JSON.parse(each.chapterNumArray);
+  });
 
   return Promise.resolve(result);
 };
@@ -88,32 +87,24 @@ exports.getActiveChapterPage = async function (limit, page, userSeq) {
   const connection = await pool.getConnection(async (conn) => conn);
 
   const offset = (page - 1) * limit;
-  const selectActiveChapterPageParams = [userSeq, parseInt(limit), offset];
-
-  const result = await dao.selectActiveChapterPage(
-    connection,
-    selectActiveChapterPageParams
-  );
+  const result = await dao.selectActiveChapterPage(connection, [
+    userSeq,
+    parseInt(limit, 10),
+    offset,
+  ]);
 
   connection.release();
 
   if (!result.length) {
-    const err = new Error("데이터가 존재하지 않습니다.");
+    const err = new Error("해당 기록이 존재하지 않습니다.");
     err.status = StatusCodes.NOT_FOUND;
     return Promise.reject(err);
   }
 
-  for (const each of result)
-    each["chapter_detail"] = JSON.parse(each["chapter_detail"]);
-
-  return Promise.resolve(result);
-};
-
-exports.getActiveCategory = async function (userSeq) {
-  const connection = await pool.getConnection(async (conn) => conn);
-
-  const result = await dao.selectActiveCategory(connection, userSeq);
-  connection.release();
+  result.forEach((each) => {
+    // eslint-disable-next-line no-param-reassign
+    each.chapterDetail = JSON.parse(each.chapterDetail);
+  });
 
   return Promise.resolve(result);
 };

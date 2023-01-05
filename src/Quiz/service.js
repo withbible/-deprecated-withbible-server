@@ -8,10 +8,10 @@ const dao = require("./dao");
 const MAX_QUESTION_COUNT = 3;
 
 exports.postQuiz = async function (categorySeq, question, bulk) {
-  const questionRow = await provider.getQuestion(question);
+  const questionRow = await provider.getQuestionSeqByText(question);
 
   if (questionRow) {
-    const err = new Error("중복된 기록입니다.");
+    const err = new Error("중복된 데이터입니다.");
     err.status = StatusCodes.METHOD_NOT_ALLOWED;
     return Promise.reject(err);
   }
@@ -20,14 +20,14 @@ exports.postQuiz = async function (categorySeq, question, bulk) {
 
   // 챕터일련번호 조회
   const maxChapterRow = await provider.getMaxChapterSeq(categorySeq);
-  let chapterSeq = maxChapterRow.chapter_seq;
+  let { chapterSeq } = maxChapterRow;
 
   try {
     await connection.beginTransaction();
 
     // 질문갯수가 초과될 시 +1 채번
-    if (maxChapterRow.question_count === MAX_QUESTION_COUNT) {
-      const newChapterNum = maxChapterRow.max_chapter_num + 1;
+    if (maxChapterRow.questionCount === MAX_QUESTION_COUNT) {
+      const newChapterNum = maxChapterRow.maxChapterNum + 1;
 
       const newChapterRow = await dao.insertChapterSeq(connection, [
         categorySeq,
@@ -55,10 +55,10 @@ exports.postQuiz = async function (categorySeq, question, bulk) {
 };
 
 exports.putQuiz = async function (questionSeq, newQuestion, bulk) {
-  const questionRow = await provider.getQuestionSeq(questionSeq);
+  const questionRow = await provider.getQuestionSeqByNumber(questionSeq);
 
   if (!questionRow) {
-    const err = new Error("해당 기록이 존재하지 않습니다.");
+    const err = new Error("데이터가 존재하지 않습니다.");
     err.status = StatusCodes.BAD_REQUEST;
     return Promise.reject(err);
   }

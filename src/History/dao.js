@@ -1,10 +1,8 @@
 exports.selectHitCount = async function (connection, selectHitCountParams) {
   const query = `
-    SELECT	
-      qc.category_seq,
-      qc.chapter_num,
-      us.hit_question_count, 
-      qc.question_count  
+    SELECT
+      us.hit_question_count AS hitQuestionCount,
+      qc.question_count AS questionCount
     FROM quiz_chapter AS qc
     LEFT JOIN quiz_chapter_user_state AS us
       ON qc.chapter_seq = us.chapter_seq
@@ -22,11 +20,10 @@ exports.selectUserOptionBulk = async function (
   selectUserOptionBulkParams
 ) {
   const query = `
-    SELECT       
-      qc.chapter_seq,
-      q.question_seq,
-      uo.question_option_seq,      
-      qo.answer_yn
+    SELECT
+      q.question_seq AS questionSeq,
+      uo.question_option_seq AS questionOptionSeq,
+      qo.answer_yn AS answerYN
     FROM quiz_chapter AS qc
     LEFT JOIN quiz_question AS q
       ON qc.chapter_seq = q.chapter_seq 
@@ -98,17 +95,18 @@ exports.selectActiveChapterCount = async function (
   selectActiveChapterCountParams
 ) {
   const query = `
-    SELECT       	
-      qc.category_seq,
-      COUNT(us.chapter_seq) AS active_chapter_count,
-      MAX(qc.chapter_num) AS max_chapter
-    FROM quiz_chapter AS qc
+    SELECT
+      COUNT(us.chapter_seq) AS activeChapterCount,
+      MAX(qc.chapter_num) AS maxChapter
+    FROM quiz_chapter AS qc      
     LEFT JOIN quiz_chapter_user_state AS us
       ON qc.chapter_seq = us.chapter_seq 
-    WHERE us.user_seq = ?
+    WHERE 
+      us.user_seq = ?
     GROUP BY
       qc.category_seq
-    HAVING category_seq = ?;
+    HAVING 
+      qc.category_seq = ?;
   `;
 
   const [rows] = await connection.query(query, selectActiveChapterCountParams);
@@ -117,28 +115,28 @@ exports.selectActiveChapterCount = async function (
 
 exports.selectActiveChapter = async function (connection, userSeq) {
   const query = `
-    SELECT       	
+    SELECT
       c.category,
-      qc.category_seq, 
+      qc.category_seq AS categorySeq,
       CONCAT(
         '[',
         GROUP_CONCAT(
           JSON_OBJECT(
-            "chapter_num", qc.chapter_num,  		
-            "hit_question_count", us.hit_question_count,
-            "question_count", qc.question_count
+            "chapterNum", qc.chapter_num,
+            "hitQuestionCount", us.hit_question_count,
+            "questionCount", qc.question_count
           )
         ),
         ']'
-      ) AS chapter_num_array
+      ) AS chapterNumArray
     FROM quiz_category AS c
     LEFT JOIN quiz_chapter AS qc
-      ON c.category_seq = qc.category_seq 
+      ON c.category_seq = qc.category_seq
     LEFT JOIN quiz_chapter_user_state AS us
       ON qc.chapter_seq = us.chapter_seq 
     WHERE us.user_seq = ?
     GROUP BY
-      qc.category_seq;    
+      qc.category_seq;
   `;
 
   const [rows] = await connection.query(query, userSeq);
@@ -150,23 +148,23 @@ exports.searchActiveChapter = async function (
   selectActiveChapterParams
 ) {
   const query = `
-    SELECT       	
+    SELECT
       c.category,
-      qc.category_seq,  
+      qc.category_seq AS categorySeq, 
       CONCAT(
         '[',
         GROUP_CONCAT(
           JSON_OBJECT(
-            "chapter_num", qc.chapter_num,  		
-            "hit_question_count", us.hit_question_count,
-            "question_count", qc.question_count
+            "chapterNum", qc.chapter_num,
+            "hitQuestionCount", us.hit_question_count,
+            "questionCount", qc.question_count
           )
         ),
         ']'
-      ) AS chapter_num_array
+      ) AS chapterNumArray
     FROM quiz_category AS c
     LEFT JOIN quiz_chapter AS qc
-      ON c.category_seq = qc.category_seq 
+      ON c.category_seq = qc.category_seq
     LEFT JOIN quiz_chapter_user_state AS us
       ON qc.chapter_seq = us.chapter_seq 
     WHERE us.user_seq = ?
@@ -185,39 +183,20 @@ exports.selectActiveChapterPage = async function (
   selectActiveChapterPageParams
 ) {
   const query = `
-    SELECT       	
-      c.category,
-      qc.category_seq,  
+    SELECT
+      qc.category_seq AS categorySeq,  
       JSON_OBJECT(
-        "chapter_num", qc.chapter_num,  		
-        "hit_question_count", us.hit_question_count,
-        "question_count", qc.question_count
-      ) AS chapter_detail
-    FROM quiz_category AS c
-    LEFT JOIN quiz_chapter AS qc
-      ON c.category_seq = qc.category_seq 
+        "chapterNum", qc.chapter_num,  		
+        "hitQuestionCount", us.hit_question_count,
+        "questionCount", qc.question_count
+      ) AS chapterDetail
+    FROM quiz_chapter AS qc      
     LEFT JOIN quiz_chapter_user_state AS us
-      ON qc.chapter_seq = us.chapter_seq 
+      ON qc.chapter_seq = us.chapter_seq
     WHERE us.user_seq = ?
     LIMIT ? OFFSET ?;
   `;
 
   const [rows] = await connection.query(query, selectActiveChapterPageParams);
-  return rows;
-};
-
-exports.selectActiveCategory = async function (connection, userSeq) {
-  const query = `
-    SELECT       		
-      qc.category_seq
-    FROM quiz_chapter AS qc 
-    LEFT JOIN quiz_chapter_user_state AS us
-      ON qc.chapter_seq = us.chapter_seq 
-    WHERE us.user_seq = ?
-    GROUP BY
-      qc.category_seq;
-  `;
-
-  const [rows] = await connection.query(query, userSeq);
   return rows;
 };

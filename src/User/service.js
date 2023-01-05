@@ -53,11 +53,9 @@ exports.login = async function (userID, password) {
     return Promise.reject(err);
   }
 
-  const selectUserID = userIDRows[0].user_id;
-
   const isValidPassword = await bcypt.compare(
     password,
-    userIDRows[0].hashed_password
+    userIDRows[0].hahsedPassword
   );
 
   if (!isValidPassword) {
@@ -67,7 +65,7 @@ exports.login = async function (userID, password) {
   }
 
   return Promise.resolve({
-    userSeq: userIDRows[0].user_seq,
-    userID: selectUserID,
+    userSeq: userIDRows[0].userSeq,
+    userID: userIDRows[0].userID,
   });
 };

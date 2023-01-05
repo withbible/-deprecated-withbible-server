@@ -46,7 +46,7 @@ exports.postUserOptionBulk = async function (
   }
 
   const connection = await pool.getConnection(async (conn) => conn);
-  const chapterSeq = chapterSeqRow.chapter_seq;
+  const { chapterSeq } = chapterSeqRow;
 
   try {
     await dao.insertUserOptionBulk(connection, bulk, userSeq, chapterSeq);
@@ -66,23 +66,28 @@ exports.putUserOptionBulk = async function (
   userSeq,
   bulk
 ) {
-  const rows = await provider.getUserOptionBulk(
-    categorySeq,
-    chapterNum,
-    userSeq
-  );
+  const [userOptionRows, chapterSeqRow] = await Promise.all([
+    await provider.getUserOptionBulk(categorySeq, chapterNum, userSeq),
+    await quizProvider.getChapterSeq(categorySeq, chapterNum),
+  ]);
 
-  if (!rows.length) {
+  if (!userOptionRows.length) {
     const err = new Error("해당 기록이 존재하지 않습니다.");
     err.status = StatusCodes.BAD_REQUEST;
     return Promise.reject(err);
   }
 
   const connection = await pool.getConnection(async (conn) => conn);
-  const chapterSeq = rows[0].chapter_seq;
+  const { chapterSeq } = chapterSeqRow;
 
-  await dao.updateUserOptionBulk(connection, bulk, userSeq, chapterSeq);
-  connection.release();
+  try {
+    await dao.updateUserOptionBulk(connection, bulk, userSeq, chapterSeq);
+  } catch (err) {
+    err.status = StatusCodes.INTERNAL_SERVER_ERROR;
+    return Promise.reject(err);
+  } finally {
+    connection.release();
+  }
 
   return Promise.resolve();
 };

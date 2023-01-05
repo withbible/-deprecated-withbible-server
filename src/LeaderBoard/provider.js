@@ -11,7 +11,7 @@ exports.getLeaderBoard = async function () {
   connection.release();
 
   if (!result.length) {
-    const err = new Error("해당 기록이 존재하지 않습니다.");
+    const err = new Error("데이터가 존재하지 않습니다.");
     err.status = StatusCodes.BAD_REQUEST;
     return Promise.reject(err);
   }
@@ -21,7 +21,7 @@ exports.getLeaderBoard = async function () {
 
 exports.getLeaderBoardPage = async function (limit, page) {
   if (!limit || !page) {
-    const err = new Error("해당 기록이 존재하지 않습니다.");
+    const err = new Error("데이터가 존재하지 않습니다.");
     err.status = StatusCodes.BAD_REQUEST;
     return Promise.reject(err);
   }

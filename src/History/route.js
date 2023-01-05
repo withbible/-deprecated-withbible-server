@@ -27,7 +27,4 @@ module.exports = function (app) {
     "/history/categories/active-chapter/page",
     history.getActiveChapterPage
   );
-
-  // 활성화된 카테고리 전체 조회 API
-  app.get("/history/categories/active", history.getActiveCategory);
 };

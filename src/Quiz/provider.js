@@ -24,7 +24,7 @@ exports.getChapter = async function (keyword) {
    */
   result.forEach((each) => {
     // eslint-disable-next-line no-param-reassign
-    each.chapter_num_array = JSON.parse(each.chapter_num_array);
+    each.chapterNumArray = [...new Set(JSON.parse(each.chapterNumArray))];
   });
 
   return Promise.resolve(result);
@@ -33,8 +33,7 @@ exports.getChapter = async function (keyword) {
 exports.getQuiz = async function (categorySeq, chapterNum) {
   const connection = await pool.getConnection(async (conn) => conn);
 
-  const selectQuizParams = [categorySeq, chapterNum];
-  const result = await dao.selectQuiz(connection, selectQuizParams);
+  const result = await dao.selectQuiz(connection, [categorySeq, chapterNum]);
   connection.release();
 
   if (!result.length) {
@@ -45,25 +44,25 @@ exports.getQuiz = async function (categorySeq, chapterNum) {
 
   result.forEach((each) => {
     // eslint-disable-next-line no-param-reassign
-    each.option_array = JSON.parse(each.option_array);
+    each.optionArray = JSON.parse(each.optionArray);
   });
 
   return Promise.resolve(result);
 };
 
-exports.getQuestion = async function (question) {
+exports.getQuestionSeqByText = async function (question) {
   const connection = await pool.getConnection(async (conn) => conn);
 
-  const [result] = await dao.selectQuestion(connection, question);
+  const [result] = await dao.selectQuestionSeqByText(connection, question);
   connection.release();
 
   return result;
 };
 
-exports.getQuestionSeq = async function (questionSeq) {
+exports.getQuestionSeqByNumber = async function (questionSeq) {
   const connection = await pool.getConnection(async (conn) => conn);
 
-  const [result] = await dao.selectQuestionSeq(connection, questionSeq);
+  const [result] = await dao.selectQuestionSeqByNumber(connection, questionSeq);
   connection.release();
 
   return result;
@@ -72,11 +71,10 @@ exports.getQuestionSeq = async function (questionSeq) {
 exports.getChapterSeq = async function (categorySeq, chapterNum) {
   const connection = await pool.getConnection(async (conn) => conn);
 
-  const selectChapterSeqParams = [categorySeq, chapterNum];
-  const [result] = await dao.selectChapterSeq(
-    connection,
-    selectChapterSeqParams
-  );
+  const [result] = await dao.selectChapterSeq(connection, [
+    categorySeq,
+    chapterNum,
+  ]);
   connection.release();
 
   return result;
