@@ -16,13 +16,8 @@ exports.getChapter = async function (req, res) {
 
   try {
     const result = await provider.getChapter(keyword);
-    const meta = {
-      count: result.length,
-    };
 
-    res.json(
-      response("카테고리별 검색어를 포함한 챕터수 조회 완료", result, meta)
-    );
+    res.json(response("카테고리별 검색어를 포함한 챕터수 조회 완료", result));
   } catch (err) {
     logger.warn(`[${dirName}]_${err.message}`);
     res.status(err.status);

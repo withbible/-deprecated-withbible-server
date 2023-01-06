@@ -1,7 +1,9 @@
-exports.response = function (message, result, meta = null) {
+exports.response = function (message, result) {
   return {
     message,
-    meta,
+    meta: {
+      ...(Array.isArray(result) && { count: result.length }),
+    },
     result,
   };
 };
