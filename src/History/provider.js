@@ -106,5 +106,12 @@ exports.getActiveChapterPage = async function (limit, page, userSeq) {
     each.chapterDetail = JSON.parse(each.chapterDetail);
   });
 
+  result.sort((a, b) => {
+    return (
+      a.categorySeq - b.categorySeq ||
+      a.chapterDetail.chapterNum - b.chapterDetail.chapterNum
+    );
+  });
+
   return Promise.resolve(result);
 };
