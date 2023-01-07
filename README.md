@@ -25,11 +25,15 @@
 </div>
 
 - [KBU BibleGraduationExam QuizApp API Server](#kbu-biblegraduationexam-quizapp-api-server)
+  - [진행사항](#진행사항)
   - [`src` 폴더 구조](#src-폴더-구조)
   - [ERD](#erd)
   - [API 명세서](#api-명세서)
   - [Setup (dev)](#setup-dev)
 
+## [진행사항](https://github.com/WithBible/withbible-server/wiki)
+
+링크를 확인해주세요.
 
 ## `src` 폴더 구조
 
