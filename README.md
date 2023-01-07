@@ -14,10 +14,6 @@
 <img src="https://img.shields.io/badge/Express-4-000000?logo=Express"/> 
 </a>
 
-<a href="https://eslint.org/docs/latest/">
-<img src="https://img.shields.io/badge/ESLint-4B32C3?logo=ESLint&logoColor=white"/>
-</a>
-
 <a href="https://avatars.dicebear.com/">
 <img src="https://img.shields.io/badge/DiceBear Avatars-19b5fe?logo=data:image/svg+xml;base64,CjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgc3R5bGU9Imlzb2xhdGlvbjppc29sYXRlIiB2aWV3Qm94PSIwIDAgMjAgMjAiIHZlcnNpb249IjEuMSIgc2hhcGUtcmVuZGVyaW5nPSJjcmlzcEVkZ2VzIj48cGF0aCBkPSJNOCAxNXYxSDR2MUgzdjNoMTR2LTNoLTF2LTFoLTR2LTFoM3YtMWgxdi0xaDF2LTNoMVY3aC0xVjRoLTFWM2gtMVYySDV2MUg0djFIM3YzSDJ2M2gxdjNoMXYxaDF2MWgzeiIgZmlsbD0iI0ZGREJBQyIvPjxwYXRoIGQ9Ik01IDE1di0xSDR2LTFIM3YtM0gyVjdoMVY0aDFWM2gxVjJoMTB2MWgxdjFoMXYzaDF2M2gtMXYzaC0xdjFoLTF2MUg1eiIgZmlsbD0iI0ZGRiIgZmlsbC1vcGFjaXR5PSIuMSIvPjxwYXRoIGQ9Ik01IDhoM3YxSDVWOHptNyAwaDN2MWgtM1Y4eiIgZmlsbD0iI0ZGRiIvPjxwYXRoIGQ9Ik02IDhoMXYxSDZWOHptNyAwaDF2MWgtMVY4eiIgZmlsbD0iIzY5N2I5NCIvPjxwYXRoIGQ9Ik03IDV2MUg1djFINFY2aDFWNWgyem03IDB2MWgtMnYxaC0xVjZoMVY1aDJ6IiBmaWxsLXJ1bGU9ImV2ZW5vZGQiIGZpbGw9IiMzNjJlMmUiLz48cGF0aCBkPSJNOCAxM3YxaDR2LTFoMXYtMWgtMXYxSDh6IiBmaWxsPSIjZDI5OTg1Ii8+PHBhdGggZD0iTTQgOEgzVjdoMVY2aDV2MWgyVjZoNXYxaDF2MWgtMXYyaC01VjhIOXYySDRWOHptMSAwVjdoM3YySDVWOHptNy0xdjJoM1Y3aC0zeiIgZmlsbC1ydWxlPSJldmVub2RkIiBmaWxsPSIjYTA0YjVkIi8+PHBhdGggZD0iTTUgN2gzdjJINVY3em03IDBoM3YyaC0zVjd6IiBmaWxsLXJ1bGU9ImV2ZW5vZGQiIGZpbGw9IiNGRkYiIGZpbGwtb3BhY2l0eT0iLjIiLz48cGF0aCBkPSJNMTQgN2gxdjFoLTFWN3pNNyA3aDF2MUg3Vjd6IiBmaWxsLXJ1bGU9ImV2ZW5vZGQiIGZpbGw9IiNGRkYiIGZpbGwtb3BhY2l0eT0iLjIiLz48cGF0aCBkPSJNMyA4VjdoMXYxSDN6bTYtMXYxaDJWN0g5em03IDB2MWgxVjdoLTF6IiBmaWxsLXJ1bGU9ImV2ZW5vZGQiIGZpbGw9IiNGRkYiIGZpbGwtb3BhY2l0eT0iLjIiLz48cGF0aCBkPSJNMyAyMHYtM2gxdi0xaDN2Mmg2di0yaDN2MWgxdjNIM3oiIGZpbGw9IiM1YmMwZGUiLz48cGF0aCBkPSJNNSAxNkg0djFIM3YzaDJ2LTR6bTEgMGgxdjJoNnYtMmgxdjRINnYtNHptOSAwaDF2MWgxdjNoLTJ2LTR6IiBmaWxsLXJ1bGU9ImV2ZW5vZGQiIGZpbGw9IiNGRkYiIGZpbGwtb3BhY2l0eT0iLjIiLz48cGF0aCBkPSJNMiA0djFoMXYxaDJWNGgxVjJINHYxSDN2MUgyem02LTFoMnYxaDJWM2gxVjJIOHYxem02IDFoMXYyaDJWNWgxVjRoLTFWM2gtMVYyaC0ydjJ6IiBmaWxsLXJ1bGU9ImV2ZW5vZGQiIGZpbGw9IiM1MDQ0NDQiLz48L3N2Zz4=&logoColor=white"/>
 </a>
@@ -41,6 +37,14 @@
 # Service 계층 의미: Create, Update, Delete 비즈니스 로직을 처리
 # Provider 계층 의미: Read 비즈니스 로직을 처리
 
++---configs
+|       app.js
+|       database.js
+|       logger.js
+|
++---constants
+|       enum.js
+|
 +---History
 |       controller.js
 |       dao.js
@@ -54,7 +58,7 @@
 |       provider.js
 |       route.js
 |
-+---middleware
++---middlewares
 |       authentication.js
 |       cors.js
 |       morgan.js

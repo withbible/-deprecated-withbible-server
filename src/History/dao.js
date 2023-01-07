@@ -134,7 +134,8 @@ exports.selectActiveChapter = async function (connection, userSeq) {
       ON c.category_seq = qc.category_seq
     LEFT JOIN quiz_chapter_user_state AS us
       ON qc.chapter_seq = us.chapter_seq 
-    WHERE us.user_seq = ?
+    WHERE 
+      us.user_seq = ?
     GROUP BY
       qc.category_seq;
   `;
@@ -193,7 +194,8 @@ exports.selectActiveChapterPage = async function (
     FROM quiz_chapter AS qc      
     LEFT JOIN quiz_chapter_user_state AS us
       ON qc.chapter_seq = us.chapter_seq
-    WHERE us.user_seq = ?
+    WHERE 
+      us.user_seq = ?    
     LIMIT ? OFFSET ?;
   `;
 

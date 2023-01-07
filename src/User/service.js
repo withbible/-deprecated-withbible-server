@@ -2,7 +2,7 @@ const bcypt = require("bcrypt");
 const { StatusCodes } = require("http-status-codes");
 
 // INTERNAL IMPORT
-const { pool } = require("../../config/database");
+const { pool } = require("../configs/database");
 const provider = require("./provider");
 const dao = require("./dao");
 const leaderBoardDao = require("../LeaderBoard/dao");

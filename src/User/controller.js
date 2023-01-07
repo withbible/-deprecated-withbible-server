@@ -2,7 +2,7 @@ const { StatusCodes } = require("http-status-codes");
 
 // INTERNAL IMPORT
 const path = require("path");
-const { logger } = require("../../config/logger");
+const { logger } = require("../configs/logger");
 const { errResponse, response } = require("../modules/response");
 const service = require("./service");
 

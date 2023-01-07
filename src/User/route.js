@@ -1,4 +1,4 @@
-const authenticate = require("../middleware/authentication");
+const authenticate = require("../middlewares/authentication");
 
 module.exports = function (app) {
   const user = require("./controller");

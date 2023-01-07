@@ -1,7 +1,7 @@
 const morgan = require("morgan");
 
 // INTERNAL IMPORT
-const { logger } = require("../../config/logger");
+const { logger } = require("../configs/logger");
 
 const colors = {
   red: "\x1B[31m",
@@ -30,7 +30,7 @@ morgan.token("status", function (req, res) {
 });
 
 const format = `
-  :method :url ｜ :status ｜ :response-time ms ｜ :res[content-length] B  
+  :method :url ｜ :status ｜ :response-time ms
 `;
 
 module.exports = morgan(format, { stream: logger.stream });
