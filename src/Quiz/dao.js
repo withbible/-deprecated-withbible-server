@@ -97,6 +97,21 @@ exports.selectQuestionSeqByNumber = async function (connection, questionSeq) {
   return rows;
 };
 
+exports.selectChapterByNumber = async function (connection, questionSeq) {
+  const query = `
+    SELECT
+      qc.category_seq AS categorySeq,
+      qc.chapter_num AS chapterNum      
+    FROM quiz_question AS q
+    INNER JOIN quiz_chapter AS qc
+      ON q.chapter_seq = qc.chapter_seq 
+    WHERE question_seq = ?;
+  `;
+
+  const [rows] = await connection.query(query, questionSeq);
+  return rows;
+};
+
 exports.selectChapterSeq = async function (connection, selectChapterSeqParams) {
   const query = `
     SELECT
@@ -122,7 +137,7 @@ exports.selectMaxChapterSeq = async function (connection, categorySeq) {
     GROUP BY
       chapter_seq
     ORDER BY
-      max_chapter_num DESC
+      maxChapterNum DESC
     LIMIT 1;
   `;
   const [rows] = await connection.query(query);
@@ -164,8 +179,8 @@ exports.insertOptionBulk = async function (connection, bulk, questionSeq) {
     (each) =>
       `(
       ${questionSeq}, 
-      "${each.question_option}", 
-      ${each.answer_yn}
+      "${each.questionOption}", 
+      ${each.answerYN}
     )`
   );
 
@@ -196,10 +211,10 @@ exports.updateOption = async function (connection, bulk, questionSeq) {
   const values = bulk.map(
     (each) =>
       `(        
-        ${each.question_option_seq},
+        ${each.questionOptionSeq},
         ${questionSeq},
-        "${each.question_option}",
-        ${each.answer_yn}
+        "${each.questionOption}",
+        ${each.answerYN}
       )`
   );
 

@@ -41,9 +41,5 @@ module.exports = function () {
     res.json(errResponse(err.message));
   });
 
-  process.on("uncaughtException", (err) => {
-    logger.error(`[${fileName}]_${err.message}`);
-  });
-
   return app;
 };

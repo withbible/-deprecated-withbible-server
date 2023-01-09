@@ -37,7 +37,9 @@ exports.postUser = async function (req, res) {
     const message = `추가된 회원 : ${result.userID}`;
     logger.info(message);
     res.status(StatusCodes.CREATED);
-    res.json(response(message, { userID: req.session.user.userID }));
+    res.json(
+      response({ message, result: { userID: req.session.user.userID } })
+    );
   } catch (err) {
     logger.warn(`[${dirName}]_${err.message}`);
     res.status(err.status);
@@ -63,7 +65,9 @@ exports.login = async function (req, res) {
 
     const message = `${userID} 로그인`;
     logger.info(message);
-    res.json(response(message, { userID: req.session.user.userID }));
+    res.json(
+      response({ message, result: { userID: req.session.user.userID } })
+    );
   } catch (err) {
     logger.warn(`[${dirName}]_${err.message}`);
     res.status(err.status);
@@ -72,7 +76,8 @@ exports.login = async function (req, res) {
 };
 
 exports.loginCheck = async function (req, res) {
-  res.json(response("세션이 유효합니다.", { userID: req.session.user.userID }));
+  const message = "세션이 유효합니다";
+  res.json(response({ message, result: { userID: req.session.user.userID } }));
 };
 
 exports.logout = async function (req, res) {
@@ -83,7 +88,7 @@ exports.logout = async function (req, res) {
       res.json(errResponse(err.message));
     } else {
       res.clearCookie("loginData");
-      res.json(response("로그아웃 되었습니다."));
+      res.json(response({ message: "로그아웃 되었습니다." }));
     }
   });
 };

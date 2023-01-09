@@ -68,6 +68,15 @@ exports.getQuestionSeqByNumber = async function (questionSeq) {
   return result;
 };
 
+exports.getChapterByNumber = async function (questionSeq) {
+  const connection = await pool.getConnection(async (conn) => conn);
+
+  const [result] = await dao.selectChapterByNumber(connection, questionSeq);
+  connection.release();
+
+  return result;
+};
+
 exports.getChapterSeq = async function (categorySeq, chapterNum) {
   const connection = await pool.getConnection(async (conn) => conn);
 

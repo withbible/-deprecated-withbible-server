@@ -11,7 +11,7 @@ exports.getLeaderBoard = async function (req, res) {
   try {
     const result = await provider.getLeaderBoard();
 
-    res.json(response("사용자별 순위 전체조회 완료", result));
+    res.json(response({ message: "사용자별 순위 전체조회 완료", result }));
   } catch (err) {
     logger.warn(`[${dirName}]_${err.message}`);
     res.status(err.status);
@@ -25,7 +25,7 @@ exports.getLeaderBoardPage = async function (req, res) {
   try {
     const result = await provider.getLeaderBoardPage(limit, page);
 
-    res.json(response("사용자별 순위 부분조회 완료", result));
+    res.json(response({ message: "사용자별 순위 부분조회 완료", result }));
   } catch (err) {
     logger.warn(`[${dirName}]_${err.message}`);
     res.status(err.status);

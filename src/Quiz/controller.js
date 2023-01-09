@@ -17,7 +17,12 @@ exports.getChapter = async function (req, res) {
   try {
     const result = await provider.getChapter(keyword);
 
-    res.json(response("카테고리별 검색어를 포함한 챕터수 조회 완료", result));
+    res.json(
+      response({
+        message: "카테고리별 검색어를 포함한 챕터수 조회 완료",
+        result,
+      })
+    );
   } catch (err) {
     logger.warn(`[${dirName}]_${err.message}`);
     res.status(err.status);
@@ -32,10 +37,10 @@ exports.getQuiz = async function (req, res) {
     const result = await provider.getQuiz(categorySeq, chapterNum);
 
     res.json(
-      response(
-        `${CATEGORY[categorySeq]} ch.${chapterNum} 질문-선택지 전체조회 완료`,
-        result
-      )
+      response({
+        message: `${CATEGORY[categorySeq]} ch.${chapterNum} 질문-선택지 전체조회 완료`,
+        result,
+      })
     );
   } catch (err) {
     logger.warn(`[${dirName}]_${err.message}`);
@@ -46,21 +51,16 @@ exports.getQuiz = async function (req, res) {
 
 /**
  * @example
- * "bulk": [
-      {
-        "questionOption": "",
-        "answerYN": 1
-      },
-    ]
+ * @link https://documenter.getpostman.com/view/11900791/2s8YswQrkS#551c845e-c9f1-48f7-b0a3-1462da5c06b9
  */
 exports.postQuiz = async function (req, res) {
   const { categorySeq, question, bulk } = req.body;
 
   try {
-    const result = await service.postQuiz(categorySeq, question, bulk);
+    const meta = await service.postQuiz(categorySeq, question, bulk);
 
     res.status(StatusCodes.CREATED);
-    res.json(response("퀴즈 생성 완료", result));
+    res.json(response({ message: "퀴즈 생성 완료", meta }));
   } catch (err) {
     logger.warn(`[${dirName}]_${err.message}`);
     res.status(err.status);
@@ -70,21 +70,15 @@ exports.postQuiz = async function (req, res) {
 
 /**
  * @example
- * "bulk": [
-      {
-        "questionOptionSeq": 1,
-        "questionOption": "",
-        "answerYN": 1
-      },
-    ]
+ * @link https://documenter.getpostman.com/view/11900791/2s8YswQrkS#750ba64a-bdae-406c-8d0a-c2416cd69b65
  */
 exports.putQuiz = async function (req, res) {
   const { questionSeq, question, bulk } = req.body;
 
   try {
-    const result = await service.putQuiz(questionSeq, question, bulk);
+    const meta = await service.putQuiz(questionSeq, question, bulk);
 
-    res.json(response("퀴즈 수정 완료", result));
+    res.json(response({ message: "퀴즈 수정 완료", meta }));
   } catch (err) {
     logger.warn(`[${dirName}]_${err.message}`);
     res.status(err.status);
