@@ -19,8 +19,8 @@ exports.getLeaderBoard = async function () {
   return Promise.resolve(result);
 };
 
-exports.getLeaderBoardPage = async function (limit, page) {
-  if (!limit || !page) {
+exports.getLeaderBoardPage = async function (limit, page, lastPage) {
+  if (!limit || !page || page > lastPage) {
     const err = new Error("데이터가 존재하지 않습니다.");
     err.status = StatusCodes.BAD_REQUEST;
     return Promise.reject(err);
@@ -31,11 +31,20 @@ exports.getLeaderBoardPage = async function (limit, page) {
   const offset = (page - 1) * limit;
   const selectLeaderBoardParams = [parseInt(limit, 10), offset];
 
-  const result = await dao.searchLeaderBoard(
+  const result = await dao.selectLeaderBoardPage(
     connection,
     selectLeaderBoardParams
   );
   connection.release();
 
+  return Promise.resolve(result);
+};
+
+exports.getTotalCount = async function () {
+  const connection = await pool.getConnection(async (conn) => conn);
+  const rows = await dao.selectTotalCount(connection);
+  connection.release();
+
+  const result = rows[0].totalCount;
   return Promise.resolve(result);
 };

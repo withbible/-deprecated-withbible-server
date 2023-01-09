@@ -23,9 +23,28 @@ exports.getLeaderBoardPage = async function (req, res) {
   const { limit, page } = req.query;
 
   try {
-    const result = await provider.getLeaderBoardPage(limit, page);
+    const totalCount = await provider.getTotalCount();
+    const lastPage = Math.ceil(totalCount / limit);
+    const result = await provider.getLeaderBoardPage(limit, page, lastPage);
 
-    res.json(response({ message: "사용자별 순위 부분조회 완료", result }));
+    res.json(
+      response({
+        message: "사용자별 순위 부분조회 완료",
+        meta: {
+          links: [
+            {
+              rel: "self",
+              link: req.url,
+            },
+            {
+              rel: "last",
+              link: req.url.replace(/\d$/, lastPage),
+            },
+          ],
+        },
+        result,
+      })
+    );
   } catch (err) {
     logger.warn(`[${dirName}]_${err.message}`);
     res.status(err.status);

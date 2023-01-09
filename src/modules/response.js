@@ -3,7 +3,10 @@ exports.response = function ({ message, meta = null, result = null }) {
     message,
     meta:
       (Array.isArray(result) && {
-        count: result.length,
+        ...meta,
+        ...{
+          count: result.length,
+        },
       }) ||
       meta,
     result,

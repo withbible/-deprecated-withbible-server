@@ -19,10 +19,10 @@ exports.getHitCount = async function (req, res) {
     const result = await provider.getHitCount(categorySeq, chapterNum, userSeq);
 
     res.json(
-      response(
-        `${CATEGORY[categorySeq]} ch.${chapterNum} 맞힌갯수 조회 완료`,
-        result
-      )
+      response({
+        message: `${CATEGORY[categorySeq]} ch.${chapterNum} 맞힌갯수 조회 완료`,
+        result,
+      })
     );
   } catch (err) {
     logger.warn(`[${dirName}]_${err.message}`);
@@ -43,10 +43,10 @@ exports.getUserOptionBulk = async function (req, res) {
     );
 
     res.json(
-      response(
-        `${CATEGORY[categorySeq]} ch.${chapterNum} 선택기록 조회 완료`,
-        result
-      )
+      response({
+        message: `${CATEGORY[categorySeq]} ch.${chapterNum} 선택기록 조회 완료`,
+        result,
+      })
     );
   } catch (err) {
     logger.warn(`[${dirName}]_${err.message}`);
@@ -56,15 +56,8 @@ exports.getUserOptionBulk = async function (req, res) {
 };
 
 /**
- * @description bulk key의 value object 의미
- * questionSeq: questionOptionSeq
- * 
  * @example
- * "bulk": {
-      "7": 13,
-      "8": 13,
-      "9": 13
-    }  
+ * @link https://documenter.getpostman.com/view/11900791/2s8YswQrkS#9ccf3ae7-46ed-4424-bedd-506ef083795e
  */
 exports.postUserOptionBulk = async function (req, res) {
   const { categorySeq, chapterNum } = req.query;
@@ -81,10 +74,10 @@ exports.postUserOptionBulk = async function (req, res) {
 
     res.status(StatusCodes.CREATED);
     res.json(
-      response(
-        `${CATEGORY[categorySeq]} ch.${chapterNum} 선택기록 생성 완료`,
-        result
-      )
+      response({
+        message: `${CATEGORY[categorySeq]} ch.${chapterNum} 선택기록 생성 완료`,
+        result,
+      })
     );
   } catch (err) {
     logger.warn(`[${dirName}]_${err.message}`);
@@ -93,6 +86,10 @@ exports.postUserOptionBulk = async function (req, res) {
   }
 };
 
+/**
+ * @example
+ * @link https://documenter.getpostman.com/view/11900791/2s8YswQrkS#4073cc67-8a41-4b4e-9314-4cd65aa8d0d5
+ */
 exports.putUserOptionBulk = async function (req, res) {
   const { categorySeq, chapterNum } = req.query;
   const { bulk } = req.body;
@@ -107,10 +104,10 @@ exports.putUserOptionBulk = async function (req, res) {
     );
 
     res.json(
-      response(
-        `${CATEGORY[categorySeq]} ch.${chapterNum} 선택기록 수정 완료`,
-        result
-      )
+      response({
+        message: `${CATEGORY[categorySeq]} ch.${chapterNum} 선택기록 수정 완료`,
+        result,
+      })
     );
   } catch (err) {
     logger.warn(`[${dirName}]_${err.message}`);
@@ -127,7 +124,10 @@ exports.getActiveChapterCount = async function (req, res) {
     const result = await provider.getActiveChapterCount(categorySeq, userSeq);
 
     res.json(
-      response(`${CATEGORY[categorySeq]} 활성화된 챕터갯수 조회 완료`, result)
+      response({
+        message: `${CATEGORY[categorySeq]} 활성화된 챕터갯수 조회 완료`,
+        result,
+      })
     );
   } catch (err) {
     logger.warn(`[${dirName}]_${err.message}`);
@@ -144,12 +144,12 @@ exports.getActiveChapter = async function (req, res) {
     const result = await provider.getActiveChapter(categorySeq, userSeq);
 
     res.json(
-      response(
-        categorySeq
+      response({
+        message: categorySeq
           ? `${CATEGORY[categorySeq]} 활성화된 챕터 검색 완료`
           : "카테고리별 활성화된 챕터 전체조회 완료",
-        result
-      )
+        result,
+      })
     );
   } catch (err) {
     logger.warn(`[${dirName}]_${err.message}`);
@@ -163,8 +163,33 @@ exports.getActiveChapterPage = async function (req, res) {
   const { userSeq } = req.session.user;
 
   try {
-    const result = await provider.getActiveChapterPage(limit, page, userSeq);
-    res.json(response("카테고리별 활성화된 챕터 부분조회 완료", result));
+    const totalCount = await provider.getTotalCountByUser(userSeq);
+    const lastPage = Math.ceil(totalCount / limit);
+    const result = await provider.getActiveChapterPage(
+      limit,
+      page,
+      lastPage,
+      userSeq
+    );
+
+    res.json(
+      response({
+        message: "카테고리별 활성화된 챕터 부분조회 완료",
+        meta: {
+          links: [
+            {
+              rel: "self",
+              link: req.url,
+            },
+            {
+              rel: "last",
+              link: req.url.replace(/\d$/, lastPage),
+            },
+          ],
+        },
+        result,
+      })
+    );
   } catch (err) {
     logger.warn(`[${dirName}]_${err.message}`);
     res.status(err.status);

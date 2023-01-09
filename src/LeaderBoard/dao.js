@@ -1,7 +1,4 @@
 exports.selectLeaderBoard = async function (connection) {
-  /**
-   * @todo createdAt과 updatedAt의 타입이 다른 이유 설명
-   */
   const query = `
     SELECT
       u.user_id AS userID,
@@ -19,7 +16,7 @@ exports.selectLeaderBoard = async function (connection) {
   return rows;
 };
 
-exports.searchLeaderBoard = async function (
+exports.selectLeaderBoardPage = async function (
   connection,
   selectLeaderBoardParams
 ) {
@@ -50,5 +47,16 @@ exports.insertLeaderBoard = async function (connection, userSeq) {
   `;
 
   const [rows] = await connection.query(query, userSeq);
+  return rows;
+};
+
+exports.selectTotalCount = async function (connection) {
+  const query = `
+    SELECT
+      COUNT(*) AS totalCount
+    FROM user_leaderboard;
+  `;
+
+  const [rows] = await connection.query(query);
   return rows;
 };

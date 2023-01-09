@@ -77,8 +77,8 @@ exports.getActiveChapter = async function (categorySeq, userSeq) {
   return Promise.resolve(result);
 };
 
-exports.getActiveChapterPage = async function (limit, page, userSeq) {
-  if (!limit || !page) {
+exports.getActiveChapterPage = async function (limit, page, lastPage, userSeq) {
+  if (!limit || !page || page > lastPage) {
     const err = new Error("해당 기록이 존재하지 않습니다.");
     err.status = StatusCodes.BAD_REQUEST;
     return Promise.reject(err);
@@ -113,5 +113,14 @@ exports.getActiveChapterPage = async function (limit, page, userSeq) {
     );
   });
 
+  return Promise.resolve(result);
+};
+
+exports.getTotalCountByUser = async function (userSeq) {
+  const connection = await pool.getConnection(async (conn) => conn);
+  const rows = await dao.selectTotalCountByUser(connection, userSeq);
+  connection.release();
+
+  const result = rows[0].totalCount;
   return Promise.resolve(result);
 };

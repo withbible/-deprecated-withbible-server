@@ -202,3 +202,15 @@ exports.selectActiveChapterPage = async function (
   const [rows] = await connection.query(query, selectActiveChapterPageParams);
   return rows;
 };
+
+exports.selectTotalCountByUser = async function (connection, userSeq) {
+  const query = `
+    SELECT
+      COUNT(*) AS totalCount
+    FROM quiz_chapter_user_state 
+    WHERE	user_seq = ?;
+  `;
+
+  const [rows] = await connection.query(query, userSeq);
+  return rows;
+};
