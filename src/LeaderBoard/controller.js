@@ -14,8 +14,9 @@ exports.getLeaderBoard = async function (req, res) {
     res.json(response({ message: "사용자별 순위 전체조회 완료", result }));
   } catch (err) {
     logger.warn(`[${dirName}]_${err.message}`);
+
     res.status(err.status);
-    res.json(errResponse(err.message));
+    res.json(errResponse({ message: err.message }));
   }
 };
 
@@ -47,7 +48,13 @@ exports.getLeaderBoardPage = async function (req, res) {
     );
   } catch (err) {
     logger.warn(`[${dirName}]_${err.message}`);
+
     res.status(err.status);
-    res.json(errResponse(err.message));
+    res.json(
+      errResponse({
+        message: err.message,
+        link: "https://documenter.getpostman.com/view/11900791/2s8YswQrkS#6e92a59d-1ada-4b77-8625-6efd421d32b8",
+      })
+    );
   }
 };

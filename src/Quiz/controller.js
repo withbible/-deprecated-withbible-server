@@ -4,9 +4,10 @@ const { StatusCodes } = require("http-status-codes");
 const path = require("path");
 const { logger } = require("../configs/logger");
 const { response, errResponse } = require("../modules/response");
-const { CATEGORY } = require("../constants/enum");
+const { CATEGORY, QUIZ_API_REFERENCE } = require("../constants/enum");
 const provider = require("./provider");
 const service = require("./service");
+const { filterReferenceOther, filterReferenceMe } = require("../utils/util");
 
 // CONSTANT
 const dirName = path.basename(__dirname);
@@ -25,8 +26,14 @@ exports.getChapter = async function (req, res) {
     );
   } catch (err) {
     logger.warn(`[${dirName}]_${err.message}`);
+
     res.status(err.status);
-    res.json(errResponse(err.message));
+    res.json(
+      errResponse({
+        message: err.message,
+        link: "https://documenter.getpostman.com/view/11900791/2s8YswQrkS#8e8515a0-c9f8-49c4-b629-42e623bdf151",
+      })
+    );
   }
 };
 
@@ -44,44 +51,70 @@ exports.getQuiz = async function (req, res) {
     );
   } catch (err) {
     logger.warn(`[${dirName}]_${err.message}`);
+
     res.status(err.status);
-    res.json(errResponse(err.message));
+    res.json(
+      errResponse({
+        message: err.message,
+        link: filterReferenceMe(QUIZ_API_REFERENCE, req.method)[0],
+      })
+    );
   }
 };
 
-/**
- * @example
- * @link https://documenter.getpostman.com/view/11900791/2s8YswQrkS#551c845e-c9f1-48f7-b0a3-1462da5c06b9
- */
 exports.postQuiz = async function (req, res) {
   const { categorySeq, question, bulk } = req.body;
 
   try {
-    const meta = await service.postQuiz(categorySeq, question, bulk);
+    const result = await service.postQuiz(categorySeq, question, bulk);
 
     res.status(StatusCodes.CREATED);
-    res.json(response({ message: "퀴즈 생성 완료", meta }));
+    res.json(
+      response({
+        message: "퀴즈 생성 완료",
+        meta: {
+          links: filterReferenceOther(QUIZ_API_REFERENCE, req.method),
+          ...result,
+        },
+      })
+    );
   } catch (err) {
     logger.warn(`[${dirName}]_${err.message}`);
+
     res.status(err.status);
-    res.json(errResponse(err.message));
+    res.json(
+      errResponse({
+        message: err.message,
+        link: filterReferenceMe(QUIZ_API_REFERENCE, req.method)[0],
+      })
+    );
   }
 };
 
-/**
- * @example
- * @link https://documenter.getpostman.com/view/11900791/2s8YswQrkS#750ba64a-bdae-406c-8d0a-c2416cd69b65
- */
 exports.putQuiz = async function (req, res) {
   const { questionSeq, question, bulk } = req.body;
 
   try {
-    const meta = await service.putQuiz(questionSeq, question, bulk);
+    const result = await service.putQuiz(questionSeq, question, bulk);
 
-    res.json(response({ message: "퀴즈 수정 완료", meta }));
+    res.json(
+      response({
+        message: "퀴즈 수정 완료",
+        meta: {
+          links: filterReferenceOther(QUIZ_API_REFERENCE, req.method),
+          ...result,
+        },
+      })
+    );
   } catch (err) {
     logger.warn(`[${dirName}]_${err.message}`);
+
     res.status(err.status);
-    res.json(errResponse(err.message));
+    res.json(
+      errResponse({
+        message: err.message,
+        link: filterReferenceMe(QUIZ_API_REFERENCE, req.method)[0],
+      })
+    );
   }
 };
