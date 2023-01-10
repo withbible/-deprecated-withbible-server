@@ -13,9 +13,10 @@ exports.response = function ({ message, meta = null, result = null }) {
   };
 };
 
-exports.errResponse = function ({ message, link = null }) {
+exports.errResponse = function ({ message, link, meta = null }) {
   return {
     message,
+    meta,
     link,
   };
 };

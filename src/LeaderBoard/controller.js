@@ -1,6 +1,7 @@
 // INTERNAL IMPORT
 const path = require("path");
 const { logger } = require("../configs/logger");
+const DOCS = require("../constants/docs");
 const { response, errResponse } = require("../modules/response");
 const provider = require("./provider");
 
@@ -16,7 +17,9 @@ exports.getLeaderBoard = async function (req, res) {
     logger.warn(`[${dirName}]_${err.message}`);
 
     res.status(err.status);
-    res.json(errResponse({ message: err.message }));
+    res.json(
+      errResponse({ message: err.message, link: DOCS["GET.LEADER-BOARD"] })
+    );
   }
 };
 
@@ -53,7 +56,7 @@ exports.getLeaderBoardPage = async function (req, res) {
     res.json(
       errResponse({
         message: err.message,
-        link: "https://documenter.getpostman.com/view/11900791/2s8YswQrkS#6e92a59d-1ada-4b77-8625-6efd421d32b8",
+        link: DOCS["GET.LEADER-BOARD-PAGE"],
       })
     );
   }

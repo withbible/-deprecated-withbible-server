@@ -1,3 +1,5 @@
+const DOCS = require("./docs");
+
 module.exports = {
   CATEGORY: Object.freeze({
     1: "모세오경",
@@ -8,62 +10,52 @@ module.exports = {
     6: "요한계시록",
   }),
 
-  USER_API_REFERENCE: Object.freeze([
+  USER_API_DOCS: Object.freeze([
     {
       rel: "POST",
-      moreInfo:
-        "https://documenter.getpostman.com/view/11900791/2s8YswQrkS#ab2dfa38-50f7-444c-911d-19275bac968d",
+      moreInfo: DOCS["POST.USER"],
     },
     {
       rel: "PATCH.LOGIN",
-      moreInfo:
-        "https://documenter.getpostman.com/view/11900791/2s8YswQrkS#7ac3f6f1-2de5-4d2d-9555-bf1629613ea7",
+      moreInfo: DOCS["PATCH.LOGIN"],
     },
     {
       rel: "PATCH.LOGOUT",
-      moreInfo:
-        "https://documenter.getpostman.com/view/11900791/2s8YswQrkS#ce78c407-8a82-450c-aaef-43ce3e20fcb1",
+      moreInfo: DOCS["PATCH.LOGOUT"],
     },
     {
       rel: "GET",
-      moreInfo:
-        "https://documenter.getpostman.com/view/11900791/2s8YswQrkS#56356070-2e82-446f-af20-558800030eeb",
+      moreInfo: DOCS["GET.LOGIN-CHECK"],
     },
   ]),
 
-  HISTORY_API_REFERENCE: Object.freeze([
+  QUIZ_API_DOCS: Object.freeze([
     {
       rel: "GET",
-      moreInfo:
-        "https://documenter.getpostman.com/view/11900791/2s8YswQrkS#cdac7f5e-3d2f-4054-89f4-6993f0b1fc47",
+      moreInfo: DOCS["GET.QUIZ"],
     },
     {
       rel: "POST",
-      moreInfo:
-        "https://documenter.getpostman.com/view/11900791/2s8YswQrkS#9ccf3ae7-46ed-4424-bedd-506ef083795e",
+      moreInfo: DOCS["POST.QUIZ"],
     },
     {
       rel: "PUT",
-      moreInfo:
-        "https://documenter.getpostman.com/view/11900791/2s8YswQrkS#4073cc67-8a41-4b4e-9314-4cd65aa8d0d5",
+      moreInfo: DOCS["PUT.QUIZ"],
     },
   ]),
 
-  QUIZ_API_REFERENCE: Object.freeze([
+  HISTORY_API_DOCS: Object.freeze([
     {
       rel: "GET",
-      moreInfo:
-        "https://documenter.getpostman.com/view/11900791/2s8YswQrkS#c78aa942-ff08-4b2d-aa8b-86c8b9f73f2b",
+      moreInfo: DOCS["GET.USER-OPTIONS"],
     },
     {
       rel: "POST",
-      moreInfo:
-        "https://documenter.getpostman.com/view/11900791/2s8YswQrkS#551c845e-c9f1-48f7-b0a3-1462da5c06b9",
+      moreInfo: DOCS["POST.USER-OPTION"],
     },
     {
       rel: "PUT",
-      moreInfo:
-        "https://documenter.getpostman.com/view/11900791/2s8YswQrkS#750ba64a-bdae-406c-8d0a-c2416cd69b65",
+      moreInfo: DOCS["PUT.USER-OPTION"],
     },
   ]),
 };

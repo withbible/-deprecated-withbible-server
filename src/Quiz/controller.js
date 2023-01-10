@@ -3,11 +3,12 @@ const { StatusCodes } = require("http-status-codes");
 // INTERNAL IMPORT
 const path = require("path");
 const { logger } = require("../configs/logger");
+const DOCS = require("../constants/docs");
+const { CATEGORY, QUIZ_API_DOCS } = require("../constants/enum");
 const { response, errResponse } = require("../modules/response");
-const { CATEGORY, QUIZ_API_REFERENCE } = require("../constants/enum");
+const { filterReferenceOther } = require("../utils/util");
 const provider = require("./provider");
 const service = require("./service");
-const { filterReferenceOther, filterReferenceMe } = require("../utils/util");
 
 // CONSTANT
 const dirName = path.basename(__dirname);
@@ -31,7 +32,7 @@ exports.getChapter = async function (req, res) {
     res.json(
       errResponse({
         message: err.message,
-        link: "https://documenter.getpostman.com/view/11900791/2s8YswQrkS#8e8515a0-c9f8-49c4-b629-42e623bdf151",
+        link: DOCS["GET.CHAPTER"],
       })
     );
   }
@@ -42,10 +43,16 @@ exports.getQuiz = async function (req, res) {
 
   try {
     const result = await provider.getQuiz(categorySeq, chapterNum);
+    const message = "한 챕터의 질문-선택지 전체조회 완료";
 
     res.json(
       response({
-        message: `${CATEGORY[categorySeq]} ch.${chapterNum} 질문-선택지 전체조회 완료`,
+        message,
+        meta: {
+          category: CATEGORY[categorySeq],
+          categorySeq,
+          chapterNum,
+        },
         result,
       })
     );
@@ -56,7 +63,7 @@ exports.getQuiz = async function (req, res) {
     res.json(
       errResponse({
         message: err.message,
-        link: filterReferenceMe(QUIZ_API_REFERENCE, req.method)[0],
+        link: DOCS["GET.USER-OPTIONS"],
       })
     );
   }
@@ -73,7 +80,7 @@ exports.postQuiz = async function (req, res) {
       response({
         message: "퀴즈 생성 완료",
         meta: {
-          links: filterReferenceOther(QUIZ_API_REFERENCE, req.method),
+          links: filterReferenceOther(QUIZ_API_DOCS, req.method),
           ...result,
         },
       })
@@ -85,7 +92,7 @@ exports.postQuiz = async function (req, res) {
     res.json(
       errResponse({
         message: err.message,
-        link: filterReferenceMe(QUIZ_API_REFERENCE, req.method)[0],
+        link: DOCS["POST.QUIZ"],
       })
     );
   }
@@ -101,7 +108,7 @@ exports.putQuiz = async function (req, res) {
       response({
         message: "퀴즈 수정 완료",
         meta: {
-          links: filterReferenceOther(QUIZ_API_REFERENCE, req.method),
+          links: filterReferenceOther(QUIZ_API_DOCS, req.method),
           ...result,
         },
       })
@@ -113,7 +120,32 @@ exports.putQuiz = async function (req, res) {
     res.json(
       errResponse({
         message: err.message,
-        link: filterReferenceMe(QUIZ_API_REFERENCE, req.method)[0],
+        link: DOCS["PUT.QUIZ"],
+      })
+    );
+  }
+};
+
+exports.getCreatedCount = async function (req, res) {
+  const { year, month } = req.query;
+
+  try {
+    const result = await provider.getCreatedCount(year, month);
+
+    res.json(
+      response({
+        message: "월별 퀴즈 등록수 조회 완료",
+        result,
+      })
+    );
+  } catch (err) {
+    logger.warn(`[${dirName}]_${err.message}`);
+
+    res.status(err.status);
+    res.json(
+      errResponse({
+        message: err.message,
+        link: DOCS["GET.CREATED-COUNT"],
       })
     );
   }

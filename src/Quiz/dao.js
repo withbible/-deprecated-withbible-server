@@ -42,7 +42,7 @@ exports.searchChapter = async function (connection, keyword) {
   return rows;
 };
 
-exports.selectQuiz = async function (connection, selectQuizParams) {
+exports.selectQuiz = async function (connection, params) {
   const query = `
     SELECT	
       q.question_seq AS questionSeq,
@@ -69,7 +69,7 @@ exports.selectQuiz = async function (connection, selectQuizParams) {
       q.question_seq;
   `;
 
-  const [rows] = await connection.query(query, selectQuizParams);
+  const [rows] = await connection.query(query, params);
   return rows;
 };
 
@@ -78,10 +78,10 @@ exports.selectQuestionSeqByText = async function (connection, question) {
     SELECT 
       question_seq AS questionSeq
     FROM quiz_question
-    WHERE question = ?;
+    WHERE question = "${question}";
   `;
 
-  const [rows] = await connection.query(query, question);
+  const [rows] = await connection.query(query);
   return rows;
 };
 
@@ -90,10 +90,10 @@ exports.selectQuestionSeqByNumber = async function (connection, questionSeq) {
     SELECT
       question_seq AS questionSeq
     FROM quiz_question
-    WHERE question_seq = ?;
+    WHERE question_seq = ${questionSeq};
   `;
 
-  const [rows] = await connection.query(query, questionSeq);
+  const [rows] = await connection.query(query);
   return rows;
 };
 
@@ -105,14 +105,14 @@ exports.selectChapterByNumber = async function (connection, questionSeq) {
     FROM quiz_question AS q
     INNER JOIN quiz_chapter AS qc
       ON q.chapter_seq = qc.chapter_seq 
-    WHERE question_seq = ?;
+    WHERE question_seq = ${questionSeq};
   `;
 
-  const [rows] = await connection.query(query, questionSeq);
+  const [rows] = await connection.query(query);
   return rows;
 };
 
-exports.selectChapterSeq = async function (connection, selectChapterSeqParams) {
+exports.selectChapterSeq = async function (connection, params) {
   const query = `
     SELECT
       chapter_seq AS chapterSeq
@@ -121,11 +121,11 @@ exports.selectChapterSeq = async function (connection, selectChapterSeqParams) {
     WHERE category_seq = ?
       AND chapter_num = ?;
   `;
-  const [rows] = await connection.query(query, selectChapterSeqParams);
+  const [rows] = await connection.query(query, params);
   return rows;
 };
 
-exports.selectMaxChapterSeq = async function (connection, categorySeq) {
+exports.selectMaxChapterByCategory = async function (connection, categorySeq) {
   const query = `
     SELECT
       chapter_seq AS chapterSeq,
@@ -144,7 +144,7 @@ exports.selectMaxChapterSeq = async function (connection, categorySeq) {
   return rows;
 };
 
-exports.insertChapterSeq = async function (connection, insertChapterSeqParams) {
+exports.insertChapterSeq = async function (connection, params) {
   const query = `
     INSERT INTO quiz_chapter
       (category_seq, chapter_num)
@@ -152,11 +152,11 @@ exports.insertChapterSeq = async function (connection, insertChapterSeqParams) {
       (?, ?);
   `;
 
-  const [rows] = await connection.query(query, insertChapterSeqParams);
+  const [rows] = await connection.query(query, params);
   return rows;
 };
 
-exports.insertQuestion = async function (connection, insertQuestionParams) {
+exports.insertQuestion = async function (connection, params) {
   const query = `
       INSERT INTO quiz_question
         (question, chapter_seq)
@@ -164,7 +164,7 @@ exports.insertQuestion = async function (connection, insertQuestionParams) {
         (?, ?);
     `;
 
-  const [rows] = await connection.query(query, insertQuestionParams);
+  const [rows] = await connection.query(query, params);
   return rows;
 };
 
@@ -191,13 +191,13 @@ exports.insertOptionBulk = async function (connection, bulk, questionSeq) {
   return rows;
 };
 
-exports.updateQuestion = async function (connection, updateQuestionParams) {
+exports.updateQuestion = async function (connection, params) {
   const query = `
     UPDATE quiz_question
       SET question = ?
     WHERE question_seq = ?;
   `;
-  const [rows] = await connection.query(query, updateQuestionParams);
+  const [rows] = await connection.query(query, params);
   return rows;
 };
 
@@ -225,6 +225,57 @@ exports.updateOption = async function (connection, bulk, questionSeq) {
       question_seq = VALUES(question_seq),
       question_option = VALUES(question_option),
       answer_yn = VALUES(answer_yn);
+  `;
+
+  const [rows] = await connection.query(query);
+  return rows;
+};
+
+exports.selectCreatedCount = async function (connection) {
+  const query = `
+    SELECT
+      YEAR(created_at) AS year,
+      MONTH(created_at) AS month,
+      COUNT(question_seq) AS totalCount
+    FROM quiz_question
+    GROUP BY 
+      YEAR(created_at),
+      MONTH(created_at);
+  `;
+
+  const [rows] = await connection.query(query);
+  return rows;
+};
+
+exports.searchCreatedCountByMonth = async function (connection, params) {
+  const query = `
+    SELECT
+      YEAR(created_at) AS year,
+      MONTH(created_at) AS month,
+      COUNT(question_seq) AS totalCount
+    FROM quiz_question
+    GROUP BY 
+      YEAR(created_at),
+      MONTH(created_at)
+    HAVING year = ?
+      AND month = ?;
+  `;
+
+  const [rows] = await connection.query(query, params);
+  return rows;
+};
+
+exports.searchCreatedCountByYear = async function (connection, year) {
+  const query = `
+    SELECT
+      YEAR(created_at) AS year,
+      MONTH(created_at) AS month,
+      COUNT(question_seq) AS totalCount
+    FROM quiz_question
+    GROUP BY 
+      YEAR(created_at),
+      MONTH(created_at)
+    HAVING year = ${year};      
   `;
 
   const [rows] = await connection.query(query);

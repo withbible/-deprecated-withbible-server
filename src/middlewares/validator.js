@@ -23,7 +23,7 @@ module.exports = {
     const { categorySeq, chapterNum } = req.query;
 
     if (!categorySeq || !CATEGORY[categorySeq]) {
-      const message = "카테고리일련번호(categorySeq)를 입력해주세요.";
+      const message = "유효한 카테고리일련번호(categorySeq)를 입력해주세요.";
 
       res.status(StatusCodes.BAD_REQUEST);
       return res.json(
@@ -36,16 +36,18 @@ module.exports = {
       );
     }
 
-    if (!chapterNum) {
-      const message = "챕터번호(chapterNum)를 입력해주세요.";
-      const { maxChapterNum } = await getMaxChapterByCategory(categorySeq);
+    const { maxChapterNum } = await getMaxChapterByCategory(categorySeq);
+    const chapterNumArray = makeSequence(maxChapterNum);
+
+    if (!chapterNum || !(chapterNum in chapterNumArray)) {
+      const message = "유효한 챕터번호(chapterNum)를 입력해주세요.";
 
       res.status(StatusCodes.BAD_REQUEST);
       return res.json(
         errResponse({
           message,
           meta: {
-            chapterNumArray: makeSequence(maxChapterNum),
+            chapterNumArray,
           },
         })
       );

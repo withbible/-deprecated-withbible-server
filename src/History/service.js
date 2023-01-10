@@ -12,12 +12,8 @@ const dao = require("./dao");
  * Service 계층의 Read와 Create는 다르게 처리되기 때문에
  * Service 계층에 Read를 두었습니다.
  */
-exports.getUserOptionBulk = async function (categorySeq, chapterNum, userSeq) {
-  const rows = await provider.getUserOptionBulk(
-    categorySeq,
-    chapterNum,
-    userSeq
-  );
+exports.getUserOptions = async function (categorySeq, chapterNum, userSeq) {
+  const rows = await provider.getUserOptions(categorySeq, chapterNum, userSeq);
 
   if (!rows.length) {
     const err = new Error("해당 기록이 존재하지 않습니다.");
@@ -28,14 +24,14 @@ exports.getUserOptionBulk = async function (categorySeq, chapterNum, userSeq) {
   return rows;
 };
 
-exports.postUserOptionBulk = async function (
+exports.postUserOption = async function (
   categorySeq,
   chapterNum,
   userSeq,
   bulk
 ) {
   const [userOptionRows, chapterSeqRow] = await Promise.all([
-    await provider.getUserOptionBulk(categorySeq, chapterNum, userSeq),
+    await provider.getUserOptions(categorySeq, chapterNum, userSeq),
     await quizProvider.getChapterSeq(categorySeq, chapterNum),
   ]);
 
@@ -49,7 +45,7 @@ exports.postUserOptionBulk = async function (
   const { chapterSeq } = chapterSeqRow;
 
   try {
-    await dao.insertUserOptionBulk(connection, bulk, userSeq, chapterSeq);
+    await dao.insertUserOption(connection, bulk, userSeq, chapterSeq);
   } catch (err) {
     err.status = StatusCodes.INTERNAL_SERVER_ERROR;
     return Promise.reject(err);
@@ -60,16 +56,20 @@ exports.postUserOptionBulk = async function (
   return Promise.resolve();
 };
 
-exports.putUserOptionBulk = async function (
+exports.putUserOption = async function (
   categorySeq,
   chapterNum,
   userSeq,
   bulk
 ) {
   const [userOptionRows, chapterSeqRow] = await Promise.all([
-    await provider.getUserOptionBulk(categorySeq, chapterNum, userSeq),
+    await provider.getUserOptions(categorySeq, chapterNum, userSeq),
     await quizProvider.getChapterSeq(categorySeq, chapterNum),
   ]);
+
+  /**
+   * @todo 변경 유무를 검증하여 없을시, 204 반환
+   */
 
   if (!userOptionRows.length) {
     const err = new Error("해당 기록이 존재하지 않습니다.");
@@ -81,7 +81,7 @@ exports.putUserOptionBulk = async function (
   const { chapterSeq } = chapterSeqRow;
 
   try {
-    await dao.updateUserOptionBulk(connection, bulk, userSeq, chapterSeq);
+    await dao.updateUserOption(connection, bulk, userSeq, chapterSeq);
   } catch (err) {
     err.status = StatusCodes.INTERNAL_SERVER_ERROR;
     return Promise.reject(err);

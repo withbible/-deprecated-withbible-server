@@ -19,7 +19,7 @@ exports.postQuiz = async function (categorySeq, question, bulk) {
   const connection = await pool.getConnection(async (conn) => conn);
 
   // 챕터일련번호 조회
-  const maxChapterRow = await provider.getMaxChapterSeq(categorySeq);
+  const maxChapterRow = await provider.getMaxChapterByCategory(categorySeq);
   let { chapterSeq, maxChapterNum } = maxChapterRow;
 
   try {

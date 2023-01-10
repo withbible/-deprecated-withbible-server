@@ -3,7 +3,7 @@ const { StatusCodes } = require("http-status-codes");
 // INTERNAL IMPORT
 const path = require("path");
 const { logger } = require("../configs/logger");
-const { USER_API_REFERENCE } = require("../constants/enum");
+const { USER_API_DOCS } = require("../constants/enum");
 const { errResponse, response } = require("../modules/response");
 const { filterReferenceOther, filterReferenceMe } = require("../utils/util");
 const service = require("./service");
@@ -44,7 +44,7 @@ exports.postUser = async function (req, res) {
       response({
         message,
         meta: {
-          links: filterReferenceOther(USER_API_REFERENCE, req.method),
+          links: filterReferenceOther(USER_API_DOCS, req.method),
         },
         result: { userID: req.session.user.userID },
       })
@@ -56,7 +56,7 @@ exports.postUser = async function (req, res) {
     res.json(
       errResponse({
         message: err.message,
-        link: filterReferenceMe(USER_API_REFERENCE, req.method)[0],
+        link: filterReferenceMe(USER_API_DOCS, req.method)[0],
       })
     );
   }
@@ -85,10 +85,7 @@ exports.login = async function (req, res) {
       response({
         message,
         meta: {
-          links: filterReferenceOther(
-            USER_API_REFERENCE,
-            `${req.method}.LOGIN`
-          ),
+          links: filterReferenceOther(USER_API_DOCS, `${req.method}.LOGIN`),
         },
         result: { userID: req.session.user.userID },
       })
@@ -100,7 +97,7 @@ exports.login = async function (req, res) {
     res.json(
       errResponse({
         message: err.message,
-        link: filterReferenceMe(USER_API_REFERENCE, `${req.method}.LOGIN`)[0],
+        link: filterReferenceMe(USER_API_DOCS, `${req.method}.LOGIN`)[0],
       })
     );
   }
@@ -111,11 +108,10 @@ exports.loginCheck = async function (req, res) {
     response({
       message: "세션이 유효합니다",
       meta: {
-        links: filterReferenceOther(USER_API_REFERENCE, req.method),
+        links: filterReferenceOther(USER_API_DOCS, req.method),
       },
       result: {
         userID: req.session.user.userID,
-        link: filterReferenceMe(USER_API_REFERENCE, req.method)[0],
       },
     })
   );
@@ -130,10 +126,7 @@ exports.logout = async function (req, res) {
       res.json(
         errResponse({
           message: err.message,
-          link: filterReferenceMe(
-            USER_API_REFERENCE,
-            `${req.method}.LOGOUT`
-          )[0],
+          link: filterReferenceMe(USER_API_DOCS, `${req.method}.LOGOUT`)[0],
         })
       );
     } else {
@@ -145,10 +138,7 @@ exports.logout = async function (req, res) {
         response({
           message,
           meta: {
-            links: filterReferenceOther(
-              USER_API_REFERENCE,
-              `${req.method}.LOGOUT`
-            ),
+            links: filterReferenceOther(USER_API_DOCS, `${req.method}.LOGOUT`),
           },
         })
       );

@@ -89,11 +89,29 @@ exports.getChapterSeq = async function (categorySeq, chapterNum) {
   return result;
 };
 
-exports.getMaxChapterSeq = async function (categorySeq) {
+exports.getMaxChapterByCategory = async function (categorySeq) {
   const connection = await pool.getConnection(async (conn) => conn);
 
-  const [result] = await dao.selectMaxChapterSeq(connection, categorySeq);
+  const [result] = await dao.selectMaxChapterByCategory(
+    connection,
+    categorySeq
+  );
   connection.release();
 
   return result;
+};
+
+exports.getCreatedCount = async function (year, month) {
+  const connection = await pool.getConnection(async (conn) => conn);
+
+  const result =
+    // eslint-disable-next-line no-nested-ternary
+    year && month
+      ? await dao.searchCreatedCountByMonth(connection, [year, month])
+      : year
+      ? await dao.searchCreatedCountByYear(connection, year)
+      : await dao.selectCreatedCount(connection);
+
+  connection.release();
+  return Promise.resolve(result);
 };

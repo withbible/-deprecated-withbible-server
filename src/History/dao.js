@@ -15,9 +15,9 @@ exports.selectHitCount = async function (connection, selectHitCountParams) {
   return rows;
 };
 
-exports.selectUserOptionBulk = async function (
+exports.selectUserOptions = async function (
   connection,
-  selectUserOptionBulkParams
+  selectUserOptionsParams
 ) {
   const query = `
     SELECT
@@ -36,11 +36,11 @@ exports.selectUserOptionBulk = async function (
       AND uo.user_seq = ?;
   `;
 
-  const [rows] = await connection.query(query, selectUserOptionBulkParams);
+  const [rows] = await connection.query(query, selectUserOptionsParams);
   return rows;
 };
 
-exports.insertUserOptionBulk = async function (
+exports.insertUserOption = async function (
   connection,
   bulk,
   userSeq,
@@ -62,7 +62,7 @@ exports.insertUserOptionBulk = async function (
   await connection.query(query);
 };
 
-exports.updateUserOptionBulk = async function (
+exports.updateUserOption = async function (
   connection,
   bulk,
   userSeq,
