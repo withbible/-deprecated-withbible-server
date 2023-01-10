@@ -5,7 +5,7 @@ const { StatusCodes } = require("http-status-codes");
 const path = require("path");
 const { logger } = require("./logger");
 const { errResponse } = require("../modules/response");
-const authenticate = require("../middlewares/authentication");
+const { authenticate } = require("../middlewares/validator");
 
 // CONSTANT
 const fileName = path.basename(__filename, ".js");
@@ -19,6 +19,7 @@ module.exports = function () {
     require("../middlewares/cors"),
     express.urlencoded({ extended: false }),
     express.json(),
+    require("../middlewares/parser"),
     require("../middlewares/morgan")
   );
 
@@ -31,14 +32,18 @@ module.exports = function () {
 
   app.use((req, res) => {
     res.status(StatusCodes.NOT_FOUND);
-    res.json(errResponse(`${req.method} ${req.url} API는 존재하지 않습니다.`));
+    res.json(
+      errResponse({
+        message: `${req.method} ${req.url} API는 존재하지 않습니다.`,
+      })
+    );
   });
 
   // ERROR HANDLEING
   app.use((err, req, res) => {
     logger.error(`[${fileName}]_${err.message}`);
     res.status(err.status);
-    res.json(errResponse(err.message));
+    res.json(errResponse({ message: err.message }));
   });
 
   return app;

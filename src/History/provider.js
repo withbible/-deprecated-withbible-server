@@ -23,10 +23,10 @@ exports.getHitCount = async function (categorySeq, chapterNum, userSeq) {
   return Promise.resolve(result);
 };
 
-exports.getUserOptionBulk = async function (categorySeq, chapterNum, userSeq) {
+exports.getUserOptions = async function (categorySeq, chapterNum, userSeq) {
   const connection = await pool.getConnection(async (conn) => conn);
 
-  const result = await dao.selectUserOptionBulk(connection, [
+  const result = await dao.selectUserOptions(connection, [
     categorySeq,
     chapterNum,
     userSeq,
@@ -89,10 +89,9 @@ exports.getActiveChapterPage = async function (limit, page, lastPage, userSeq) {
   const offset = (page - 1) * limit;
   const result = await dao.selectActiveChapterPage(connection, [
     userSeq,
-    parseInt(limit, 10),
+    limit,
     offset,
   ]);
-
   connection.release();
 
   if (!result.length) {
@@ -118,6 +117,7 @@ exports.getActiveChapterPage = async function (limit, page, lastPage, userSeq) {
 
 exports.getTotalCountByUser = async function (userSeq) {
   const connection = await pool.getConnection(async (conn) => conn);
+
   const rows = await dao.selectTotalCountByUser(connection, userSeq);
   connection.release();
 

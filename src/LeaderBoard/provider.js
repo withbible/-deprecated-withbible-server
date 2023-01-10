@@ -29,7 +29,7 @@ exports.getLeaderBoardPage = async function (limit, page, lastPage) {
   const connection = await pool.getConnection(async (conn) => conn);
 
   const offset = (page - 1) * limit;
-  const selectLeaderBoardParams = [parseInt(limit, 10), offset];
+  const selectLeaderBoardParams = [limit, offset];
 
   const result = await dao.selectLeaderBoardPage(
     connection,
