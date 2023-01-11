@@ -29,6 +29,7 @@ module.exports = function () {
   require("../LeaderBoard/route")(app);
   app.use(authenticate);
   require("../History/route")(app);
+  require("../Notice/route")(app);
 
   app.use((req, res) => {
     res.status(StatusCodes.NOT_FOUND);
