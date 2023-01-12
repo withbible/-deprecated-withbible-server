@@ -10,7 +10,7 @@ exports.selectToken = async function (connection, userSeq) {
   return rows;
 };
 
-exports.insertToken = async function (connection, params) {
+exports.updateToken = async function (connection, params) {
   const query = `
     UPDATE user
       SET fcm_token = ?

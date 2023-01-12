@@ -16,7 +16,6 @@ exports.getToken = async function (req, res) {
   try {
     const token = await provider.getToken(userSeq);
 
-    res.status(StatusCodes.CREATED);
     res.json(
       response({
         message: "FCM 토큰 조회 완료",
@@ -48,6 +47,32 @@ exports.postToken = async function (req, res) {
     res.json(
       response({
         message: "FCM 토큰 등록 완료",
+        result,
+      })
+    );
+  } catch (err) {
+    logger.warn(`[${dirName}]_${err.message}`);
+
+    res.status(err.status);
+    res.json(
+      errResponse({
+        message: err.message,
+      })
+    );
+  }
+};
+
+exports.putToken = async function (req, res) {
+  const { token } = req.body;
+  const { userSeq } = req.session.user;
+
+  try {
+    const result = await service.putToken(token, userSeq);
+
+    res.status(StatusCodes.CREATED);
+    res.json(
+      response({
+        message: "FCM 토큰 수정 완료",
         result,
       })
     );

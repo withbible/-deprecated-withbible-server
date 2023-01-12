@@ -17,7 +17,30 @@ exports.postToken = async function (token, userSeq) {
   const connection = await pool.getConnection(async (conn) => conn);
 
   try {
-    await dao.insertToken(connection, [token, userSeq]);
+    await dao.updateToken(connection, [token, userSeq]);
+  } catch (err) {
+    err.status = StatusCodes.INTERNAL_SERVER_ERROR;
+    return Promise.reject(err);
+  } finally {
+    connection.release();
+  }
+
+  return Promise.resolve();
+};
+
+exports.putToken = async function (token, userSeq) {
+  const result = await provider.getToken(userSeq);
+
+  if (!result) {
+    const err = new Error("데이터가 존재하지 않습니다.");
+    err.status = StatusCodes.METHOD_NOT_ALLOWED;
+    return Promise.reject(err);
+  }
+
+  const connection = await pool.getConnection(async (conn) => conn);
+
+  try {
+    await dao.updateToken(connection, [token, userSeq]);
   } catch (err) {
     err.status = StatusCodes.INTERNAL_SERVER_ERROR;
     return Promise.reject(err);

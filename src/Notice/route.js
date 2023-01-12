@@ -6,4 +6,7 @@ module.exports = function (app) {
 
   // FCM 토큰 등록 API
   app.post("/notice/token", notice.postToken);
+
+  // FCM 토큰 수정 API
+  app.put("/notice/token", notice.putToken);
 };
