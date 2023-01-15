@@ -1,15 +1,32 @@
 require("dotenv").config();
 
+// INTERNAL IMPORT
 const app = require("./src/configs/app");
 
-const { PORT } = process.env;
+// CONSTANT
+const { PORT, NODE_ENV } = process.env;
 
-app().listen(PORT, () =>
+function incomingMessage() {
   console.log(
     `
 ##############################################
-  🛡️  Server listening on port: ${PORT} 🛡️
+  🛡️  HTTPS Server listening on port: ${PORT} 🛡️
 ##############################################
   `
-  )
-);
+  );
+}
+
+if (NODE_ENV === "development") {
+  const https = require("https");
+  const fs = require("fs");
+
+  const options = {
+    key: fs.readFileSync("./certs/localhost-key.pem"),
+    cert: fs.readFileSync("./certs/localhost.pem"),
+  };
+
+  const server = https.createServer(options, app());
+  server.listen(PORT, incomingMessage);
+} else {
+  app().listen(PORT, incomingMessage);
+}
