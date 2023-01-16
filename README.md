@@ -33,15 +33,7 @@
   - [`src`폴더 주요 서비스](#src폴더-주요-서비스)
   - [ERD](#erd)
   - [API 명세서](#api-명세서)
-  - [설정](#설정)
-    - [1. 공개된 의존성](#1-공개된-의존성)
-    - [2. 공개되지 않은 의존성](#2-공개되지-않은-의존성)
-      - [2-1. `env`파일](#2-1-env파일)
-      - [2-2. `keys`폴더](#2-2-keys폴더)
-      - [(선택) `certs`폴더](#선택-certs폴더)
-  - [실행](#실행)
-    - [로컬 환경](#로컬-환경)
-    - [클라우드 환경](#클라우드-환경)
+  - [사용법](#사용법)
 
 ## [진행사항](https://github.com/WithBible/withbible-server/wiki)
 
@@ -97,76 +89,6 @@
 
 링크를 확인해주세요.
 
-<hr/>
+## [사용법](https://github.com/WithBible/withbible-server/wiki/%EC%82%AC%EC%9A%A9%EB%B2%95)
 
-## 설정 
-
-### 1. 공개된 의존성
-
-Download [Node.js](https://nodejs.org/ko/download/).
-
-```bash
-npm install
-```
-### 2. 공개되지 않은 의존성
-
-별도로 관리합니다.
-
-#### 2-1. `env`파일
-
-```bash
-touch .env
-```
-
-기입이 요구되는 환경변수 내역입니다.
-
-```env
-LOCAL_HOST=
-CLOUD_HOST=
-
-LOCAL_HTTP_GUEST=
-LOCAL_HTTPS_GUEST=
-CLOUD_GUEST=
-
-PORT=5000
-
-SQL_HOST=
-SQL_USER=
-SQL_PASSWORD=
-SQL_PORT=
-SQL_DATABASE=
-
-COOKIE_SECRET=
-
-FCM_ADMIN_SDK=
-```
-
-#### 2-2. `keys`폴더
-
-```bash
-mkdir keys
-```
-
-- [Firebase Admin SDK 발급하러 가기](https://firebase.google.com/docs/admin/setup?authuser=0&hl=ko)
-
-#### (선택) `certs`폴더
-
-```bash
-mkdir certs
-```
-
-- `HTTPS(TLS)` 인증서
-
-## 실행
-
-### 로컬 환경
-
-```bash
-npm run dev
-```
-
-### 클라우드 환경
-
-```bash
-npm run start
-```
+링크를 확인해주세요.

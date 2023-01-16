@@ -31,8 +31,8 @@ if (NODE_ENV === "development") {
   const fs = require("fs");
 
   const options = {
-    key: fs.readFileSync("./certs/localhost-key.pem"),
-    cert: fs.readFileSync("./certs/localhost.pem"),
+    key: fs.readFileSync("./etc/certs/localhost-key.pem"),
+    cert: fs.readFileSync("./etc/certs/localhost.pem"),
   };
 
   const server = https.createServer(options, app());
