@@ -1,10 +1,11 @@
 const cors = require("cors");
 
-// INTERNAL IMPORT
-const { LOCAL_GUEST, CLOUD_GUEST } = process.env;
-
 module.exports = cors({
-  origin: [LOCAL_GUEST, CLOUD_GUEST],
-  methods: ["GET", "PUT", "POST", "PATCH", "DELETE"],
+  origin: [
+    process.env.LOCAL_HTTP_GUEST,
+    process.env.LOCAL_HTTPS_GUEST,
+    process.env.CLOUD_GUEST,
+  ],
+  methods: ["GET", "PUT", "POST", "PATCH"],
   credentials: true,
 });

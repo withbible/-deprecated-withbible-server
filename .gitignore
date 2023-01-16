@@ -12,3 +12,4 @@ sessions/
 # development
 .vscode/
 certs/
+keys/

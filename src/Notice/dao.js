@@ -1,4 +1,4 @@
-exports.selectToken = async function (connection, userSeq) {
+exports.searchToken = async function (connection, userSeq) {
   const query = `
     SELECT
       fcm_token AS token
@@ -7,6 +7,18 @@ exports.selectToken = async function (connection, userSeq) {
   `;
 
   const [rows] = await connection.query(query, userSeq);
+  return rows;
+};
+
+exports.selectToken = async function (connection) {
+  const query = `
+    SELECT      
+      fcm_token AS token
+    FROM user
+    WHERE fcm_token != "";
+  `;
+
+  const [rows] = await connection.query(query);
   return rows;
 };
 

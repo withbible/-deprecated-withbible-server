@@ -14,12 +14,13 @@ exports.getToken = async function (req, res) {
   const { userSeq } = req.session.user;
 
   try {
-    const token = await provider.getToken(userSeq);
+    const [token] = await provider.getToken(userSeq);
 
     res.json(
       response({
         message: "FCM 토큰 조회 완료",
         result: {
+          userID: req.session.user.userID,
           token,
         },
       })

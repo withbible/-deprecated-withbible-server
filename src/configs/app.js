@@ -20,7 +20,8 @@ module.exports = function () {
     express.urlencoded({ extended: false }),
     express.json(),
     require("../middlewares/parser"),
-    require("../middlewares/morgan")
+    require("../middlewares/morgan"),
+    express.static("public")
   );
 
   // ROUTING
