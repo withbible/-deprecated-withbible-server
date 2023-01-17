@@ -3,10 +3,11 @@ const { StatusCodes } = require("http-status-codes");
 // INTERNAL IMPORT
 const path = require("path");
 const { logger } = require("../configs/logger");
-const { USER_API_DOCS } = require("../constants/enum");
 const { errResponse, response } = require("../modules/response");
-const { filterReferenceOther, filterReferenceMe } = require("../utils/util");
+const { filterReferenceOther } = require("../utils/util");
 const service = require("./service");
+const { USER_API_DOCS } = require("../constants/enum");
+const DOCS = require("../constants/docs");
 
 // CONSTANT
 const dirName = path.basename(__dirname);
@@ -21,14 +22,15 @@ function decodeAuthorization(authorization) {
 
 exports.postUser = async function (req, res) {
   const [userID, password] = decodeAuthorization(req.headers.authorization);
-  const { userName, userEmail } = req.body;
+  const { userName, userEmail, fcmToken } = req.body;
 
   try {
     const result = await service.postUser(
       userID,
       password,
       userName,
-      userEmail
+      userEmail,
+      fcmToken
     );
 
     req.session.user = {
@@ -56,7 +58,7 @@ exports.postUser = async function (req, res) {
     res.json(
       errResponse({
         message: err.message,
-        link: filterReferenceMe(USER_API_DOCS, req.method)[0],
+        link: DOCS["POST.USER"],
       })
     );
   }
@@ -64,10 +66,10 @@ exports.postUser = async function (req, res) {
 
 exports.login = async function (req, res) {
   const [userID, password] = decodeAuthorization(req.headers.authorization);
-  const { isAutoLogin } = req.body;
+  const { isAutoLogin, fcmToken } = req.body;
 
   try {
-    const result = await service.login(userID, password);
+    const result = await service.patchUser(userID, password, fcmToken);
 
     req.session.user = {
       ...result,
@@ -97,7 +99,7 @@ exports.login = async function (req, res) {
     res.json(
       errResponse({
         message: err.message,
-        link: filterReferenceMe(USER_API_DOCS, `${req.method}.LOGIN`)[0],
+        link: DOCS["PATCH.LOGIN"],
       })
     );
   }
@@ -126,7 +128,7 @@ exports.logout = async function (req, res) {
       res.json(
         errResponse({
           message: err.message,
-          link: filterReferenceMe(USER_API_DOCS, `${req.method}.LOGOUT`)[0],
+          link: DOCS["PATCH.LOGOUT"],
         })
       );
     } else {

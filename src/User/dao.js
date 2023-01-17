@@ -6,21 +6,21 @@ exports.selectUserID = async function (connection, userID) {
       hashed_password AS hahsedPassword
     FROM user
     WHERE 
-      user_id = ?;
+      user_id = "${userID}";
   `;
 
-  const [rows] = await connection.query(query, userID);
+  const [rows] = await connection.query(query);
   return rows;
 };
 
-exports.insertUser = async function (connection, insertUserParams) {
+exports.insertUser = async function (connection, params) {
   const query = `
     INSERT INTO user 
-      (user_id, hashed_password, user_name, user_email)
+      (user_id, hashed_password, user_name, user_email, fcm_token)
     VALUES 
-      (?, ?, ?, ?);
+      (?, ?, ?, ?, ?);
   `;
 
-  const [result] = await connection.query(query, insertUserParams);
+  const [result] = await connection.query(query, params);
   return result;
 };

@@ -1,11 +1,11 @@
 const { pool } = require("../configs/database");
 const dao = require("./dao");
 
-exports.getToken = async function (userSeq) {
+exports.getToken = async function (userID) {
   const connection = await pool.getConnection(async (conn) => conn);
 
-  const rows = userSeq
-    ? await dao.searchToken(connection, userSeq)
+  const rows = userID
+    ? await dao.searchToken(connection, userID)
     : await dao.selectToken(connection);
   connection.release();
 
