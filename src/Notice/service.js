@@ -6,7 +6,7 @@ const provider = require("./provider");
 const dao = require("./dao");
 
 exports.postToken = async function (token, userSeq) {
-  const result = await provider.getToken(userSeq);
+  const [result] = await provider.getToken(userSeq);
 
   if (result) {
     const err = new Error("중복된 데이터입니다.");

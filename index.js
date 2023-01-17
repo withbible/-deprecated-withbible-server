@@ -21,7 +21,7 @@ function listener() {
   incomingMessage();
 
   cron.schedule("0 1 9 * * *", function () {
-    logger.info("금월 퀴즈 등록수 알림 송신");
+    logger.info("전월 퀴즈 등록수 알림 송신");
     sendQuizNotification();
   });
 }
