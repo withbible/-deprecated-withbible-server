@@ -13,11 +13,11 @@ exports.searchToken = async function (connection, userID) {
 
 exports.selectToken = async function (connection) {
   const query = `
-    SELECT      
+    SELECT
       fcm_token AS token
     FROM user
-    WHERE 
-      fcm_token != NULL;
+    WHERE
+      fcm_token IS NOT NULL;
   `;
 
   const [rows] = await connection.query(query);

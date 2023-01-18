@@ -53,8 +53,8 @@ jobs:
                   value: ${{ secrets.COOKIE_SECRET }}
                 - name: FCM_ADMIN_SDK
                   value: ${{ secrets.FCM_ADMIN_SDK }}
-                - name: GITHUB_ACCESS_TOKEN
-                  value: ${{ secrets.GHP_TOKEN }}
+                - name: GHP_SERVER_ETC_ACCESS_TOKEN
+                  value: ${{ secrets.GHP_SERVER_ETC_ACCESS_TOKEN }}
               ports: "5000"
             context:
               git:

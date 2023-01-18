@@ -12,7 +12,7 @@ const REPO_URL = `https://api.github.com/repos/WithBible/withbible-server-etc/co
   try {
     const response = await axios.get(REPO_URL, {
       headers: {
-        Authorization: `Bearer ${process.env.GITHUB_ACCESS_TOKEN}`,
+        Authorization: `Bearer ${process.env.GHP_SERVER_ETC_ACCESS_TOKEN}`,
         Accept: "application/vnd.github+json",
       },
     });
