@@ -1,0 +1,62 @@
+name: Deploy to cloudtype
+on:
+  push:
+    branches:
+      - main
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Connect deploy key
+        uses: cloudtype-github-actions/connect@v1
+        with:
+          token: ${{ secrets.CLOUDTYPE_TOKEN }}
+          ghtoken: ${{ secrets.GHP_TOKEN }}
+      - name: Deploy
+        uses: cloudtype-github-actions/deploy@v1
+        with:
+          token: ${{ secrets.CLOUDTYPE_TOKEN }}
+          project: yongki150/withbible
+          stage: main
+          yaml: >
+            name: withbible-server
+
+            app: node@16
+
+            options:
+              env:
+                - name: LOCAL_HOST
+                  value: https://localhost:5000
+                - name: CLOUD_HOST
+                  value: ${{ vars.CLOUD_HOST }}
+                - name: LOCAL_HTTP_GUEST
+                  value: http://localhost:3000
+                - name: LOCAL_HTTPS_GUEST
+                  value: https://localhost:3000
+                - name: CLOUD_GUEST
+                  value: ${{ vars.CLOUD_GUEST }}
+                - name: PORT
+                  value: "5000"
+                - name: SQL_HOST
+                  value: ${{ secrets.SQL_HOST }}
+                - name: SQL_USER
+                  value: ${{ secrets.SQL_USER }}
+                - name: SQL_PASSWORD
+                  value: ${{ secrets.SQL_PASSWORD }}
+                - name: SQL_PORT
+                  value: ${{ secrets.SQL_PORT }}
+                - name: SQL_DATABASE
+                  value: ${{ secrets.SQL_DATABASE }}
+                - name: COOKIE_SECRET
+                  value: ${{ secrets.COOKIE_SECRET }}
+                - name: FCM_ADMIN_SDK
+                  value: ${{ secrets.FCM_ADMIN_SDK }}
+                - name: GITHUB_ACCESS_TOKEN
+                  value: ${{ secrets.GHP_TOKEN }}
+              ports: "5000"
+            context:
+              git:
+                url: git@github.com:${{ github.repository }}.git
+                ref: ${{ github.ref }}
