@@ -69,7 +69,7 @@ exports.login = async function (req, res) {
   const { isAutoLogin, fcmToken } = req.body;
 
   try {
-    const result = await service.patchUser(userID, password, fcmToken);
+    const result = await service.login(userID, password, fcmToken);
 
     req.session.user = {
       ...result,

@@ -1,9 +1,9 @@
 // INTERNAL IMPORT
 const path = require("path");
 const { logger } = require("../configs/logger");
-const DOCS = require("../constants/docs");
 const { response, errResponse } = require("../modules/response");
 const provider = require("./provider");
+const DOCS = require("../constants/docs");
 
 // CONSTANT
 const dirName = path.basename(__dirname);

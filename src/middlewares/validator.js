@@ -38,8 +38,9 @@ module.exports = {
 
     const { maxChapterNum } = await getMaxChapterByCategory(categorySeq);
     const chapterNumArray = makeSequence(maxChapterNum);
+    const chapterNumIndex = chapterNum - 1;
 
-    if (!chapterNum || !(chapterNum in chapterNumArray)) {
+    if (!chapterNum || !(chapterNumIndex in chapterNumArray)) {
       const message = "유효한 챕터번호(chapterNum)를 입력해주세요.";
 
       res.status(StatusCodes.BAD_REQUEST);

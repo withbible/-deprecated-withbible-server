@@ -58,7 +58,7 @@ exports.postUser = async function (
 };
 
 exports.login = async function (userID, password, token) {
-  const [userIDRows, existedToken] = Promise.all([
+  const [userIDRows, existedToken] = await Promise.all([
     await provider.userIDCheck(userID),
     await noticeProvider.getToken(userID),
   ]);

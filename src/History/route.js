@@ -7,7 +7,7 @@ module.exports = function (app) {
   app.get("/history/chapter/hit-count", validator, history.getHitCount);
 
   // 한 챕터의 선택기록 전체조회 API
-  app.get("/history/chapter/user-options", validator, history.getUserOptions);
+  app.get("/history/chapter/user-option", validator, history.getUserOptions);
 
   // 한 챕터의 선택기록 생성 API
   app.post("/history/chapter/user-option", validator, history.postUserOption);
