@@ -9,5 +9,8 @@ package-lock.json
 etc/
 sessions/
 
-# development
+# debug
 .vscode/
+
+# test
+load-test-report*
