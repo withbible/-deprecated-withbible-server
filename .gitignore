@@ -13,4 +13,4 @@ sessions/
 .vscode/
 
 # test
-load-test-report*
+test/load-test-report*
