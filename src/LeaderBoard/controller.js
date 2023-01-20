@@ -71,7 +71,7 @@ exports.getLeaderBoardLastPage = async function (req, res) {
 
     res.json(
       response({
-        message: "사용자별 순위 부분조회 완료",
+        message: "사용자별 순위 부분조회 마지막 페이징값 조회 완료",
         result,
       })
     );

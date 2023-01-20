@@ -1,3 +1,5 @@
-set DEBUG=http
-artillery run --dotenv ./.env --output ./test/load-test-report.json ./test/load-test.yml
-artillery report ./test/load-test-report.json
+@REM SET DEBUG=http
+FOR %%f IN (./test/scenarios/*) DO ( 
+  artillery run --dotenv ./.env --output ./test/reports/%%~nf.json ./test/scenarios/%%~nf.yml
+  artillery report ./test/reports/%%~nf.json
+)
