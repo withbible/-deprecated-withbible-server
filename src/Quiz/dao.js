@@ -234,8 +234,7 @@ exports.updateOption = async function (connection, bulk, questionSeq) {
 exports.selectCreatedCount = async function (connection) {
   const query = `
     SELECT
-      YEAR(created_at) AS year,
-      MONTH(created_at) AS month,
+      DATE_FORMAT(created_at, '%Y/%m') AS date,
       COUNT(question_seq) AS totalCount
     FROM quiz_question
     GROUP BY 
@@ -250,15 +249,14 @@ exports.selectCreatedCount = async function (connection) {
 exports.searchCreatedCountByMonth = async function (connection, params) {
   const query = `
     SELECT
-      YEAR(created_at) AS year,
-      MONTH(created_at) AS month,
+      DATE_FORMAT(created_at, '%Y/%m') AS date,
       COUNT(question_seq) AS totalCount
     FROM quiz_question
+    WHERE YEAR(created_at) = ?
+      AND MONTH(created_at) = ?
     GROUP BY 
       YEAR(created_at),
-      MONTH(created_at)
-    HAVING year = ?
-      AND month = ?;
+      MONTH(created_at);
   `;
 
   const [rows] = await connection.query(query, params);
@@ -268,14 +266,13 @@ exports.searchCreatedCountByMonth = async function (connection, params) {
 exports.searchCreatedCountByYear = async function (connection, year) {
   const query = `
     SELECT
-      YEAR(created_at) AS year,
-      MONTH(created_at) AS month,
+      DATE_FORMAT(created_at, '%Y/%m') AS date,
       COUNT(question_seq) AS totalCount
     FROM quiz_question
+    WHERE YEAR(created_at) = ${year}
     GROUP BY 
       YEAR(created_at),
-      MONTH(created_at)
-    HAVING year = ${year};      
+      MONTH(created_at);
   `;
 
   const [rows] = await connection.query(query);
