@@ -3,13 +3,15 @@ config:
   processor: "./load-test-hook.js"
   phases:
     - name: Warm up
-      duration: 60
-      arrivalRate: 30
+      duration: 1
+      arrivalRate: 1
   variables:
     categorySeq:
       - 1
     chapterNum:
       - 3
+    limit:
+      - 7
 before:
   flow:
     - log: "로그인"
@@ -24,8 +26,26 @@ before:
         afterResponse: "parseCookieValue"
         expect:
           - statusCode: 200
+    - log: "(테스트) 사용자별 순위 부분조회 마지막 페이징값 조회 API"
+    - get:
+        url: "/leader-board/last-page"
+        capture:
+          json: "$.result"
+          as: "leaderBoardLastPage"
+        expect:
+          - statusCode: 200
+    - log: "(테스트) 카테고리별 활성화된 챕터 부분조회 마지막 페이징값 조회 API"
+    - get:
+        url: "/history/categories/active-chapter/last-page"
+        cookie:
+          loginData: "{{ cookieValue }}"
+        capture:
+          json: "$.result"
+          as: "activeChapterLastPage"
+        expect:
+          - statusCode: 200
 scenarios:
-  - name: "퀴즈 서비스 이용 흐름"
+  - name: "퀴즈"
     flow:
       # 카테고리별 검색어를 포함한 챕터수 검색 API
       - get:
@@ -63,6 +83,22 @@ scenarios:
           url: "/history/category/active-chapter-count?categorySeq={{ categorySeq }}"
           cookie:
             loginData: "{{ cookieValue }}"
+  - name: "리더보드"
+    flow:
+      # 사용자별 순위 부분조회 API
+      - loop:
+          - get:
+              url: "/leader-board/page?limit={{ limit }}&page={{ $loopCount }}"
+        count: "{{ leaderBoardLastPage }}"
+  - name: "퀴즈리뷰"
+    flow:
+      # 카테고리별 활성화된 챕터 부분조회 API
+      - loop:
+          - get:
+              url: "/history/categories/active-chapter/page?limit={{ limit }}&page={{ $loopCount }}"
+              cookie:
+                loginData: "{{ cookieValue }}"
+        count: "{{ activeChapterLastPage }}"
 after:
   flow:
     - log: "로그아웃"

@@ -29,4 +29,10 @@ module.exports = function (app) {
     "/history/categories/active-chapter/page",
     history.getActiveChapterPage
   );
+
+  // (테스트) 카테고리별 활성화된 챕터 부분조회 마지막 페이징값 조회 API
+  app.get(
+    "/history/categories/active-chapter/last-page",
+    history.getActiveChapterLastPage
+  );
 };

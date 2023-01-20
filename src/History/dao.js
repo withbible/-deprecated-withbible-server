@@ -1,4 +1,4 @@
-exports.selectHitCount = async function (connection, selectHitCountParams) {
+exports.selectHitCount = async function (connection, params) {
   const query = `
     SELECT
       us.hit_question_count AS hitQuestionCount,
@@ -11,14 +11,11 @@ exports.selectHitCount = async function (connection, selectHitCountParams) {
       AND us.user_seq = ?;
   `;
 
-  const [rows] = await connection.query(query, selectHitCountParams);
+  const [rows] = await connection.query(query, params);
   return rows;
 };
 
-exports.selectUserOptions = async function (
-  connection,
-  selectUserOptionsParams
-) {
+exports.selectUserOptions = async function (connection, params) {
   const query = `
     SELECT
       q.question_seq AS questionSeq,
@@ -36,7 +33,7 @@ exports.selectUserOptions = async function (
       AND uo.user_seq = ?;
   `;
 
-  const [rows] = await connection.query(query, selectUserOptionsParams);
+  const [rows] = await connection.query(query, params);
   return rows;
 };
 
@@ -90,10 +87,7 @@ exports.updateUserOption = async function (
   await connection.query(query);
 };
 
-exports.selectActiveChapterCount = async function (
-  connection,
-  selectActiveChapterCountParams
-) {
+exports.selectActiveChapterCount = async function (connection, params) {
   const query = `
     SELECT
       COUNT(us.chapter_seq) AS activeChapterCount,
@@ -109,7 +103,7 @@ exports.selectActiveChapterCount = async function (
       qc.category_seq = ?;
   `;
 
-  const [rows] = await connection.query(query, selectActiveChapterCountParams);
+  const [rows] = await connection.query(query, params);
   return rows;
 };
 
@@ -135,19 +129,16 @@ exports.selectActiveChapter = async function (connection, userSeq) {
     LEFT JOIN quiz_chapter_user_state AS us
       ON qc.chapter_seq = us.chapter_seq 
     WHERE 
-      us.user_seq = ?
+      us.user_seq = ${userSeq}
     GROUP BY
       qc.category_seq;
   `;
 
-  const [rows] = await connection.query(query, userSeq);
+  const [rows] = await connection.query(query);
   return rows;
 };
 
-exports.searchActiveChapter = async function (
-  connection,
-  selectActiveChapterParams
-) {
+exports.searchActiveChapter = async function (connection, params) {
   const query = `
     SELECT
       c.category,
@@ -175,14 +166,11 @@ exports.searchActiveChapter = async function (
       qc.category_seq = ?;
   `;
 
-  const [rows] = await connection.query(query, selectActiveChapterParams);
+  const [rows] = await connection.query(query, params);
   return rows;
 };
 
-exports.selectActiveChapterPage = async function (
-  connection,
-  selectActiveChapterPageParams
-) {
+exports.selectActiveChapterPage = async function (connection, params) {
   const query = `
     SELECT
       qc.category_seq AS categorySeq,  
@@ -199,7 +187,7 @@ exports.selectActiveChapterPage = async function (
     LIMIT ? OFFSET ?;
   `;
 
-  const [rows] = await connection.query(query, selectActiveChapterPageParams);
+  const [rows] = await connection.query(query, params);
   return rows;
 };
 
@@ -208,9 +196,10 @@ exports.selectTotalCountByUser = async function (connection, userSeq) {
     SELECT
       COUNT(*) AS totalCount
     FROM quiz_chapter_user_state 
-    WHERE	user_seq = ?;
+    WHERE	
+      user_seq = ${userSeq};
   `;
 
-  const [rows] = await connection.query(query, userSeq);
+  const [rows] = await connection.query(query);
   return rows;
 };

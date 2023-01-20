@@ -61,3 +61,28 @@ exports.getLeaderBoardPage = async function (req, res) {
     );
   }
 };
+
+exports.getLeaderBoardLastPage = async function (req, res) {
+  const { limit } = req.query;
+
+  try {
+    const totalCount = await provider.getTotalCount();
+    const result = Math.ceil(totalCount / limit);
+
+    res.json(
+      response({
+        message: "사용자별 순위 부분조회 완료",
+        result,
+      })
+    );
+  } catch (err) {
+    logger.warn(`[${dirName}]_${err.message}`);
+
+    res.status(err.status);
+    res.json(
+      errResponse({
+        message: err.message,
+      })
+    );
+  }
+};

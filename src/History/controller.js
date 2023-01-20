@@ -264,3 +264,29 @@ exports.getActiveChapterPage = async function (req, res) {
     );
   }
 };
+
+exports.getActiveChapterLastPage = async function (req, res) {
+  const { limit } = req.query;
+  const { userSeq } = req.session.user;
+
+  try {
+    const totalCount = await provider.getTotalCountByUser(userSeq);
+    const result = Math.ceil(totalCount / limit);
+
+    res.json(
+      response({
+        message: "카테고리별 활성화된 챕터 부분조회 마지막 페이징값 조회 완료",
+        result,
+      })
+    );
+  } catch (err) {
+    logger.warn(`[${dirName}]_${err.message}`);
+
+    res.status(err.status);
+    res.json(
+      errResponse({
+        message: err.message,
+      })
+    );
+  }
+};
