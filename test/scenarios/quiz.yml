@@ -2,14 +2,16 @@ config:
   target: "{{ $processEnvironment.CLOUD_HOST }}"
   processor: "../load-test-hook.js"
   phases:
+    # duration 동안 매초마다 n명이 요청
     - name: Warm up
       duration: 1
       arrivalRate: 1
-  variables:
-    categorySeq:
-      - 1
-    chapterNum:
-      - 3
+    # - name: Ramp up load
+    #   duration: 10
+    #   arrivalRate: 5
+    # - name: Sustained load
+    #   duration: 20
+    #   arrivalRate: 10
 before:
   flow:
     - log: "로그인"
@@ -22,6 +24,18 @@ before:
           isAutoLogin: false
           fcmToken: null
         afterResponse: "parseCookieValue"
+        expect:
+          - statusCode: 200
+    - log: "카테고리별 검색어를 포함한 챕터수 조회 API"
+    - get:
+        url: "/quiz/categories/chapter"
+        afterResponse: "setQuizQueryString"
+        expect:
+          - statusCode: 200
+    - log: "한 챕터의 질문-선택지 전체조회 API"
+    - get:
+        url: "/quiz/chapter?categorySeq={{ categorySeq }}&chapterNum={{ chapterNum }}"
+        afterResponse: "setUserOption"
         expect:
           - statusCode: 200
 scenarios:
@@ -43,16 +57,23 @@ scenarios:
           url: "/history/chapter/user-option?categorySeq={{ categorySeq }}&chapterNum={{ chapterNum }}"
           cookie:
             loginData: "{{ cookieValue }}"
+          afterResponse: "getStatusCode"
+      # 한 챕터의 선택기록 생성 API
+      - post:
+          url: "/history/chapter/user-option?categorySeq={{ categorySeq }}&chapterNum={{ chapterNum }}"
+          cookie:
+            loginData: "{{ cookieValue }}"
+          json:
+            bulk: "{{ userOption }}"
+          ifTrue: "statusCode == 400"
       # 한 챕터의 선택기록 수정 API
       - put:
           url: "/history/chapter/user-option?categorySeq={{ categorySeq }}&chapterNum={{ chapterNum }}"
           cookie:
             loginData: "{{ cookieValue }}"
           json:
-            bulk:
-              "7": 26
-              "8": 29
-              "9": 34
+            bulk: "{{ userOption }}"
+          ifTrue: "statusCode == 200"
       # 한 챕터의 맞힌갯수 조회 API
       - get:
           url: "/history/chapter/hit-count?categorySeq={{ categorySeq }}&chapterNum={{ chapterNum }}"

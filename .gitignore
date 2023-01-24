@@ -14,3 +14,4 @@ sessions/
 
 # test
 test/reports/
+.clinic/
