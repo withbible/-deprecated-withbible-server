@@ -7,7 +7,7 @@ const dao = require("./dao");
 
 const MAX_QUESTION_COUNT = 3;
 
-exports.postQuiz = async function (categorySeq, question, bulk) {
+exports.postQuiz = async function (categorySeq, question, questionSub, bulk) {
   const questionRow = await provider.getQuestionSeqByText(question);
 
   if (questionRow) {
@@ -38,6 +38,7 @@ exports.postQuiz = async function (categorySeq, question, bulk) {
 
     const newQuestionRow = await dao.insertQuestion(connection, [
       question,
+      questionSub,
       chapterSeq,
     ]);
 
@@ -47,6 +48,7 @@ exports.postQuiz = async function (categorySeq, question, bulk) {
     return Promise.resolve({
       categorySeq,
       chapterNum: maxChapterNum,
+      questionCount: maxChapterRow.questionCount,
     });
   } catch (err) {
     await connection.rollback();
@@ -57,7 +59,7 @@ exports.postQuiz = async function (categorySeq, question, bulk) {
   }
 };
 
-exports.putQuiz = async function (questionSeq, newQuestion, bulk) {
+exports.putQuiz = async function (questionSeq, question, questionSub, bulk) {
   const [questionRow, chapterRow] = await Promise.all([
     await provider.getQuestionSeqByNumber(questionSeq),
     await provider.getChapterByNumber(questionSeq),
@@ -72,7 +74,7 @@ exports.putQuiz = async function (questionSeq, newQuestion, bulk) {
   const connection = await pool.getConnection(async (conn) => conn);
 
   await Promise.all([
-    dao.updateQuestion(connection, [newQuestion, questionSeq]),
+    dao.updateQuestion(connection, [question, questionSub, questionSeq]),
     dao.updateOption(connection, bulk, questionSeq),
   ]);
 

@@ -47,6 +47,7 @@ exports.selectQuiz = async function (connection, params) {
     SELECT	
       q.question_seq AS questionSeq,
       q.question,
+      q.question_sub AS questionSub,
       CONCAT(
         '[',
         GROUP_CONCAT(
@@ -159,9 +160,9 @@ exports.insertChapterSeq = async function (connection, params) {
 exports.insertQuestion = async function (connection, params) {
   const query = `
       INSERT INTO quiz_question
-        (question, chapter_seq)
+        (question, question_sub, chapter_seq)
       VALUES
-        (?, ?);
+        (?, ?, ?);
     `;
 
   const [rows] = await connection.query(query, params);
@@ -194,7 +195,8 @@ exports.insertOptionBulk = async function (connection, bulk, questionSeq) {
 exports.updateQuestion = async function (connection, params) {
   const query = `
     UPDATE quiz_question
-      SET question = ?
+      SET question = ?,
+          question_sub = ?
     WHERE question_seq = ?;
   `;
   const [rows] = await connection.query(query, params);
