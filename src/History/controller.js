@@ -3,7 +3,7 @@ const { StatusCodes } = require("http-status-codes");
 // INTERNAL IMPORT
 const path = require("path");
 const { logger } = require("../configs/logger");
-const DOCS = require("../constants/docs");
+const docs = require("../constants/docs");
 const { CATEGORY, HISTORY_API_DOCS } = require("../constants/enum");
 const { response, errResponse } = require("../modules/response");
 const { filterReferenceOther } = require("../utils/util");
@@ -38,7 +38,7 @@ exports.getHitCount = async function (req, res) {
     res.json(
       errResponse({
         message: err.message,
-        link: DOCS["GET.HIT-COUNT"],
+        link: docs["GET.HIT-COUNT"],
       })
     );
   }
@@ -74,7 +74,7 @@ exports.getUserOptions = async function (req, res) {
     res.json(
       errResponse({
         message: err.message,
-        link: DOCS["GET.USER-OPTIONS"],
+        link: docs["GET.USER-OPTIONS"],
       })
     );
   }
@@ -113,7 +113,7 @@ exports.postUserOption = async function (req, res) {
     res.json(
       errResponse({
         message: err.message,
-        link: DOCS["POST.USER-OPTION"],
+        link: docs["POST.USER-OPTION"],
       })
     );
   }
@@ -152,7 +152,7 @@ exports.putUserOption = async function (req, res) {
     res.json(
       errResponse({
         message: err.message,
-        link: DOCS["PUT.USER-OPTION"],
+        link: docs["PUT.USER-OPTION"],
       })
     );
   }
@@ -182,7 +182,7 @@ exports.getActiveChapterCount = async function (req, res) {
     res.json(
       errResponse({
         message: err.message,
-        link: DOCS["GET.ACTIVE-CHAPTER-COUNT"],
+        link: docs["GET.ACTIVE-CHAPTER-COUNT"],
       })
     );
   }
@@ -214,7 +214,7 @@ exports.getActiveChapter = async function (req, res) {
     res.json(
       errResponse({
         message: err.message,
-        link: DOCS["GET.ACTIVE-CHAPTER"],
+        link: docs["GET.ACTIVE-CHAPTER"],
       })
     );
   }
@@ -259,7 +259,7 @@ exports.getActiveChapterPage = async function (req, res) {
     res.json(
       errResponse({
         message: err.message,
-        link: DOCS["GET.ACTIVE-CHAPTER-PAGE"],
+        link: docs["GET.ACTIVE-CHAPTER-PAGE"],
       })
     );
   }

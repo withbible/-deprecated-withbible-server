@@ -7,7 +7,7 @@ const { errResponse, response } = require("../modules/response");
 const { filterReferenceOther } = require("../utils/util");
 const service = require("./service");
 const { USER_API_DOCS } = require("../constants/enum");
-const DOCS = require("../constants/docs");
+const docs = require("../constants/docs");
 
 // CONSTANT
 const dirName = path.basename(__dirname);
@@ -58,7 +58,7 @@ exports.postUser = async function (req, res) {
     res.json(
       errResponse({
         message: err.message,
-        link: DOCS["POST.USER"],
+        link: docs["POST.USER"],
       })
     );
   }
@@ -99,7 +99,7 @@ exports.login = async function (req, res) {
     res.json(
       errResponse({
         message: err.message,
-        link: DOCS["PATCH.LOGIN"],
+        link: docs["PATCH.LOGIN"],
       })
     );
   }
@@ -128,7 +128,7 @@ exports.logout = async function (req, res) {
       res.json(
         errResponse({
           message: err.message,
-          link: DOCS["PATCH.LOGOUT"],
+          link: docs["PATCH.LOGOUT"],
         })
       );
     } else {

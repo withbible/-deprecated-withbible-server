@@ -3,7 +3,7 @@ const path = require("path");
 const { logger } = require("../configs/logger");
 const { response, errResponse } = require("../modules/response");
 const provider = require("./provider");
-const DOCS = require("../constants/docs");
+const docs = require("../constants/docs");
 
 // CONSTANT
 const dirName = path.basename(__dirname);
@@ -18,7 +18,7 @@ exports.getLeaderBoard = async function (req, res) {
 
     res.status(err.status);
     res.json(
-      errResponse({ message: err.message, link: DOCS["GET.LEADER-BOARD"] })
+      errResponse({ message: err.message, link: docs["GET.LEADER-BOARD"] })
     );
   }
 };
@@ -56,7 +56,7 @@ exports.getLeaderBoardPage = async function (req, res) {
     res.json(
       errResponse({
         message: err.message,
-        link: DOCS["GET.LEADER-BOARD-PAGE"],
+        link: docs["GET.LEADER-BOARD-PAGE"],
       })
     );
   }

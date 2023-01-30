@@ -3,7 +3,7 @@ const { StatusCodes } = require("http-status-codes");
 // INTERNAL IMPORT
 const path = require("path");
 const { logger } = require("../configs/logger");
-const DOCS = require("../constants/docs");
+const docs = require("../constants/docs");
 const { CATEGORY, QUIZ_API_DOCS } = require("../constants/enum");
 const { response, errResponse } = require("../modules/response");
 const { filterReferenceOther } = require("../utils/util");
@@ -32,7 +32,7 @@ exports.getChapter = async function (req, res) {
     res.json(
       errResponse({
         message: err.message,
-        link: DOCS["GET.CHAPTER"],
+        link: docs["GET.CHAPTER"],
       })
     );
   }
@@ -63,7 +63,7 @@ exports.getQuiz = async function (req, res) {
     res.json(
       errResponse({
         message: err.message,
-        link: DOCS["GET.USER-OPTIONS"],
+        link: docs["GET.USER-OPTIONS"],
       })
     );
   }
@@ -97,7 +97,7 @@ exports.postQuiz = async function (req, res) {
     res.json(
       errResponse({
         message: err.message,
-        link: DOCS["POST.QUIZ"],
+        link: docs["POST.QUIZ"],
       })
     );
   }
@@ -130,7 +130,7 @@ exports.putQuiz = async function (req, res) {
     res.json(
       errResponse({
         message: err.message,
-        link: DOCS["PUT.QUIZ"],
+        link: docs["PUT.QUIZ"],
       })
     );
   }
@@ -155,7 +155,7 @@ exports.getCreatedCount = async function (req, res) {
     res.json(
       errResponse({
         message: err.message,
-        link: DOCS["GET.CREATED-COUNT"],
+        link: docs["GET.CREATED-COUNT"],
       })
     );
   }

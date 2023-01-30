@@ -6,27 +6,9 @@ const app = require("./src/configs/app");
 const { logger } = require("./src/configs/logger");
 const { sendQuizNotification } = require("./src/Notice/cron");
 
-// CONSTANT
-const { PORT, NODE_ENV } = process.env;
+let server;
 
-function incomingMessage() {
-  console.log(`
-##############################################
-  🛡️  HTTPS Server listening on port: ${PORT} 🛡️
-##############################################
-  `);
-}
-
-function listener() {
-  incomingMessage();
-
-  cron.schedule("0 1 9 * * *", function () {
-    logger.info("전월 퀴즈 등록수 알림 송신");
-    sendQuizNotification();
-  });
-}
-
-if (NODE_ENV === "development") {
+if (process.env.NODE_ENV === "development") {
   const https = require("https");
   const fs = require("fs");
 
@@ -35,8 +17,20 @@ if (NODE_ENV === "development") {
     cert: fs.readFileSync("./etc/certs/localhost.pem"),
   };
 
-  const server = https.createServer(options, app());
-  server.listen(PORT, listener);
+  server = https.createServer(options, app());
 } else {
-  app().listen(PORT, listener);
+  server = app();
 }
+
+server.listen(process.env.PORT, () => {
+  console.log(`
+##############################################
+  🛡️  HTTPS Server listening on port: ${process.env.PORT} 🛡️
+##############################################
+  `);
+
+  cron.schedule("0 9 1 * *", function () {
+    logger.info("전월 퀴즈 등록수 알림 송신");
+    sendQuizNotification();
+  });
+});
