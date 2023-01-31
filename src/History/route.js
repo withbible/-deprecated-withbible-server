@@ -35,4 +35,7 @@ module.exports = function (app) {
     "/history/categories/active-chapter/last-page",
     history.getActiveChapterLastPage
   );
+
+  // 카테고리별 맞힌갯수 조회 API
+  app.get("/history/categories/hit-count", history.getCategoriesHitCount);
 };

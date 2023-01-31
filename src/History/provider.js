@@ -124,3 +124,43 @@ exports.getTotalCountByUser = async function (userSeq) {
   const result = rows[0].totalCount;
   return Promise.resolve(result);
 };
+
+exports.getCategoriesHitCount = async function () {
+  const connection = await pool.getConnection(async (conn) => conn);
+
+  const rows = await dao.selectCategoriesHitCount(connection);
+  connection.release();
+
+  const result = [];
+
+  rows.forEach((each) => {
+    const index = result.findIndex(
+      (exist) => exist.categorySeq === each.categorySeq
+    );
+
+    if (index > -1) {
+      result[index].chapterNumArray = result[index].chapterNumArray.concat({
+        chapterNum: each.chapterNum,
+        hitQuestionCount: parseInt(each.hitQuestionCount, 10),
+      });
+    } else {
+      // eslint-disable-next-line no-param-reassign
+      each.chapterNumArray = [
+        {
+          chapterNum: each.chapterNum,
+          hitQuestionCount: parseInt(each.hitQuestionCount, 10),
+        },
+      ];
+      result.push(each);
+    }
+  });
+
+  result.forEach((each) => {
+    // eslint-disable-next-line no-param-reassign
+    delete each.chapterNum;
+    // eslint-disable-next-line no-param-reassign
+    delete each.hitQuestionCount;
+  });
+
+  return Promise.resolve(result);
+};

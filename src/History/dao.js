@@ -203,3 +203,21 @@ exports.selectTotalCountByUser = async function (connection, userSeq) {
   const [rows] = await connection.query(query);
   return rows;
 };
+
+exports.selectCategoriesHitCount = async function (connection) {
+  const query = `
+    SELECT
+      qc.category_seq AS categorySeq,
+      qc.chapter_num AS chapterNum,
+      COALESCE(SUM(us.hit_question_count), 0) AS hitQuestionCount
+    FROM quiz_chapter AS qc
+    LEFT JOIN quiz_chapter_user_state AS us
+      ON qc.chapter_seq = us.chapter_seq 
+    GROUP BY
+      qc.category_seq,
+      qc.chapter_num;
+  `;
+
+  const [rows] = await connection.query(query);
+  return rows;
+};

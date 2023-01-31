@@ -290,3 +290,25 @@ exports.getActiveChapterLastPage = async function (req, res) {
     );
   }
 };
+
+exports.getCategoriesHitCount = async function (req, res) {
+  try {
+    const result = await provider.getCategoriesHitCount();
+
+    res.json(
+      response({
+        message: "카테고리별 맞은횟수 조회 완료",
+        result,
+      })
+    );
+  } catch (err) {
+    logger.warn(`[${dirName}]_${err.message}`);
+
+    res.status(err.status);
+    res.json(
+      errResponse({
+        message: err.message,
+      })
+    );
+  }
+};
