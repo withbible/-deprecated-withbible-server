@@ -36,6 +36,6 @@ module.exports = function (app) {
     history.getActiveChapterLastPage
   );
 
-  // 카테고리별 맞힌갯수 조회 API
-  app.get("/history/categories/hit-count", history.getCategoriesHitCount);
+  // 카테고리별 평균 맞힌갯수 챕터 전체조회 API
+  app.get("/history/categories/avg-hit-count", history.getAvgHitCount);
 };

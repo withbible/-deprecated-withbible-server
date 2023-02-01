@@ -291,13 +291,13 @@ exports.getActiveChapterLastPage = async function (req, res) {
   }
 };
 
-exports.getCategoriesHitCount = async function (req, res) {
+exports.getAvgHitCount = async function (req, res) {
   try {
-    const result = await provider.getCategoriesHitCount();
+    const result = await provider.getAvgHitCount();
 
     res.json(
       response({
-        message: "카테고리별 맞은횟수 조회 완료",
+        message: "카테고리별 평균 맞힌갯수 챕터 전체조회 완료",
         result,
       })
     );

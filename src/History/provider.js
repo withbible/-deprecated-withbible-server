@@ -125,10 +125,10 @@ exports.getTotalCountByUser = async function (userSeq) {
   return Promise.resolve(result);
 };
 
-exports.getCategoriesHitCount = async function () {
+exports.getAvgHitCount = async function () {
   const connection = await pool.getConnection(async (conn) => conn);
 
-  const rows = await dao.selectCategoriesHitCount(connection);
+  const rows = await dao.selectAvgHitCount(connection);
   connection.release();
 
   const result = [];
@@ -141,14 +141,16 @@ exports.getCategoriesHitCount = async function () {
     if (index > -1) {
       result[index].chapterNumArray = result[index].chapterNumArray.concat({
         chapterNum: each.chapterNum,
-        hitQuestionCount: parseInt(each.hitQuestionCount, 10),
+        avgHitQuestionCount: parseInt(each.avgHitQuestionCount, 10),
+        questionCount: each.questionCount,
       });
     } else {
       // eslint-disable-next-line no-param-reassign
       each.chapterNumArray = [
         {
           chapterNum: each.chapterNum,
-          hitQuestionCount: parseInt(each.hitQuestionCount, 10),
+          avgHitQuestionCount: parseInt(each.avgHitQuestionCount, 10),
+          questionCount: each.questionCount,
         },
       ];
       result.push(each);
@@ -159,7 +161,9 @@ exports.getCategoriesHitCount = async function () {
     // eslint-disable-next-line no-param-reassign
     delete each.chapterNum;
     // eslint-disable-next-line no-param-reassign
-    delete each.hitQuestionCount;
+    delete each.avgHitQuestionCount;
+    // eslint-disable-next-line no-param-reassign
+    delete each.questionCount;
   });
 
   return Promise.resolve(result);

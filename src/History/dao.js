@@ -204,15 +204,22 @@ exports.selectTotalCountByUser = async function (connection, userSeq) {
   return rows;
 };
 
-exports.selectCategoriesHitCount = async function (connection) {
+exports.selectAvgHitCount = async function (connection) {
   const query = `
     SELECT
       qc.category_seq AS categorySeq,
       qc.chapter_num AS chapterNum,
-      COALESCE(SUM(us.hit_question_count), 0) AS hitQuestionCount
+      (CASE	 	  
+        WHEN SUM(us.hit_question_count) = 0
+        THEN 0
+        WHEN us.hit_question_count IS NULL
+        THEN 0		    
+        ELSE ROUND(SUM(us.hit_question_count / qc.question_count))
+      END) AS avgHitQuestionCount,
+      qc.question_count AS questionCount
     FROM quiz_chapter AS qc
     LEFT JOIN quiz_chapter_user_state AS us
-      ON qc.chapter_seq = us.chapter_seq 
+      ON qc.chapter_seq = us.chapter_seq
     GROUP BY
       qc.category_seq,
       qc.chapter_num;
