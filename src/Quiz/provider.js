@@ -15,7 +15,7 @@ exports.getChapter = async function (keyword) {
 
   if (!result.length) {
     const err = new Error("데이터가 존재하지 않습니다.");
-    err.status = StatusCodes.NOT_FOUND;
+    err.status = StatusCodes.BAD_REQUEST;
     return Promise.reject(err);
   }
 
