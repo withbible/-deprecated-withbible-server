@@ -141,7 +141,7 @@ exports.getAvgHitCount = async function () {
     if (index > -1) {
       result[index].chapterNumArray = result[index].chapterNumArray.concat({
         chapterNum: each.chapterNum,
-        avgHitQuestionCount: parseInt(each.avgHitQuestionCount, 10),
+        avgHitQuestionCount: each.avgHitQuestionCount,
         questionCount: each.questionCount,
       });
     } else {
@@ -149,7 +149,7 @@ exports.getAvgHitCount = async function () {
       each.chapterNumArray = [
         {
           chapterNum: each.chapterNum,
-          avgHitQuestionCount: parseInt(each.avgHitQuestionCount, 10),
+          avgHitQuestionCount: each.avgHitQuestionCount,
           questionCount: each.questionCount,
         },
       ];
