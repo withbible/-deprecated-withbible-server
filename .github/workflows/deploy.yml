@@ -55,6 +55,14 @@ jobs:
                   value: ${{ secrets.FCM_ADMIN_SDK }}
                 - name: GHP_SERVER_ETC_ACCESS_TOKEN
                   value: ${{ secrets.GHP_SERVER_ETC_ACCESS_TOKEN }}
+                - name: PUSHER_APP_ID
+                  value: ${{ secrets.PUSHER_APP_ID }}
+                - name: PUSHER_APP_KEY
+                  value: ${{ secrets.PUSHER_APP_KEY }}
+                - name: PUSHER_SECREAT
+                  value: ${{ secrets.PUSHER_SECREAT }}
+                - name: PUSHER_CLUSTER
+                  value: ${{ secrets.PUSHER_CLUSTER }}
               ports: "5000"
             context:
               git:
