@@ -5,11 +5,13 @@ config:
     - name: Warm up
       duration: 1
       arrivalRate: 1
+    - name: Ramp up load
+      duration: 10
+      arrivalRate: 5
+    - name: Sustained load
+      duration: 20
+      arrivalRate: 10
   variables:
-    categorySeq:
-      - 1
-    chapterNum:
-      - 3
     limit:
       - 7
 before:
@@ -34,6 +36,12 @@ before:
         capture:
           json: "$.result"
           as: "activeChapterLastPage"
+        expect:
+          - statusCode: 200
+    - log: "카테고리별 검색어를 포함한 챕터수 조회 API"
+    - get:
+        url: "/quiz/categories/chapter"
+        afterResponse: "setQuizQueryString"
         expect:
           - statusCode: 200
 scenarios:

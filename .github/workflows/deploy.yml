@@ -63,6 +63,8 @@ jobs:
                   value: ${{ secrets.PUSHER_SECREAT }}
                 - name: PUSHER_CLUSTER
                   value: ${{ secrets.PUSHER_CLUSTER }}
+                - name: SENTRY_DSN_KEY
+                  value: ${{ secrets.SENTRY_DSN_KEY }}
               ports: "5000"
             context:
               git:

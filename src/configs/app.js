@@ -1,5 +1,6 @@
 const express = require("express");
 const { StatusCodes } = require("http-status-codes");
+const Sentry = require("@sentry/node");
 
 // INTERNAL IMPORT
 const path = require("path");
@@ -13,8 +14,13 @@ const fileName = path.basename(__filename, ".js");
 module.exports = function () {
   const app = express();
 
+  // MONITORING
+  require("./sentry")(app);
+
   // MIDDLEWARE
   app.use(
+    Sentry.Handlers.requestHandler(),
+    Sentry.Handlers.tracingHandler(),
     require("../middlewares/session"),
     require("../middlewares/cors"),
     express.urlencoded({ extended: false }),
@@ -41,6 +47,7 @@ module.exports = function () {
   });
 
   // ERROR HANDLEING
+  app.use(Sentry.Handlers.errorHandler());
   app.use((err, req, res) => {
     logger.error(`[${fileName}]_${err.message}`);
 

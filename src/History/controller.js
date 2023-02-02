@@ -1,4 +1,5 @@
 const { StatusCodes } = require("http-status-codes");
+const Sentry = require("@sentry/node");
 
 // INTERNAL IMPORT
 const path = require("path");
@@ -123,6 +124,7 @@ exports.postUserOption = async function (req, res) {
     );
   } catch (err) {
     logger.warn(`[${dirName}]_${err.message}`);
+    Sentry.captureException(err);
 
     res.status(err.status);
     res.json(
@@ -176,6 +178,7 @@ exports.putUserOption = async function (req, res) {
     );
   } catch (err) {
     logger.warn(`[${dirName}]_${err.message}`);
+    Sentry.captureException(err);
 
     res.status(err.status);
     res.json(
