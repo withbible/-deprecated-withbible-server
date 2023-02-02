@@ -6,6 +6,7 @@ const app = require("./src/configs/app");
 const { logger } = require("./src/configs/logger");
 const { sendQuizNotification } = require("./src/Notice/cron");
 
+// MAIN
 let server;
 
 if (process.env.NODE_ENV === "development") {

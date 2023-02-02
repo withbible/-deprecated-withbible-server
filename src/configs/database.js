@@ -7,6 +7,7 @@ const { logger } = require("./logger");
 // CONSTANT
 const fileName = path.basename(__filename, ".js");
 
+// CONFIG
 const pool = mysql.createPool({
   host: process.env.SQL_HOST,
   user: process.env.SQL_USER,
@@ -15,15 +16,17 @@ const pool = mysql.createPool({
   database: process.env.SQL_DATABASE,
 });
 
-pool
-  .query("SELECT 1")
-  .then(() => {
+// MAIN
+(async function () {
+  try {
+    await pool.query("SELECT 1");
+
     logger.info("MariaDB 10.5 connected");
-  })
-  .catch((err) => {
+  } catch (err) {
     logger.error(`[${fileName}]_${err.message}`);
     pool.end();
-  });
+  }
+})();
 
 module.exports = {
   pool,

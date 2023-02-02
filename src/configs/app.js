@@ -43,6 +43,7 @@ module.exports = function () {
   // ERROR HANDLEING
   app.use((err, req, res) => {
     logger.error(`[${fileName}]_${err.message}`);
+
     res.status(err.status);
     res.json(errResponse({ message: err.message }));
   });

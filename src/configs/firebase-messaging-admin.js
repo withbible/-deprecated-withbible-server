@@ -2,9 +2,11 @@ const admin = require("firebase-admin");
 const axios = require("axios");
 
 // INTERNAL IMPORT
+const path = require("path");
 const { logger } = require("./logger");
 
 // CONSTANT
+const fileName = path.basename(__filename, ".js");
 const REPO_URL = `https://api.github.com/repos/WithBible/withbible-server-etc/contents/keys/${process.env.FCM_ADMIN_SDK}.json`;
 
 // MAIN
@@ -18,12 +20,13 @@ const REPO_URL = `https://api.github.com/repos/WithBible/withbible-server-etc/co
     });
 
     const decoded = Buffer.from(response.data.content, "base64");
-
     admin.initializeApp({
       credential: admin.credential.cert(JSON.parse(decoded)),
     });
+
+    logger.info("Firebase Cloud Messaging connected");
   } catch (err) {
-    logger.warn(err.message);
+    logger.error(`[${fileName}]_${err.message}`);
   }
 })();
 

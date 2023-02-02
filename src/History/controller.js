@@ -3,6 +3,7 @@ const { StatusCodes } = require("http-status-codes");
 // INTERNAL IMPORT
 const path = require("path");
 const { logger } = require("../configs/logger");
+const pusher = require("../configs/pusher-trigger");
 const docs = require("../constants/docs");
 const { CATEGORY, HISTORY_API_DOCS } = require("../constants/enum");
 const { response, errResponse } = require("../modules/response");
@@ -93,6 +94,20 @@ exports.postUserOption = async function (req, res) {
       bulk
     );
 
+    const pusherResponse = await pusher.trigger(
+      "quiz-interaction-channel",
+      "quiz-interaction-event",
+      response({
+        message: "카테고리별 평균 맞힌갯수 챕터 전체조회 완료",
+        result,
+      }),
+      { info: "subscription_count.user_count" }
+    );
+    const pusherResult = await pusherResponse.json();
+    logger.info(
+      `Pusher Channels 이용자 현황: ${JSON.stringify(pusherResult.channels)}`
+    );
+
     res.status(StatusCodes.CREATED);
     res.json(
       response({
@@ -130,6 +145,20 @@ exports.putUserOption = async function (req, res) {
       chapterNum,
       userSeq,
       bulk
+    );
+
+    const pusherResponse = await pusher.trigger(
+      "quiz-interaction-channel",
+      "quiz-interaction-event",
+      response({
+        message: "카테고리별 평균 맞힌갯수 챕터 전체조회 완료",
+        result,
+      }),
+      { info: "subscription_count.user_count" }
+    );
+    const pusherResult = await pusherResponse.json();
+    logger.info(
+      `Pusher Channels 이용자 현황: ${JSON.stringify(pusherResult.channels)}`
     );
 
     res.status(StatusCodes.CREATED);

@@ -2,8 +2,6 @@ const { StatusCodes } = require("http-status-codes");
 
 // INTERNAL IMPORT
 const { pool } = require("../configs/database");
-const pusher = require("../configs/pusher-trigger");
-const { response } = require("../modules/response");
 const provider = require("./provider");
 const quizProvider = require("../Quiz/provider");
 const dao = require("./dao");
@@ -50,22 +48,13 @@ exports.postUserOption = async function (
     await dao.insertUserOption(connection, bulk, userSeq, chapterSeq);
     const result = await provider.getAvgHitCount();
 
-    pusher.trigger(
-      "quiz-interaction-channel",
-      "quiz-interaction-event",
-      response({
-        message: "카테고리별 평균 맞힌갯수 챕터 전체조회 완료",
-        result,
-      })
-    );
+    return Promise.resolve(result);
   } catch (err) {
     err.status = StatusCodes.INTERNAL_SERVER_ERROR;
     return Promise.reject(err);
   } finally {
     connection.release();
   }
-
-  return Promise.resolve();
 };
 
 exports.putUserOption = async function (
@@ -96,20 +85,11 @@ exports.putUserOption = async function (
     await dao.updateUserOption(connection, bulk, userSeq, chapterSeq);
     const result = await provider.getAvgHitCount();
 
-    pusher.trigger(
-      "quiz-interaction-channel",
-      "quiz-interaction-event",
-      response({
-        message: "카테고리별 평균 맞힌갯수 챕터 전체조회 완료",
-        result,
-      })
-    );
+    return Promise.resolve(result);
   } catch (err) {
     err.status = StatusCodes.INTERNAL_SERVER_ERROR;
     return Promise.reject(err);
   } finally {
     connection.release();
   }
-
-  return Promise.resolve();
 };
