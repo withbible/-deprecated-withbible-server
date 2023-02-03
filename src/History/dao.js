@@ -44,10 +44,10 @@ exports.insertUserOption = async function (
   chapterSeq
 ) {
   let query = `
-  INSERT INTO quiz_user_option
-    (question_seq, question_option_seq, user_seq, chapter_seq)
-  VALUES
-`;
+    INSERT INTO quiz_user_option
+      (question_seq, question_option_seq, user_seq, chapter_seq)
+    VALUES
+  `;
 
   const values = Object.entries(bulk).map(
     ([key, value]) => `(${key}, ${value}, ${userSeq}, ${chapterSeq})`
@@ -65,30 +65,24 @@ exports.updateUserOption = async function (
   userSeq,
   chapterSeq
 ) {
-  const prefixQuery = `
-    UPDATE quiz_user_option AS uo
-    JOIN(
+  let query = `
+    INSERT INTO quiz_user_option
+      (question_seq, question_option_seq, user_seq, chapter_seq)
+    VALUES
   `;
 
   const values = Object.entries(bulk).map(
-    ([key, value]) => `
-      SELECT 
-        ${key} AS question_seq, 
-        ${value} AS new_question_option_seq      
-    `
+    ([key, value]) => `(${key}, ${value}, ${userSeq}, ${chapterSeq})`
   );
 
-  const postfixQuery = `
-    ) AS vals 
-    ON uo.question_seq = vals.question_seq
-    SET question_option_seq = new_question_option_seq
-    WHERE uo.user_seq = ${userSeq}
-    AND uo.chapter_seq = ${chapterSeq};
+  query += values.join();
+  query += `
+    ON DUPLICATE KEY UPDATE
+      question_seq = VALUES(question_seq),
+      question_option_seq = VALUES(question_option_seq),
+      user_seq = VALUES(user_seq),
+      chapter_seq = VALUES(chapter_seq);
   `;
-
-  let query = prefixQuery;
-  query += values.join("UNION ALL");
-  query += postfixQuery;
 
   await connection.query(query);
 };
