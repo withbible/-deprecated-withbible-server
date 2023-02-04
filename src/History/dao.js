@@ -87,6 +87,47 @@ exports.updateUserOption = async function (
   await connection.query(query);
 };
 
+exports.deleteUserOption = async function (connection, userSeq, chapterSeq) {
+  const query = `
+    DELETE 
+    FROM quiz_user_option
+    WHERE user_seq = ${userSeq}
+      AND chapter_seq = ${chapterSeq};
+  `;
+
+  await connection.query(query);
+};
+
+exports.deleteChapterUserState = async function (
+  connection,
+  userSeq,
+  chapterSeq
+) {
+  const query = `
+    DELETE 
+    FROM quiz_chapter_user_state
+    WHERE user_seq = ${userSeq}
+      AND chapter_seq = ${chapterSeq};
+  `;
+
+  await connection.query(query);
+};
+
+exports.selectScore = async function (connection, userSeq) {
+  const query = `
+    SELECT 
+      COUNT(*) * 100 AS quizScore
+    FROM quiz_question_option AS qo
+    INNER JOIN quiz_user_option AS uo
+      ON qo.question_option_seq = uo.question_option_seq    
+    WHERE qo.answer_yn = 1
+      AND uo.user_seq = ${userSeq};
+  `;
+
+  const [rows] = await connection.query(query);
+  return rows;
+};
+
 exports.selectActiveChapterCount = async function (connection, params) {
   const query = `
     SELECT

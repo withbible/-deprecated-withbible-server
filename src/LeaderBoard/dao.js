@@ -50,6 +50,18 @@ exports.insertLeaderBoard = async function (connection, userSeq) {
   return rows;
 };
 
+exports.updateLeaderBoard = async function (connection, userSeq, quizScore) {
+  const query = `
+    UPDATE user_leaderboard
+      SET quiz_score = ${quizScore}
+    WHERE 
+      user_seq = ${userSeq};
+  `;
+
+  const [rows] = await connection.query(query);
+  return rows;
+};
+
 exports.selectTotalCount = async function (connection) {
   const query = `
     SELECT

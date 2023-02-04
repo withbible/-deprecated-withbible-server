@@ -188,6 +188,57 @@ exports.putUserOption = async function (req, res) {
   }
 };
 
+exports.deleteUserOption = async function (req, res) {
+  const { categorySeq, chapterNum } = req.query;
+  const { userSeq } = req.session.user;
+
+  try {
+    const result = await service.deleteUserOption(
+      categorySeq,
+      chapterNum,
+      userSeq
+    );
+
+    const pusherResponse = await pusher.trigger(
+      "quiz-interaction-channel",
+      "quiz-interaction-event",
+      response({
+        message: "카테고리별 평균 맞힌갯수 챕터 전체조회 완료",
+        result,
+      }),
+      { info: "subscription_count.user_count" }
+    );
+    const pusherResult = await pusherResponse.json();
+    logger.info(
+      `Pusher Channels 이용자 현황: ${JSON.stringify(pusherResult.channels)}`
+    );
+
+    res.status(StatusCodes.CREATED);
+    res.json(
+      response({
+        message: "한 챕터의 선택기록 삭제 완료",
+        meta: {
+          category: CATEGORY[categorySeq],
+          categorySeq,
+          chapterNum,
+          links: filterReferenceOther(HISTORY_API_DOCS, req.method),
+        },
+      })
+    );
+  } catch (err) {
+    logger.warn(`[${dirName}]_${err.message}`);
+    Sentry.captureException(err);
+
+    res.status(err.status);
+    res.json(
+      errResponse({
+        message: err.message,
+        link: docs["PUT.USER-OPTION"],
+      })
+    );
+  }
+};
+
 exports.getActiveChapterCount = async function (req, res) {
   const { categorySeq } = req.query;
   const { userSeq } = req.session.user;

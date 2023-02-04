@@ -5,6 +5,7 @@ const { pool } = require("../configs/database");
 const provider = require("./provider");
 const quizProvider = require("../Quiz/provider");
 const dao = require("./dao");
+const leaderBoardDao = require("../LeaderBoard/dao");
 
 /**
  * @description
@@ -71,7 +72,6 @@ exports.putUserOption = async function (
   /**
    * @todo 변경 유무를 검증하여 없을시, 204 반환
    */
-
   if (!userOptionRows.length) {
     const err = new Error("해당 기록이 존재하지 않습니다.");
     err.status = StatusCodes.BAD_REQUEST;
@@ -88,6 +88,44 @@ exports.putUserOption = async function (
     return Promise.resolve(result);
   } catch (err) {
     err.status = StatusCodes.INTERNAL_SERVER_ERROR;
+    return Promise.reject(err);
+  } finally {
+    connection.release();
+  }
+};
+
+exports.deleteUserOption = async function (categorySeq, chapterNum, userSeq) {
+  const [userOptionRows, chapterSeqRow] = await Promise.all([
+    await provider.getUserOptions(categorySeq, chapterNum, userSeq),
+    await quizProvider.getChapterSeq(categorySeq, chapterNum),
+  ]);
+
+  if (!userOptionRows.length) {
+    const err = new Error("해당 기록이 존재하지 않습니다.");
+    err.status = StatusCodes.BAD_REQUEST;
+    return Promise.reject(err);
+  }
+
+  const connection = await pool.getConnection(async (conn) => conn);
+  const { chapterSeq } = chapterSeqRow;
+
+  try {
+    await connection.beginTransaction();
+    await Promise.all([
+      await dao.deleteUserOption(connection, userSeq, chapterSeq),
+      await dao.deleteChapterUserState(connection, userSeq, chapterSeq),
+    ]);
+
+    const [{ quizScore }] = await dao.selectScore(connection, userSeq);
+    await leaderBoardDao.updateLeaderBoard(connection, userSeq, quizScore);
+    await connection.commit();
+
+    const result = await provider.getAvgHitCount();
+
+    return Promise.resolve(result);
+  } catch (err) {
+    await connection.rollback();
+
     return Promise.reject(err);
   } finally {
     connection.release();

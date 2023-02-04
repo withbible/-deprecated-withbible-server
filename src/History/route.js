@@ -15,6 +15,13 @@ module.exports = function (app) {
   // 한 챕터의 선택기록 수정 API
   app.put("/history/chapter/user-option", validator, history.putUserOption);
 
+  // 한 챕터의 선택기록 삭제 API
+  app.delete(
+    "/history/chapter/user-option",
+    validator,
+    history.deleteUserOption
+  );
+
   // 한 카테고리의 활성화된 챕터갯수 조회 API
   app.get(
     "/history/category/active-chapter-count",

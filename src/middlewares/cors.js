@@ -6,6 +6,6 @@ module.exports = cors({
     process.env.LOCAL_HTTPS_GUEST,
     process.env.CLOUD_GUEST,
   ],
-  methods: ["GET", "PUT", "POST", "PATCH"],
+  methods: ["GET", "PUT", "POST", "PATCH", "DELETE"],
   credentials: true,
 });
