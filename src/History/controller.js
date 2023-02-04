@@ -119,7 +119,6 @@ exports.postUserOption = async function (req, res) {
           chapterNum,
           links: filterReferenceOther(HISTORY_API_DOCS, req.method),
         },
-        result,
       })
     );
   } catch (err) {
@@ -173,7 +172,6 @@ exports.putUserOption = async function (req, res) {
           chapterNum,
           links: filterReferenceOther(HISTORY_API_DOCS, req.method),
         },
-        result,
       })
     );
   } catch (err) {

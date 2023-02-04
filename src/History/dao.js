@@ -214,9 +214,10 @@ exports.selectAvgHitCount = async function (connection) {
         THEN 0
         WHEN us.hit_question_count IS NULL
         THEN 0		    
-        ELSE ROUND(SUM(us.hit_question_count / qc.question_count), 2)
+        ELSE ROUND(AVG(us.hit_question_count), 2)
       END) AS avgHitQuestionCount,
-      qc.question_count AS questionCount
+      qc.question_count AS questionCount,
+      SUM(us.hit_question_count)
     FROM quiz_chapter AS qc
     LEFT JOIN quiz_chapter_user_state AS us
       ON qc.chapter_seq = us.chapter_seq
