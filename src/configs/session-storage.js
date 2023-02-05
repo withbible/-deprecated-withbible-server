@@ -9,7 +9,7 @@ const fileName = path.basename(__filename, ".js");
 
 // CONFIG
 const client = redis.createClient({
-  url: process.env.REDIS_URI,
+  url: process.env.REDIS_URL,
   legacyMode: true,
 });
 

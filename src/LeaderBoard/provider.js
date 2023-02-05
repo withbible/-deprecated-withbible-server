@@ -1,7 +1,7 @@
 const { StatusCodes } = require("http-status-codes");
 
 // INTERNAL IMPORT
-const { pool } = require("../configs/database");
+const pool = require("../configs/database");
 const dao = require("./dao");
 
 exports.getLeaderBoard = async function () {

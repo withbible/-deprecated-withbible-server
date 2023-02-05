@@ -49,6 +49,8 @@ jobs:
                   value: ${{ secrets.SQL_PORT }}
                 - name: SQL_DATABASE
                   value: ${{ secrets.SQL_DATABASE }}
+                - name: REDIS_URL
+                  value: ${{ secrets.REDIS_URL }}
                 - name: COOKIE_SECRET
                   value: ${{ secrets.COOKIE_SECRET }}
                 - name: FCM_ADMIN_SDK

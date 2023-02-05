@@ -9,5 +9,6 @@ module.exports = function (app) {
       new Tracing.Integrations.Express({ app }),
     ],
     tracesSampleRate: 1.0,
+    enabled: process.env.NODE_ENV === "production",
   });
 };

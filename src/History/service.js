@@ -1,7 +1,7 @@
 const { StatusCodes } = require("http-status-codes");
 
 // INTERNAL IMPORT
-const { pool } = require("../configs/database");
+const pool = require("../configs/database");
 const provider = require("./provider");
 const quizProvider = require("../Quiz/provider");
 const dao = require("./dao");
@@ -32,8 +32,8 @@ exports.postUserOption = async function (
   bulk
 ) {
   const [userOptionRows, chapterSeqRow] = await Promise.all([
-    await provider.getUserOptions(categorySeq, chapterNum, userSeq),
-    await quizProvider.getChapterSeq(categorySeq, chapterNum),
+    provider.getUserOptions(categorySeq, chapterNum, userSeq),
+    quizProvider.getChapterSeq(categorySeq, chapterNum),
   ]);
 
   if (userOptionRows.length > 0) {
@@ -65,8 +65,8 @@ exports.putUserOption = async function (
   bulk
 ) {
   const [userOptionRows, chapterSeqRow] = await Promise.all([
-    await provider.getUserOptions(categorySeq, chapterNum, userSeq),
-    await quizProvider.getChapterSeq(categorySeq, chapterNum),
+    provider.getUserOptions(categorySeq, chapterNum, userSeq),
+    quizProvider.getChapterSeq(categorySeq, chapterNum),
   ]);
 
   /**
@@ -96,8 +96,8 @@ exports.putUserOption = async function (
 
 exports.deleteUserOption = async function (categorySeq, chapterNum, userSeq) {
   const [userOptionRows, chapterSeqRow] = await Promise.all([
-    await provider.getUserOptions(categorySeq, chapterNum, userSeq),
-    await quizProvider.getChapterSeq(categorySeq, chapterNum),
+    provider.getUserOptions(categorySeq, chapterNum, userSeq),
+    quizProvider.getChapterSeq(categorySeq, chapterNum),
   ]);
 
   if (!userOptionRows.length) {
@@ -112,8 +112,8 @@ exports.deleteUserOption = async function (categorySeq, chapterNum, userSeq) {
   try {
     await connection.beginTransaction();
     await Promise.all([
-      await dao.deleteUserOption(connection, userSeq, chapterSeq),
-      await dao.deleteChapterUserState(connection, userSeq, chapterSeq),
+      dao.deleteUserOption(connection, userSeq, chapterSeq),
+      dao.deleteChapterUserState(connection, userSeq, chapterSeq),
     ]);
 
     const [{ quizScore }] = await dao.selectScore(connection, userSeq);

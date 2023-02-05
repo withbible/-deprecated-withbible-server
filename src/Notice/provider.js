@@ -1,4 +1,4 @@
-const { pool } = require("../configs/database");
+const pool = require("../configs/database");
 const dao = require("./dao");
 
 exports.getToken = async function (userID) {

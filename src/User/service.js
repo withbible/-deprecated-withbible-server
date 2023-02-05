@@ -2,7 +2,7 @@ const bcypt = require("bcrypt");
 const { StatusCodes } = require("http-status-codes");
 
 // INTERNAL IMPORT
-const { pool } = require("../configs/database");
+const pool = require("../configs/database");
 const noticeService = require("../Notice/service");
 const noticeProvider = require("../Notice/provider");
 const provider = require("./provider");

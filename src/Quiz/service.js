@@ -1,7 +1,7 @@
 const { StatusCodes } = require("http-status-codes");
 
 // INTERNAL IMPORT
-const { pool } = require("../configs/database");
+const pool = require("../configs/database");
 const provider = require("./provider");
 const dao = require("./dao");
 
@@ -61,8 +61,8 @@ exports.postQuiz = async function (categorySeq, question, questionSub, bulk) {
 
 exports.putQuiz = async function (questionSeq, question, questionSub, bulk) {
   const [questionRow, chapterRow] = await Promise.all([
-    await provider.getQuestionSeqByNumber(questionSeq),
-    await provider.getChapterByNumber(questionSeq),
+    provider.getQuestionSeqByNumber(questionSeq),
+    provider.getChapterByNumber(questionSeq),
   ]);
 
   if (!questionRow) {

@@ -15,7 +15,7 @@ module.exports = function () {
   const app = express();
 
   // MONITORING
-  require("./sentry")(app);
+  require("./monitoring")(app);
 
   // MIDDLEWARE
   app.use(
@@ -47,7 +47,16 @@ module.exports = function () {
   });
 
   // ERROR HANDLEING
-  app.use(Sentry.Handlers.errorHandler());
+  app.use(
+    Sentry.Handlers.errorHandler({
+      shouldHandleError(err) {
+        if (err.status === 404 || err.status === 500) {
+          return true;
+        }
+        return false;
+      },
+    })
+  );
   app.use((err, req, res) => {
     logger.error(`[${fileName}]_${err.message}`);
 
