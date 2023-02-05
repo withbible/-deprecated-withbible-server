@@ -1,5 +1,6 @@
 const session = require("express-session");
-const FileStore = require("session-file-store")(session);
+const RedisStore = require("connect-redis")(session);
+const client = require("../configs/session-storage");
 
 module.exports = session({
   name: "loginData",
@@ -7,15 +8,7 @@ module.exports = session({
   resave: false,
   saveUninitialized: false,
   rolling: true,
-  store: new FileStore({
-    /**
-     * @description number by seconds
-     *
-     * [default] 1H
-     */
-    reapInterval: 60 * 60,
-    reapAsync: true,
-  }),
+  store: new RedisStore({ client, prefix: "session:" }),
   cookie: {
     httpOnly: true,
     secure: false,
