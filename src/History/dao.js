@@ -270,3 +270,51 @@ exports.selectAvgHitCount = async function (connection) {
   const [rows] = await connection.query(query);
   return rows;
 };
+
+exports.selectActiveCountByChapter = async function (connection, params) {
+  const query = `
+    SELECT 			
+      COUNT(uo.question_option_seq) AS activeQuestionCount
+    FROM quiz_user_option AS uo		
+    GROUP BY 
+      uo.chapter_seq,
+      uo.user_seq
+    HAVING uo.chapter_seq = ?
+      AND uo.user_seq = ?;
+  `;
+
+  const [rows] = await connection.query(query, params);
+  return rows;
+};
+
+exports.selectHitCountByChapter = async function (connection, params) {
+  const query = `
+    SELECT	
+      COUNT(uo.question_option_seq) AS hitQuestionCount
+    FROM quiz_question_option AS qo	
+    INNER JOIN quiz_user_option AS uo	
+      ON qo.question_option_seq = uo.question_option_seq 
+    WHERE qo.answer_yn = 1
+    GROUP BY
+      uo.chapter_seq,
+      uo.user_seq
+    HAVING uo.chapter_seq = ?
+      AND uo.user_seq = ?;
+  `;
+
+  const [rows] = await connection.query(query, params);
+  return rows;
+};
+
+exports.updateChapterUserState = async function (connection, params) {
+  const query = `
+    UPDATE quiz_chapter_user_state
+    SET active_question_count = ?,
+        hit_question_count = IFNULL(?, 0)
+    WHERE chapter_seq = ?
+    AND user_seq = ?;
+  `;
+
+  const [rows] = await connection.query(query, params);
+  return rows;
+};

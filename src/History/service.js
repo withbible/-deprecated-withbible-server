@@ -82,11 +82,31 @@ exports.putUserOption = async function (
   const { chapterSeq } = chapterSeqRow;
 
   try {
+    await connection.beginTransaction();
     await dao.updateUserOption(connection, bulk, userSeq, chapterSeq);
+
+    const [[activeCountRow], [hitCountRow]] = await Promise.all([
+      dao.selectActiveCountByChapter(connection, [chapterSeq, userSeq]),
+      dao.selectHitCountByChapter(connection, [chapterSeq, userSeq]),
+    ]);
+
+    await dao.updateChapterUserState(connection, [
+      activeCountRow.activeQuestionCount,
+      hitCountRow?.hitQuestionCount,
+      chapterSeq,
+      userSeq,
+    ]);
+
+    const [{ quizScore }] = await dao.selectScore(connection, userSeq);
+    await leaderBoardDao.updateLeaderBoard(connection, userSeq, quizScore);
+    await connection.commit();
+
     const result = await provider.getAvgHitCount();
 
     return Promise.resolve(result);
   } catch (err) {
+    await connection.rollback();
+
     err.status = StatusCodes.INTERNAL_SERVER_ERROR;
     return Promise.reject(err);
   } finally {
