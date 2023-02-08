@@ -15,43 +15,12 @@ const service = require("./service");
 // CONSTANT
 const dirName = path.basename(__dirname);
 
-exports.getHitCount = async function (req, res) {
+exports.getUserOption = async function (req, res) {
   const { categorySeq, chapterNum } = req.query;
   const { userSeq } = req.session.user;
 
   try {
-    const result = await provider.getHitCount(categorySeq, chapterNum, userSeq);
-
-    res.json(
-      response({
-        message: "한 챕터의 맞힌갯수 조회 완료",
-        meta: {
-          category: CATEGORY[categorySeq],
-          categorySeq,
-          chapterNum,
-        },
-        result,
-      })
-    );
-  } catch (err) {
-    logger.warn(`[${dirName}]_${err.message}`);
-
-    res.status(err.status);
-    res.json(
-      errResponse({
-        message: err.message,
-        link: docs["GET.HIT-COUNT"],
-      })
-    );
-  }
-};
-
-exports.getUserOptions = async function (req, res) {
-  const { categorySeq, chapterNum } = req.query;
-  const { userSeq } = req.session.user;
-
-  try {
-    const result = await service.getUserOptions(
+    const result = await service.getUserOption(
       categorySeq,
       chapterNum,
       userSeq
@@ -239,6 +208,59 @@ exports.deleteUserOption = async function (req, res) {
   }
 };
 
+exports.getHitCount = async function (req, res) {
+  const { categorySeq, chapterNum } = req.query;
+  const { userSeq } = req.session.user;
+
+  try {
+    const result = await provider.getHitCount(categorySeq, chapterNum, userSeq);
+
+    res.json(
+      response({
+        message: "한 챕터의 맞힌갯수 조회 완료",
+        meta: {
+          category: CATEGORY[categorySeq],
+          categorySeq,
+          chapterNum,
+        },
+        result,
+      })
+    );
+  } catch (err) {
+    logger.warn(`[${dirName}]_${err.message}`);
+
+    res.status(err.status);
+    res.json(
+      errResponse({
+        message: err.message,
+        link: docs["GET.HIT-COUNT"],
+      })
+    );
+  }
+};
+
+exports.getAvgHitCount = async function (req, res) {
+  try {
+    const result = await provider.getAvgHitCount();
+
+    res.json(
+      response({
+        message: "카테고리별 평균 맞힌갯수 챕터 전체조회 완료",
+        result,
+      })
+    );
+  } catch (err) {
+    logger.warn(`[${dirName}]_${err.message}`);
+
+    res.status(err.status);
+    res.json(
+      errResponse({
+        message: err.message,
+      })
+    );
+  }
+};
+
 exports.getActiveChapterCount = async function (req, res) {
   const { categorySeq } = req.query;
   const { userSeq } = req.session.user;
@@ -306,7 +328,7 @@ exports.getActiveChapterPage = async function (req, res) {
   const { userSeq } = req.session.user;
 
   try {
-    const totalCount = await provider.getTotalCountByUser(userSeq);
+    const totalCount = await provider.getTotalCount(userSeq);
     const lastPage = Math.ceil(totalCount / limit);
     const result = await provider.getActiveChapterPage(
       limit,
@@ -351,34 +373,12 @@ exports.getActiveChapterLastPage = async function (req, res) {
   const { userSeq } = req.session.user;
 
   try {
-    const totalCount = await provider.getTotalCountByUser(userSeq);
+    const totalCount = await provider.getTotalCount(userSeq);
     const result = Math.ceil(totalCount / limit);
 
     res.json(
       response({
         message: "카테고리별 활성화된 챕터 부분조회 마지막 페이징값 조회 완료",
-        result,
-      })
-    );
-  } catch (err) {
-    logger.warn(`[${dirName}]_${err.message}`);
-
-    res.status(err.status);
-    res.json(
-      errResponse({
-        message: err.message,
-      })
-    );
-  }
-};
-
-exports.getAvgHitCount = async function (req, res) {
-  try {
-    const result = await provider.getAvgHitCount();
-
-    res.json(
-      response({
-        message: "카테고리별 평균 맞힌갯수 챕터 전체조회 완료",
         result,
       })
     );

@@ -4,29 +4,10 @@ const { StatusCodes } = require("http-status-codes");
 const pool = require("../configs/database");
 const dao = require("./dao");
 
-exports.getHitCount = async function (categorySeq, chapterNum, userSeq) {
+exports.getUserOption = async function (categorySeq, chapterNum, userSeq) {
   const connection = await pool.getConnection(async (conn) => conn);
 
-  const [result] = await dao.selectHitCount(connection, [
-    categorySeq,
-    chapterNum,
-    userSeq,
-  ]);
-  connection.release();
-
-  if (!result) {
-    const err = new Error("해당 기록이 존재하지 않습니다.");
-    err.status = StatusCodes.BAD_REQUEST;
-    return Promise.reject(err);
-  }
-
-  return Promise.resolve(result);
-};
-
-exports.getUserOptions = async function (categorySeq, chapterNum, userSeq) {
-  const connection = await pool.getConnection(async (conn) => conn);
-
-  const result = await dao.selectUserOptions(connection, [
+  const result = await dao.selectUserOption(connection, [
     categorySeq,
     chapterNum,
     userSeq,
@@ -115,13 +96,32 @@ exports.getActiveChapterPage = async function (limit, page, lastPage, userSeq) {
   return Promise.resolve(result);
 };
 
-exports.getTotalCountByUser = async function (userSeq) {
+exports.getTotalCount = async function (userSeq) {
   const connection = await pool.getConnection(async (conn) => conn);
 
-  const rows = await dao.selectTotalCountByUser(connection, userSeq);
+  const rows = await dao.selectTotalCount(connection, userSeq);
   connection.release();
 
   const result = rows[0].totalCount;
+  return Promise.resolve(result);
+};
+
+exports.getHitCount = async function (categorySeq, chapterNum, userSeq) {
+  const connection = await pool.getConnection(async (conn) => conn);
+
+  const [result] = await dao.selectHitCountByChapterNum(connection, [
+    categorySeq,
+    chapterNum,
+    userSeq,
+  ]);
+  connection.release();
+
+  if (!result) {
+    const err = new Error("해당 기록이 존재하지 않습니다.");
+    err.status = StatusCodes.BAD_REQUEST;
+    return Promise.reject(err);
+  }
+
   return Promise.resolve(result);
 };
 

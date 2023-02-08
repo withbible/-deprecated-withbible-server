@@ -7,14 +7,8 @@ const quizProvider = require("../Quiz/provider");
 const dao = require("./dao");
 const leaderBoardDao = require("../LeaderBoard/dao");
 
-/**
- * @description
- * Provider 계층의 Read의 데이터가 존재하지 않을시
- * Service 계층의 Read와 Create는 다르게 처리되기 때문에
- * Service 계층에 Read를 두었습니다.
- */
-exports.getUserOptions = async function (categorySeq, chapterNum, userSeq) {
-  const rows = await provider.getUserOptions(categorySeq, chapterNum, userSeq);
+exports.getUserOption = async function (categorySeq, chapterNum, userSeq) {
+  const rows = await provider.getUserOption(categorySeq, chapterNum, userSeq);
 
   if (!rows.length) {
     const err = new Error("해당 기록이 존재하지 않습니다.");
@@ -32,7 +26,7 @@ exports.postUserOption = async function (
   bulk
 ) {
   const [userOptionRows, chapterSeqRow] = await Promise.all([
-    provider.getUserOptions(categorySeq, chapterNum, userSeq),
+    provider.getUserOption(categorySeq, chapterNum, userSeq),
     quizProvider.getChapterSeq(categorySeq, chapterNum),
   ]);
 
@@ -65,7 +59,7 @@ exports.putUserOption = async function (
   bulk
 ) {
   const [userOptionRows, chapterSeqRow] = await Promise.all([
-    provider.getUserOptions(categorySeq, chapterNum, userSeq),
+    provider.getUserOption(categorySeq, chapterNum, userSeq),
     quizProvider.getChapterSeq(categorySeq, chapterNum),
   ]);
 
@@ -86,8 +80,8 @@ exports.putUserOption = async function (
     await dao.updateUserOption(connection, bulk, userSeq, chapterSeq);
 
     const [[activeCountRow], [hitCountRow]] = await Promise.all([
-      dao.selectActiveCountByChapter(connection, [chapterSeq, userSeq]),
-      dao.selectHitCountByChapter(connection, [chapterSeq, userSeq]),
+      dao.selectActiveQuestionCount(connection, [chapterSeq, userSeq]),
+      dao.selectHitCountByChapterSeq(connection, [chapterSeq, userSeq]),
     ]);
 
     await dao.updateChapterUserState(connection, [
@@ -116,7 +110,7 @@ exports.putUserOption = async function (
 
 exports.deleteUserOption = async function (categorySeq, chapterNum, userSeq) {
   const [userOptionRows, chapterSeqRow] = await Promise.all([
-    provider.getUserOptions(categorySeq, chapterNum, userSeq),
+    provider.getUserOption(categorySeq, chapterNum, userSeq),
     quizProvider.getChapterSeq(categorySeq, chapterNum),
   ]);
 

@@ -1,21 +1,4 @@
-exports.selectHitCount = async function (connection, params) {
-  const query = `
-    SELECT
-      us.hit_question_count AS hitQuestionCount,
-      qc.question_count AS questionCount
-    FROM quiz_chapter AS qc
-    LEFT JOIN quiz_chapter_user_state AS us
-      ON qc.chapter_seq = us.chapter_seq
-    WHERE qc.category_seq = ?
-      AND qc.chapter_num = ?
-      AND us.user_seq = ?;
-  `;
-
-  const [rows] = await connection.query(query, params);
-  return rows;
-};
-
-exports.selectUserOptions = async function (connection, params) {
+exports.selectUserOption = async function (connection, params) {
   const query = `
     SELECT
       q.question_seq AS questionSeq,
@@ -128,6 +111,22 @@ exports.selectScore = async function (connection, userSeq) {
   return rows;
 };
 
+exports.selectActiveQuestionCount = async function (connection, params) {
+  const query = `
+    SELECT 			
+      COUNT(uo.question_option_seq) AS activeQuestionCount
+    FROM quiz_user_option AS uo		
+    GROUP BY 
+      uo.chapter_seq,
+      uo.user_seq
+    HAVING uo.chapter_seq = ?
+      AND uo.user_seq = ?;
+  `;
+
+  const [rows] = await connection.query(query, params);
+  return rows;
+};
+
 exports.selectActiveChapterCount = async function (connection, params) {
   const query = `
     SELECT
@@ -232,7 +231,7 @@ exports.selectActiveChapterPage = async function (connection, params) {
   return rows;
 };
 
-exports.selectTotalCountByUser = async function (connection, userSeq) {
+exports.selectTotalCount = async function (connection, userSeq) {
   const query = `
     SELECT
       COUNT(*) AS totalCount
@@ -245,49 +244,24 @@ exports.selectTotalCountByUser = async function (connection, userSeq) {
   return rows;
 };
 
-exports.selectAvgHitCount = async function (connection) {
+exports.selectHitCountByChapterNum = async function (connection, params) {
   const query = `
     SELECT
-      qc.category_seq AS categorySeq,
-      qc.chapter_num AS chapterNum,
-      (CASE	 	  
-        WHEN SUM(us.hit_question_count) = 0
-        THEN 0
-        WHEN us.hit_question_count IS NULL
-        THEN 0		    
-        ELSE ROUND(AVG(us.hit_question_count), 2)
-      END) AS avgHitQuestionCount,
-      qc.question_count AS questionCount,
-      SUM(us.hit_question_count)
+      us.hit_question_count AS hitQuestionCount,
+      qc.question_count AS questionCount
     FROM quiz_chapter AS qc
     LEFT JOIN quiz_chapter_user_state AS us
       ON qc.chapter_seq = us.chapter_seq
-    GROUP BY
-      qc.category_seq,
-      qc.chapter_num;
-  `;
-
-  const [rows] = await connection.query(query);
-  return rows;
-};
-
-exports.selectActiveCountByChapter = async function (connection, params) {
-  const query = `
-    SELECT 			
-      COUNT(uo.question_option_seq) AS activeQuestionCount
-    FROM quiz_user_option AS uo		
-    GROUP BY 
-      uo.chapter_seq,
-      uo.user_seq
-    HAVING uo.chapter_seq = ?
-      AND uo.user_seq = ?;
+    WHERE qc.category_seq = ?
+      AND qc.chapter_num = ?
+      AND us.user_seq = ?;
   `;
 
   const [rows] = await connection.query(query, params);
   return rows;
 };
 
-exports.selectHitCountByChapter = async function (connection, params) {
+exports.selectHitCountByChapterSeq = async function (connection, params) {
   const query = `
     SELECT	
       COUNT(uo.question_option_seq) AS hitQuestionCount
@@ -303,6 +277,29 @@ exports.selectHitCountByChapter = async function (connection, params) {
   `;
 
   const [rows] = await connection.query(query, params);
+  return rows;
+};
+
+exports.selectAvgHitCount = async function (connection) {
+  const query = `
+    SELECT
+      qc.category_seq AS categorySeq,
+      qc.chapter_num AS chapterNum,
+      (CASE	 	          
+        WHEN us.hit_question_count IS NULL
+        THEN 0		    
+        ELSE ROUND(AVG(us.hit_question_count), 2)
+      END) AS avgHitQuestionCount,
+      qc.question_count AS questionCount      
+    FROM quiz_chapter AS qc
+    LEFT JOIN quiz_chapter_user_state AS us
+      ON qc.chapter_seq = us.chapter_seq
+    GROUP BY
+      qc.category_seq,
+      qc.chapter_num;
+  `;
+
+  const [rows] = await connection.query(query);
   return rows;
 };
 
