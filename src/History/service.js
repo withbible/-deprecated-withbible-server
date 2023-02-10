@@ -40,7 +40,25 @@ exports.postUserOption = async function (
   const { chapterSeq } = chapterSeqRow;
 
   try {
+    await connection.beginTransaction();
     await dao.insertUserOption(connection, bulk, userSeq, chapterSeq);
+
+    const [[activeCountRow], [hitCountRow]] = await Promise.all([
+      dao.selectActiveQuestionCount(connection, [chapterSeq, userSeq]),
+      dao.selectHitCountByChapterSeq(connection, [chapterSeq, userSeq]),
+    ]);
+
+    await dao.insertChapterUserState(connection, [
+      chapterSeq,
+      userSeq,
+      activeCountRow.activeQuestionCount,
+      hitCountRow?.hitQuestionCount,
+    ]);
+
+    const [{ quizScore }] = await dao.selectScore(connection, userSeq);
+    await leaderBoardDao.updateLeaderBoard(connection, userSeq, quizScore);
+    await connection.commit();
+
     const result = await provider.getAvgHitCount();
 
     return Promise.resolve(result);

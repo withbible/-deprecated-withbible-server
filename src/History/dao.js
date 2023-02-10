@@ -303,6 +303,24 @@ exports.selectAvgHitCount = async function (connection) {
   return rows;
 };
 
+exports.insertChapterUserState = async function (connection, params) {
+  const query = `
+    INSERT INTO quiz_chapter_user_state
+      (chapter_seq, user_seq, active_question_count, hit_question_count)
+    VALUES(
+      ?,
+      ?,
+      ?,
+      IFNULL(?, 0)
+    ) ON DUPLICATE KEY UPDATE
+      chapter_seq = VALUES(chapter_seq),
+      user_seq = VALUES(user_seq);
+  `;
+
+  const [rows] = await connection.query(query, params);
+  return rows;
+};
+
 exports.updateChapterUserState = async function (connection, params) {
   const query = `
     UPDATE quiz_chapter_user_state
