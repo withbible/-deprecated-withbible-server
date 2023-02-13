@@ -27,6 +27,8 @@ jobs:
 
             options:
               env:
+                - name: TZ
+                  value: Asia/Seoul
                 - name: LOCAL_HOST
                   value: https://localhost:5000
                 - name: CLOUD_HOST
