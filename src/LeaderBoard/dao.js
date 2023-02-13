@@ -1,8 +1,7 @@
 exports.selectLeaderBoard = async function (connection) {
   const query = `
     SELECT
-      u.user_id AS userID,
-      u.user_name AS userName,
+      u.user_id AS userID,      
       CONCAT('https://avatars.dicebear.com/api/micah/', u.user_id,'.svg') AS image,
       ul.quiz_score AS quizScore,
       ul.updated_at AS updatedAt
@@ -22,8 +21,7 @@ exports.selectLeaderBoardPage = async function (
 ) {
   const query = `
     SELECT
-      u.user_id AS userID,
-      u.user_name AS userName,
+      u.user_id AS userID,      
       CONCAT('https://avatars.dicebear.com/api/micah/', u.user_id,'.svg') AS image,
       ul.quiz_score AS quizScore,
       ul.updated_at AS updatedAt

@@ -9,13 +9,7 @@ const provider = require("./provider");
 const dao = require("./dao");
 const leaderBoardDao = require("../LeaderBoard/dao");
 
-exports.postUser = async function (
-  userID,
-  password,
-  userName,
-  userEmail,
-  token
-) {
+exports.postUser = async function (userID, password, userEmail, token) {
   const userIDRows = await provider.userIDCheck(userID);
 
   if (userIDRows.length > 0) {
@@ -35,7 +29,6 @@ exports.postUser = async function (
     const newUserRow = await dao.insertUser(connection, [
       userID,
       hashedPassword,
-      userName,
       userEmail,
       token,
     ]);

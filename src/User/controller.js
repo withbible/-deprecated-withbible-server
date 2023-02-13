@@ -22,13 +22,12 @@ function decodeAuthorization(authorization) {
 
 exports.postUser = async function (req, res) {
   const [userID, password] = decodeAuthorization(req.headers.authorization);
-  const { userName, userEmail, fcmToken } = req.body;
+  const { userEmail, fcmToken } = req.body;
 
   try {
     const result = await service.postUser(
       userID,
       password,
-      userName,
       userEmail,
       fcmToken
     );
