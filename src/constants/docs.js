@@ -19,12 +19,16 @@ module.exports = {
     "https://documenter.getpostman.com/view/11900791/2s8YswQrkS#85553210-7171-4c15-b37e-fdeb7f21d68f",
   "GET.HIT-COUNT":
     "https://documenter.getpostman.com/view/11900791/2s8YswQrkS#415a33d7-012e-45a7-bbcf-a669e90e2336",
-  "GET.USER-OPTIONS":
+  "GET.AVG-HIT-COUNT":
+    "https://documenter.getpostman.com/view/11900791/2s8YswQrkS#141b7de1-62ea-4730-ac36-8223af4f87e7",
+  "GET.USER-OPTION":
     "https://documenter.getpostman.com/view/11900791/2s8YswQrkS#cdac7f5e-3d2f-4054-89f4-6993f0b1fc47",
   "POST.USER-OPTION":
     "https://documenter.getpostman.com/view/11900791/2s8YswQrkS#9ccf3ae7-46ed-4424-bedd-506ef083795e",
   "PUT.USER-OPTION":
     "https://documenter.getpostman.com/view/11900791/2s8YswQrkS#4073cc67-8a41-4b4e-9314-4cd65aa8d0d5",
+  "DELETE.USER-OPTION":
+    "https://documenter.getpostman.com/view/11900791/2s8YswQrkS#6db8505d-f3ba-4d13-ab1e-26cb2c102322",
   "GET.ACTIVE-CHAPTER-COUNT":
     "https://documenter.getpostman.com/view/11900791/2s8YswQrkS#a61d2c21-ee0a-46c7-9fa2-513a1621c9c7",
   "GET.ACTIVE-CHAPTER":

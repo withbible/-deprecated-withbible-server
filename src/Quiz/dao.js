@@ -169,14 +169,18 @@ exports.insertQuestion = async function (connection, params) {
   return rows;
 };
 
-exports.insertOptionBulk = async function (connection, bulk, questionSeq) {
+exports.insertOptionArray = async function (
+  connection,
+  optionArray,
+  questionSeq
+) {
   let query = `
     INSERT INTO quiz_question_option
       (question_seq, question_option, answer_yn)
     VALUES
   `;
 
-  const values = bulk.map(
+  const values = optionArray.map(
     (each) =>
       `(
       ${questionSeq}, 
@@ -203,14 +207,14 @@ exports.updateQuestion = async function (connection, params) {
   return rows;
 };
 
-exports.updateOption = async function (connection, bulk, questionSeq) {
+exports.updateOption = async function (connection, optionArray, questionSeq) {
   let query = `
     INSERT INTO quiz_question_option
       (question_option_seq, question_seq, question_option, answer_yn)
     VALUES
   `;
 
-  const values = bulk.map(
+  const values = optionArray.map(
     (each) =>
       `(        
         ${each.questionOptionSeq},

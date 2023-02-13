@@ -2,15 +2,16 @@ config:
   target: "{{ $processEnvironment.CLOUD_HOST }}"
   processor: "../load-test-hook.js"
   phases:
-    - name: Warm up
-      duration: 1
+    - name: "Warming up the application"
+      duration: 5
       arrivalRate: 1
-    - name: Ramp up load
+    - name: "Mild load on the application"
       duration: 10
-      arrivalRate: 5
-    - name: Sustained load
-      duration: 20
-      arrivalRate: 10
+      rampTo: 30
+    - name: "Putting load on the application"
+      duration: 180
+      arrivalRate: 3
+      maxVusers: 120
 before:
   flow:
     - log: "로그인"
@@ -57,7 +58,7 @@ scenarios:
           cookie:
             loginData: "{{ cookieValue }}"
           json:
-            bulk: "{{ userOption }}"
+            userOption: "{{ userOption }}"
           ifTrue: "statusCode == 400"
       # 한 챕터의 선택기록 수정 API
       - put:
@@ -65,7 +66,7 @@ scenarios:
           cookie:
             loginData: "{{ cookieValue }}"
           json:
-            bulk: "{{ userOption }}"
+            userOption: "{{ userOption }}"
           ifTrue: "statusCode == 200"
       # 한 챕터의 맞힌갯수 조회 API
       - get:

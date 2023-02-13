@@ -45,7 +45,7 @@ exports.getUserOption = async function (req, res) {
     res.json(
       errResponse({
         message: err.message,
-        link: docs["GET.USER-OPTIONS"],
+        link: docs["GET.USER-OPTION"],
       })
     );
   }
@@ -53,7 +53,7 @@ exports.getUserOption = async function (req, res) {
 
 exports.postUserOption = async function (req, res) {
   const { categorySeq, chapterNum } = req.query;
-  const { bulk } = req.body;
+  const { userOption } = req.body;
   const { userSeq } = req.session.user;
 
   try {
@@ -61,7 +61,7 @@ exports.postUserOption = async function (req, res) {
       categorySeq,
       chapterNum,
       userSeq,
-      bulk
+      userOption
     );
 
     const pusherResponse = await pusher.trigger(
@@ -106,7 +106,7 @@ exports.postUserOption = async function (req, res) {
 
 exports.putUserOption = async function (req, res) {
   const { categorySeq, chapterNum } = req.query;
-  const { bulk } = req.body;
+  const { userOption } = req.body;
   const { userSeq } = req.session.user;
 
   try {
@@ -114,7 +114,7 @@ exports.putUserOption = async function (req, res) {
       categorySeq,
       chapterNum,
       userSeq,
-      bulk
+      userOption
     );
 
     const pusherResponse = await pusher.trigger(
@@ -202,7 +202,7 @@ exports.deleteUserOption = async function (req, res) {
     res.json(
       errResponse({
         message: err.message,
-        link: docs["PUT.USER-OPTION"],
+        link: docs["DELETE.USER-OPTION"],
       })
     );
   }
@@ -256,6 +256,7 @@ exports.getAvgHitCount = async function (req, res) {
     res.json(
       errResponse({
         message: err.message,
+        link: docs["GET.AVG-HIT-COUNT"],
       })
     );
   }

@@ -23,7 +23,7 @@ exports.postUserOption = async function (
   categorySeq,
   chapterNum,
   userSeq,
-  bulk
+  userOption
 ) {
   const [userOptionRows, chapterSeqRow] = await Promise.all([
     provider.getUserOption(categorySeq, chapterNum, userSeq),
@@ -41,7 +41,7 @@ exports.postUserOption = async function (
 
   try {
     await connection.beginTransaction();
-    await dao.insertUserOption(connection, bulk, userSeq, chapterSeq);
+    await dao.insertUserOption(connection, userOption, userSeq, chapterSeq);
 
     const [[activeCountRow], [hitCountRow]] = await Promise.all([
       dao.selectActiveQuestionCount(connection, [chapterSeq, userSeq]),
@@ -74,7 +74,7 @@ exports.putUserOption = async function (
   categorySeq,
   chapterNum,
   userSeq,
-  bulk
+  userOption
 ) {
   const [userOptionRows, chapterSeqRow] = await Promise.all([
     provider.getUserOption(categorySeq, chapterNum, userSeq),
@@ -95,7 +95,7 @@ exports.putUserOption = async function (
 
   try {
     await connection.beginTransaction();
-    await dao.updateUserOption(connection, bulk, userSeq, chapterSeq);
+    await dao.updateUserOption(connection, userOption, userSeq, chapterSeq);
 
     const [[activeCountRow], [hitCountRow]] = await Promise.all([
       dao.selectActiveQuestionCount(connection, [chapterSeq, userSeq]),

@@ -22,7 +22,7 @@ exports.selectUserOption = async function (connection, params) {
 
 exports.insertUserOption = async function (
   connection,
-  bulk,
+  userOption,
   userSeq,
   chapterSeq
 ) {
@@ -32,7 +32,7 @@ exports.insertUserOption = async function (
     VALUES
   `;
 
-  const values = Object.entries(bulk).map(
+  const values = Object.entries(userOption).map(
     ([key, value]) => `(${key}, ${value}, ${userSeq}, ${chapterSeq})`
   );
 
@@ -44,7 +44,7 @@ exports.insertUserOption = async function (
 
 exports.updateUserOption = async function (
   connection,
-  bulk,
+  userOption,
   userSeq,
   chapterSeq
 ) {
@@ -54,7 +54,7 @@ exports.updateUserOption = async function (
     VALUES
   `;
 
-  const values = Object.entries(bulk).map(
+  const values = Object.entries(userOption).map(
     ([key, value]) => `(${key}, ${value}, ${userSeq}, ${chapterSeq})`
   );
 

@@ -70,14 +70,14 @@ exports.getQuiz = async function (req, res) {
 };
 
 exports.postQuiz = async function (req, res) {
-  const { categorySeq, question, questionSub, bulk } = req.body;
+  const { categorySeq, question, questionSub, optionArray } = req.body;
 
   try {
     const result = await service.postQuiz(
       categorySeq,
       question,
       questionSub,
-      bulk
+      optionArray
     );
 
     res.status(StatusCodes.CREATED);
@@ -104,14 +104,14 @@ exports.postQuiz = async function (req, res) {
 };
 
 exports.putQuiz = async function (req, res) {
-  const { questionSeq, question, questionSub, bulk } = req.body;
+  const { questionSeq, question, questionSub, optionArray } = req.body;
 
   try {
     const result = await service.putQuiz(
       questionSeq,
       question,
       questionSub,
-      bulk
+      optionArray
     );
 
     res.json(
