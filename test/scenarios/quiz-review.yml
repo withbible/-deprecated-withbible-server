@@ -62,12 +62,12 @@ scenarios:
           url: "/history/chapter/user-option?categorySeq={{ categorySeq }}&chapterNum={{ chapterNum }}"
           cookie:
             loginData: "{{ cookieValue }}"
-      # 한 챕터의 맞힌갯수 조회 API
+      # 한 챕터의 맞힌개수 조회 API
       - get:
           url: "/history/chapter/hit-count?categorySeq={{ categorySeq }}&chapterNum={{ chapterNum }}"
           cookie:
             loginData: "{{ cookieValue }}"
-      # 한 카테고리의 활성화된 챕터갯수 조회 API
+      # 한 카테고리의 활성화된 챕터개수 조회 API
       - get:
           url: "/history/category/active-chapter-count?categorySeq={{ categorySeq }}"
           cookie:

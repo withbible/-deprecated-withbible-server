@@ -30,7 +30,7 @@ exports.postQuiz = async function (
   try {
     await connection.beginTransaction();
 
-    // 질문갯수가 초과될 시 +1 채번
+    // 질문개수가 초과될 시 +1 채번
     if (maxChapterRow.questionCount === MAX_QUESTION_COUNT) {
       maxChapterNum += 1;
 

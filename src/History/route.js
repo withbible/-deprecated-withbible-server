@@ -19,13 +19,13 @@ module.exports = function (app) {
     history.deleteUserOption
   );
 
-  // 한 챕터의 맞힌갯수 조회 API
+  // 한 챕터의 맞힌개수 조회 API
   app.get("/history/chapter/hit-count", validator, history.getHitCount);
 
-  // 카테고리별 평균 맞힌갯수 챕터 전체조회 API
+  // 카테고리별 평균 맞힌개수 챕터 전체조회 API
   app.get("/history/categories/avg-hit-count", history.getAvgHitCount);
 
-  // 한 카테고리의 활성화된 챕터갯수 조회 API
+  // 한 카테고리의 활성화된 챕터개수 조회 API
   app.get(
     "/history/category/active-chapter-count",
     history.getActiveChapterCount

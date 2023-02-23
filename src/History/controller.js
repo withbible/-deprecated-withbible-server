@@ -68,7 +68,7 @@ exports.postUserOption = async function (req, res) {
       "quiz-interaction-channel",
       "quiz-interaction-event",
       response({
-        message: "카테고리별 평균 맞힌갯수 챕터 전체조회 완료",
+        message: "카테고리별 평균 맞힌개수 챕터 전체조회 완료",
         result,
       }),
       { info: "subscription_count.user_count" }
@@ -121,7 +121,7 @@ exports.putUserOption = async function (req, res) {
       "quiz-interaction-channel",
       "quiz-interaction-event",
       response({
-        message: "카테고리별 평균 맞힌갯수 챕터 전체조회 완료",
+        message: "카테고리별 평균 맞힌개수 챕터 전체조회 완료",
         result,
       }),
       { info: "subscription_count.user_count" }
@@ -172,7 +172,7 @@ exports.deleteUserOption = async function (req, res) {
       "quiz-interaction-channel",
       "quiz-interaction-event",
       response({
-        message: "카테고리별 평균 맞힌갯수 챕터 전체조회 완료",
+        message: "카테고리별 평균 맞힌개수 챕터 전체조회 완료",
         result,
       }),
       { info: "subscription_count.user_count" }
@@ -217,7 +217,7 @@ exports.getHitCount = async function (req, res) {
 
     res.json(
       response({
-        message: "한 챕터의 맞힌갯수 조회 완료",
+        message: "한 챕터의 맞힌개수 조회 완료",
         meta: {
           category: CATEGORY[categorySeq],
           categorySeq,
@@ -245,7 +245,7 @@ exports.getAvgHitCount = async function (req, res) {
 
     res.json(
       response({
-        message: "카테고리별 평균 맞힌갯수 챕터 전체조회 완료",
+        message: "카테고리별 평균 맞힌개수 챕터 전체조회 완료",
         result,
       })
     );
@@ -271,7 +271,7 @@ exports.getActiveChapterCount = async function (req, res) {
 
     res.json(
       response({
-        message: "한 카테고리의 활성화된 챕터갯수 조회 완료",
+        message: "한 카테고리의 활성화된 챕터개수 조회 완료",
         meta: {
           category: CATEGORY[categorySeq],
           categorySeq,
