@@ -37,8 +37,10 @@ jobs:
                   value: http://localhost:3000
                 - name: LOCAL_HTTPS_GUEST
                   value: https://localhost:3000
-                - name: CLOUD_GUEST
-                  value: ${{ vars.CLOUD_GUEST }}
+                - name: CLOUD_GUEST_CLOUDTYPE
+                  value: ${{ vars.CLOUD_GUEST_CLOUDTYPE }}
+                - name: CLOUD_GUEST_SWYG
+                  value: ${{ vars.CLOUD_GUEST_SWYG }}
                 - name: PORT
                   value: "5000"
                 - name: SQL_HOST
