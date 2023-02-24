@@ -11,7 +11,8 @@ module.exports = session({
   store: new RedisStore({ client, prefix: "session:" }),
   cookie: {
     httpOnly: true,
-    secure: false,
+    sameSite: "none",
+    secure: true,
 
     /**
      * @description number by milliseconds

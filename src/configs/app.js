@@ -17,6 +17,9 @@ module.exports = function () {
   // MONITORING
   require("./monitoring")(app);
 
+  // VARIABLES
+  app.set("trust proxy", 1);
+
   // MIDDLEWARE
   app.use(
     Sentry.Handlers.requestHandler(),
