@@ -25,7 +25,9 @@ exports.sendQuizNotification = async function () {
     const message = {
       notification: {
         title: "전월 퀴즈 등록수 알림",
-        body: `${createdCount.totalCount}개의 새로운 퀴즈가 등록되었습니다.`,
+        body: `${
+          createdCount?.totalCount || 0
+        }개의 새로운 퀴즈가 등록되었습니다.`,
         image: `${process.env.CLOUD_GUEST}/images/logo.png`,
       },
       tokens,
