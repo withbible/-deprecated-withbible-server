@@ -7,7 +7,6 @@ module.exports = session({
   secret: process.env.COOKIE_SECRET,
   resave: false,
   saveUninitialized: false,
-  rolling: true,
   store: new RedisStore({ client, prefix: "session:" }),
   cookie: {
     httpOnly: true,
