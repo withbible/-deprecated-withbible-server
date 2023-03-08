@@ -100,18 +100,3 @@ exports.getMaxChapterByCategory = async function (categorySeq) {
 
   return result;
 };
-
-exports.getCreatedCount = async function (year, month) {
-  const connection = await pool.getConnection(async (conn) => conn);
-
-  const result =
-    // eslint-disable-next-line no-nested-ternary
-    year && month
-      ? await dao.searchCreatedCountByMonth(connection, [year, month])
-      : year
-      ? await dao.searchCreatedCountByYear(connection, year)
-      : await dao.selectCreatedCount(connection);
-
-  connection.release();
-  return Promise.resolve(result);
-};

@@ -12,3 +12,10 @@ exports.getToken = async function (userID) {
   const result = rows.map((each) => each.token);
   return Promise.resolve(result);
 };
+
+exports.getCreatedCountByPrevMonth = async function () {
+  const connection = await pool.getConnection(async (conn) => conn);
+
+  const [result] = await dao.selectCreatedCountByPrevMonth(connection);
+  return Promise.resolve(result);
+};

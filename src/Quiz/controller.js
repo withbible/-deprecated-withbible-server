@@ -135,28 +135,3 @@ exports.putQuiz = async function (req, res) {
     );
   }
 };
-
-exports.getCreatedCount = async function (req, res) {
-  const { year, month } = req.query;
-
-  try {
-    const result = await provider.getCreatedCount(year, month);
-
-    res.json(
-      response({
-        message: "월별 퀴즈 등록수 조회 완료",
-        result,
-      })
-    );
-  } catch (err) {
-    logger.warn(`[${dirName}]_${err.message}`);
-
-    res.status(err.status);
-    res.json(
-      errResponse({
-        message: err.message,
-        link: docs["GET.CREATED-COUNT"],
-      })
-    );
-  }
-};

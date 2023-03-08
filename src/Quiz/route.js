@@ -14,7 +14,4 @@ module.exports = function (app) {
 
   // (관리자) 질문-선택지-정답여부 수정 API
   app.put("/quiz", quiz.putQuiz);
-
-  // (관리자) 월별 퀴즈 등록수 조회 API (+ 연 or 월 검색지원)
-  app.get("/quiz/created-count/months", quiz.getCreatedCount);
 };

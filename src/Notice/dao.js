@@ -35,3 +35,17 @@ exports.updateToken = async function (connection, params) {
   const [rows] = await connection.query(query, params);
   return rows;
 };
+
+exports.selectCreatedCountByPrevMonth = async function (connection) {
+  const query = `
+    SELECT
+      DATE_FORMAT(created_at, '%Y-%m') AS date,  
+      COUNT(question_seq) AS createdCount
+    FROM quiz_question
+    WHERE DATE_FORMAT(created_at, '%Y-%m')
+      = DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH), '%Y-%m');
+  `;
+
+  const [rows] = await connection.query(query);
+  return rows;
+};
