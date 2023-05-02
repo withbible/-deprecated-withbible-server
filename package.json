@@ -31,12 +31,7 @@
     "pusher": "^5.1.2",
     "redis": "^4.6.4",
     "winston": "^3.3.3"
-  },
-  "nodemonConfig": {
-    "ignore": [
-      "sessions/*.json"
-    ]
-  },
+  },  
   "devDependencies": {
     "eslint": "^8.31.0",
     "eslint-config-airbnb": "^19.0.4",
