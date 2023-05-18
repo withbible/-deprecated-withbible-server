@@ -1,7 +1,7 @@
 const morgan = require("morgan");
 
 // INTERNAL IMPORT
-const { logger } = require("../configs/logger");
+const logger = require("../configs/logger");
 
 const colors = {
   red: "\x1B[31m",

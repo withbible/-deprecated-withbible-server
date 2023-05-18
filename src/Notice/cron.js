@@ -1,6 +1,6 @@
 const util = require("util");
 const path = require("path");
-const { logger } = require("../configs/logger");
+const logger = require("../configs/logger");
 const provider = require("./provider");
 const admin = require("../configs/firebase-messaging-admin");
 

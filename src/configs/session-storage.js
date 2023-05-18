@@ -1,7 +1,7 @@
 const redis = require("redis");
 
 // INTERNAL IMPORT
-const { logger } = require("./logger");
+const logger = require("./logger");
 
 // CONSTANT
 const redisConfig = {

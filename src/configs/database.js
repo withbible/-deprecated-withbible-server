@@ -2,7 +2,7 @@ const mysql = require("mysql2/promise");
 const fs = require("fs");
 
 // INTERNAL IMPORT
-const { logger } = require("./logger");
+const logger = require("./logger");
 
 // CONSTANT
 const dbConfig = {

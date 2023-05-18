@@ -3,7 +3,7 @@ const Sentry = require("@sentry/node");
 
 // INTERNAL IMPORT
 const path = require("path");
-const { logger } = require("../configs/logger");
+const logger = require("../configs/logger");
 const pusher = require("../configs/pusher-trigger");
 const docs = require("../constants/docs");
 const { CATEGORY, HISTORY_API_DOCS } = require("../constants/enum");

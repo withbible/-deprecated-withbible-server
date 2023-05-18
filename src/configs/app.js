@@ -4,7 +4,7 @@ const Sentry = require("@sentry/node");
 
 // INTERNAL IMPORT
 const path = require("path");
-const { logger } = require("./logger");
+const logger = require("./logger");
 const { errResponse } = require("../modules/response");
 const { authenticate } = require("../middlewares/validator");
 

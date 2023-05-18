@@ -2,7 +2,7 @@ const Pusher = require("pusher");
 
 // INTERNAL IMPORT
 const path = require("path");
-const { logger } = require("./logger");
+const logger = require("./logger");
 
 // CONSTANT
 const fileName = path.basename(__filename, ".js");

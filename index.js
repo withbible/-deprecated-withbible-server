@@ -1,32 +1,32 @@
 require("dotenv").config();
 const cron = require("node-cron");
+const https = require("https");
+const fs = require("fs");
 
 // INTERNAL IMPORT
 const app = require("./src/configs/app");
-const { logger } = require("./src/configs/logger");
+const logger = require("./src/configs/logger");
 const { sendQuizNotification } = require("./src/Notice/cron");
 
-// MAIN
-let server;
+const { PORT } = process.env;
+const httpsConfig = {
+  key: fs.readFileSync("./etc/certs/localhost-key.pem"),
+  cert: fs.readFileSync("./etc/certs/localhost.pem"),
+};
+const server =
+  process.env.NODE_ENV === "development"
+    ? https.createServer(httpsConfig, app())
+    : app(); // +++ production 환경에서 https 지원
 
-if (process.env.NODE_ENV === "development") {
-  const https = require("https");
-  const fs = require("fs");
-
-  const options = {
-    key: fs.readFileSync("./etc/certs/localhost-key.pem"),
-    cert: fs.readFileSync("./etc/certs/localhost.pem"),
-  };
-
-  server = https.createServer(options, app());
-} else {
-  server = app();
+if (!PORT) {
+  logger.error("포트번호가 존재하지 않습니다.");
+  process.exit();
 }
 
-server.listen(process.env.PORT, () => {
+server.listen(PORT, () => {
   console.log(`
 ##############################################
-  🛡️  HTTPS Server listening on port: ${process.env.PORT} 🛡️
+  🛡️  HTTPS Server listening on port: ${PORT} 🛡️
 ##############################################
   `);
 

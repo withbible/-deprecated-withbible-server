@@ -1,6 +1,6 @@
 // INTERNAL IMPORT
 const path = require("path");
-const { logger } = require("../configs/logger");
+const logger = require("../configs/logger");
 const { response, errResponse } = require("../modules/response");
 const provider = require("./provider");
 const docs = require("../constants/docs");
