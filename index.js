@@ -9,13 +9,15 @@ const logger = require("./src/configs/logger");
 const { sendQuizNotification } = require("./src/Notice/cron");
 
 const { PORT } = process.env;
-const httpsConfig = {
-  key: fs.readFileSync("./etc/certs/localhost-key.pem"),
-  cert: fs.readFileSync("./etc/certs/localhost.pem"),
-};
 const server =
   process.env.NODE_ENV === "development"
-    ? https.createServer(httpsConfig, app())
+    ? https.createServer(
+        {
+          key: fs.readFileSync("./etc/certs/localhost-key.pem"),
+          cert: fs.readFileSync("./etc/certs/localhost.pem"),
+        },
+        app()
+      )
     : app(); // +++ production 환경에서 https 지원
 
 if (!PORT) {
