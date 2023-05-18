@@ -20,11 +20,9 @@ jobs:
           token: ${{ secrets.CLOUDTYPE_TOKEN }}
           project: yongki150/withbible
           stage: main
-          yaml: >
+          yaml: |-
             name: withbible-server
-
             app: node@16
-
             options:
               env:
                 - name: TZ
@@ -42,7 +40,7 @@ jobs:
                 - name: CLOUD_GUEST_SWYG
                   value: ${{ vars.CLOUD_GUEST_SWYG }}
                 - name: PORT
-                  value: "5000"
+                  value: 5000
                 - name: SQL_HOST
                   value: ${{ secrets.SQL_HOST }}
                 - name: SQL_USER
@@ -71,7 +69,7 @@ jobs:
                   value: ${{ secrets.PUSHER_CLUSTER }}
                 - name: SENTRY_DSN_KEY
                   value: ${{ secrets.SENTRY_DSN_KEY }}
-              ports: "5000"
+              ports: 5000
             context:
               git:
                 url: git@github.com:${{ github.repository }}.git
