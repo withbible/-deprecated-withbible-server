@@ -1,5 +1,5 @@
 const mysql = require("mysql2/promise");
-const fs = require("fs");
+const axios = require("axios");
 
 // INTERNAL IMPORT
 const logger = require("./logger");
@@ -11,18 +11,27 @@ const dbConfig = {
   port: process.env.SQL_PORT,
   password: process.env.SQL_PASSWORD,
   database: process.env.SQL_DATABASE,
-  ssl: {
-    key: fs.readFileSync("./etc/certs/localhost-key.pem"),
-    cert: fs.readFileSync("./etc/certs/localhost.pem"),
-  },
 };
+const headers = {
+  Authorization: `Bearer ${process.env.GHP_SERVER_ETC_ACCESS_TOKEN}`,
+  Accept: "application/vnd.github.raw",
+};
+const REPO_URL =
+  "https://api.github.com/repos/WithBible/withbible-server-etc/contents";
+
+// HELPER FUNCTION
+function sleep(ms) {
+  return new Promise((resolve) => {
+    setTimeout(resolve, ms);
+  });
+}
 
 // MAIN
 // eslint-disable-next-line no-shadow
-function waitForDB(dbConfig, times = 1) {
+async function waitForDB(dbConfig, times = 1) {
   try {
     const pool = mysql.createPool(dbConfig);
-    pool.query("SELECT 1");
+    await pool.query("SELECT 1");
 
     logger.info("MariaDB 10.5 connected");
     return pool;
@@ -38,12 +47,33 @@ function waitForDB(dbConfig, times = 1) {
     logger.warn(`Unable to connect to database, trying again in ${backoff}ms
     `);
 
-    setTimeout(() => undefined, backoff);
+    await sleep(backoff);
     return waitForDB(dbConfig, times + 1);
   }
 }
 
-module.exports = (function () {
-  const pool = waitForDB(dbConfig);
-  return pool;
+// eslint-disable-next-line consistent-return
+module.exports = (async function () {
+  try {
+    const [keyResponse, certResponse] = await Promise.all([
+      axios.get(`${REPO_URL}/certs/localhost-key.pem`, {
+        headers,
+      }),
+      axios.get(`${REPO_URL}/certs/localhost.pem`, {
+        headers,
+      }),
+    ]);
+
+    const sslConfig = {
+      ssl: {
+        key: keyResponse.data,
+        cert: certResponse.data,
+      },
+    };
+
+    const pool = await waitForDB({ ...dbConfig, ...sslConfig });
+    return pool;
+  } catch (err) {
+    logger.error(err);
+  }
 })();
