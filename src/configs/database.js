@@ -1,4 +1,5 @@
 const mysql = require("mysql2/promise");
+const fs = require("fs");
 
 // INTERNAL IMPORT
 const { logger } = require("./logger");
@@ -10,6 +11,10 @@ const dbConfig = {
   port: process.env.SQL_PORT,
   password: process.env.SQL_PASSWORD,
   database: process.env.SQL_DATABASE,
+  ssl: {
+    key: fs.readFileSync("./etc/certs/localhost-key.pem"),
+    cert: fs.readFileSync("./etc/certs/localhost.pem"),
+  },
 };
 
 // MAIN
