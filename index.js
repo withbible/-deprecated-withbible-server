@@ -1,23 +1,20 @@
 require("dotenv").config();
 const cron = require("node-cron");
 const https = require("https");
-const fs = require("fs");
 
 // INTERNAL IMPORT
 const app = require("./src/configs/app");
 const logger = require("./src/configs/logger");
 const { sendQuizNotification } = require("./src/Notice/cron");
+const { getSSLConfigLocal } = require("./src/configs/ssl");
 
-const { PORT } = process.env;
+// CONSTANT
+const { PORT, NODE_ENV } = process.env;
+
+// MAIN
 const server =
-  process.env.NODE_ENV === "development"
-    ? https.createServer(
-        {
-          key: fs.readFileSync("./etc/certs/localhost-key.pem"),
-          cert: fs.readFileSync("./etc/certs/localhost.pem"),
-        },
-        app()
-      )
+  NODE_ENV === "development"
+    ? https.createServer(getSSLConfigLocal(), app())
     : app(); // +++ production 환경에서 https 지원
 
 if (!PORT) {
@@ -32,7 +29,7 @@ server.listen(PORT, () => {
 ##############################################
   `);
 
-  cron.schedule("0 9 1 * *", function () {
+  cron.schedule("0 9 1 * *", () => {
     logger.info("전월 퀴즈 등록수 알림 송신");
     sendQuizNotification();
   });

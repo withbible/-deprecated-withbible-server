@@ -1,8 +1,8 @@
 const mysql = require("mysql2/promise");
-const axios = require("axios");
 
 // INTERNAL IMPORT
 const logger = require("./logger");
+const { getSSLConfigRemote } = require("./ssl");
 
 // CONSTANT
 const dbConfig = {
@@ -12,12 +12,6 @@ const dbConfig = {
   password: process.env.SQL_PASSWORD,
   database: process.env.SQL_DATABASE,
 };
-const headers = {
-  Authorization: `Bearer ${process.env.GHP_SERVER_ETC_ACCESS_TOKEN}`,
-  Accept: "application/vnd.github.raw",
-};
-const REPO_URL =
-  "https://api.github.com/repos/WithBible/withbible-server-etc/contents";
 
 // HELPER FUNCTION
 function sleep(ms) {
@@ -27,7 +21,6 @@ function sleep(ms) {
 }
 
 // MAIN
-// eslint-disable-next-line no-shadow
 async function waitForDB(dbConfig, times = 1) {
   try {
     const pool = mysql.createPool(dbConfig);
@@ -53,27 +46,14 @@ async function waitForDB(dbConfig, times = 1) {
 }
 
 // eslint-disable-next-line consistent-return
-module.exports = (async function () {
+const pool = (async () => {
   try {
-    const [keyResponse, certResponse] = await Promise.all([
-      axios.get(`${REPO_URL}/certs/localhost-key.pem`, {
-        headers,
-      }),
-      axios.get(`${REPO_URL}/certs/localhost.pem`, {
-        headers,
-      }),
-    ]);
+    const sslConfig = await getSSLConfigRemote();
 
-    const sslConfig = {
-      ssl: {
-        key: keyResponse.data,
-        cert: certResponse.data,
-      },
-    };
-
-    const pool = await waitForDB({ ...dbConfig, ...sslConfig });
-    return pool;
+    return await waitForDB({ ...dbConfig, ...sslConfig });
   } catch (err) {
     logger.error(err);
   }
 })();
+
+module.exports = pool;
