@@ -10,7 +10,6 @@ const redisConfig = {
 };
 
 // MAIN
-// eslint-disable-next-line no-shadow
 function waitForRedis(redisConfig) {
   const client = redis.createClient(redisConfig);
   let times = 0;
@@ -32,7 +31,7 @@ function waitForRedis(redisConfig) {
     }
   });
 
-  return client.connect();
+  return client;
 }
 
 module.exports = (function () {

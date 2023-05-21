@@ -2,6 +2,8 @@ const session = require("express-session");
 const RedisStore = require("connect-redis")(session);
 const client = require("../configs/session-storage");
 
+client.connect();
+
 module.exports = session({
   name: "loginData",
   secret: process.env.COOKIE_SECRET,
