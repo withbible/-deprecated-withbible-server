@@ -48,16 +48,12 @@ exports.selectQuiz = async function (connection, params) {
       q.question_seq AS questionSeq,
       q.question,
       q.question_sub AS questionSub,
-      CONCAT(
-        '[',
-        GROUP_CONCAT(
-          JSON_OBJECT(
-            "questionOptionSeq", qo.question_option_seq,
-            "questionOption", qo.question_option,
-            "answerYN", qo.answer_yn
-          )
-        ),
-        ']'
+      JSON_ARRAYAGG(
+        JSON_OBJECT(
+          "questionOptionSeq", qo.question_option_seq,
+          "questionOption", qo.question_option,
+          "answerYN", qo.answer_yn
+        )      
       ) AS optionArray
     FROM quiz_chapter AS qc
     LEFT JOIN quiz_question AS q

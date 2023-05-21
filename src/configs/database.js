@@ -46,14 +46,14 @@ async function waitForDB(dbConfig, times = 1) {
 }
 
 // eslint-disable-next-line consistent-return
-const pool = (async () => {
+const poolPromise = (async () => {
   try {
     const sslConfig = await getSSLConfigRemote();
 
-    return await waitForDB({ ...dbConfig, ...sslConfig });
+    return waitForDB({ ...dbConfig, ...sslConfig });
   } catch (err) {
     logger.error(err);
   }
 })();
 
-module.exports = pool;
+module.exports = poolPromise;

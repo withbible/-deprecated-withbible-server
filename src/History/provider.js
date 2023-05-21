@@ -1,30 +1,26 @@
 const { StatusCodes } = require("http-status-codes");
 
 // INTERNAL IMPORT
-const pool = require("../configs/database");
+const poolPromise = require("../configs/database");
 const dao = require("./dao");
 
 exports.getUserOption = async function (categorySeq, chapterNum, userSeq) {
-  const connection = await pool.getConnection(async (conn) => conn);
-
-  const result = await dao.selectUserOption(connection, [
+  const pool = await poolPromise;
+  const result = await dao.selectUserOption(pool, [
     categorySeq,
     chapterNum,
     userSeq,
   ]);
-  connection.release();
 
   return Promise.resolve(result);
 };
 
 exports.getActiveChapterCount = async function (categorySeq, userSeq) {
-  const connection = await pool.getConnection(async (conn) => conn);
-
-  const [result] = await dao.selectActiveChapterCount(connection, [
+  const pool = await poolPromise;
+  const [result] = await dao.selectActiveChapterCount(pool, [
     userSeq,
     categorySeq,
   ]);
-  connection.release();
 
   if (!result) {
     const err = new Error("해당 기록이 존재하지 않습니다.");
@@ -36,24 +32,16 @@ exports.getActiveChapterCount = async function (categorySeq, userSeq) {
 };
 
 exports.getActiveChapter = async function (categorySeq, userSeq) {
-  const connection = await pool.getConnection(async (conn) => conn);
-
+  const pool = await poolPromise;
   const result = categorySeq
-    ? await dao.searchActiveChapter(connection, [userSeq, categorySeq])
-    : await dao.selectActiveChapter(connection, userSeq);
-
-  connection.release();
+    ? await dao.searchActiveChapter(pool, [userSeq, categorySeq])
+    : await dao.selectActiveChapter(pool, userSeq);
 
   if (!result.length) {
     const err = new Error("해당 기록이 존재하지 않습니다.");
     err.status = StatusCodes.NOT_FOUND;
     return Promise.reject(err);
   }
-
-  result.forEach((each) => {
-    // eslint-disable-next-line no-param-reassign
-    each.chapterNumArray = JSON.parse(each.chapterNumArray);
-  });
 
   return Promise.resolve(result);
 };
@@ -65,15 +53,13 @@ exports.getActiveChapterPage = async function (limit, page, lastPage, userSeq) {
     return Promise.reject(err);
   }
 
-  const connection = await pool.getConnection(async (conn) => conn);
-
+  const pool = await poolPromise;
   const offset = (page - 1) * limit;
-  const result = await dao.selectActiveChapterPage(connection, [
+  const result = await dao.selectActiveChapterPage(pool, [
     userSeq,
     limit,
     offset,
   ]);
-  connection.release();
 
   if (!result.length) {
     const err = new Error("해당 기록이 존재하지 않습니다.");
@@ -81,40 +67,24 @@ exports.getActiveChapterPage = async function (limit, page, lastPage, userSeq) {
     return Promise.reject(err);
   }
 
-  result.forEach((each) => {
-    // eslint-disable-next-line no-param-reassign
-    each.chapterDetail = JSON.parse(each.chapterDetail);
-  });
-
-  result.sort((a, b) => {
-    return (
-      a.categorySeq - b.categorySeq ||
-      a.chapterDetail.chapterNum - b.chapterDetail.chapterNum
-    );
-  });
-
   return Promise.resolve(result);
 };
 
 exports.getTotalCount = async function (userSeq) {
-  const connection = await pool.getConnection(async (conn) => conn);
-
-  const rows = await dao.selectTotalCount(connection, userSeq);
-  connection.release();
-
+  const pool = await poolPromise;
+  const rows = await dao.selectTotalCount(pool, userSeq);
   const result = rows[0].totalCount;
+
   return Promise.resolve(result);
 };
 
 exports.getHitCount = async function (categorySeq, chapterNum, userSeq) {
-  const connection = await pool.getConnection(async (conn) => conn);
-
-  const [result] = await dao.selectHitCountByChapterNum(connection, [
+  const pool = await poolPromise;
+  const [result] = await dao.selectHitCountByChapterNum(pool, [
     categorySeq,
     chapterNum,
     userSeq,
   ]);
-  connection.release();
 
   if (!result) {
     const err = new Error("해당 기록이 존재하지 않습니다.");
@@ -126,11 +96,8 @@ exports.getHitCount = async function (categorySeq, chapterNum, userSeq) {
 };
 
 exports.getAvgHitCount = async function () {
-  const connection = await pool.getConnection(async (conn) => conn);
-
-  const rows = await dao.selectAvgHitCount(connection);
-  connection.release();
-
+  const pool = await poolPromise;
+  const rows = await dao.selectAvgHitCount(pool);
   const result = [];
 
   rows.forEach((each) => {

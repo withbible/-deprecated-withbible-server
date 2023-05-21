@@ -1,7 +1,7 @@
 const { StatusCodes } = require("http-status-codes");
 
 // INTERNAL IMPORT
-const pool = require("../configs/database");
+const poolPromise = require("../configs/database");
 const provider = require("./provider");
 const quizProvider = require("../Quiz/provider");
 const dao = require("./dao");
@@ -36,7 +36,8 @@ exports.postUserOption = async function (
     return Promise.reject(err);
   }
 
-  const connection = await pool.getConnection(async (conn) => conn);
+  const pool = await poolPromise;
+  const connection = await pool.getConnection();
   const { chapterSeq } = chapterSeqRow;
 
   try {
@@ -63,6 +64,8 @@ exports.postUserOption = async function (
 
     return Promise.resolve(result);
   } catch (err) {
+    await connection.rollback();
+
     err.status = StatusCodes.INTERNAL_SERVER_ERROR;
     return Promise.reject(err);
   } finally {
@@ -90,7 +93,8 @@ exports.putUserOption = async function (
     return Promise.reject(err);
   }
 
-  const connection = await pool.getConnection(async (conn) => conn);
+  const pool = await poolPromise;
+  const connection = await pool.getConnection();
   const { chapterSeq } = chapterSeqRow;
 
   try {
@@ -138,7 +142,8 @@ exports.deleteUserOption = async function (categorySeq, chapterNum, userSeq) {
     return Promise.reject(err);
   }
 
-  const connection = await pool.getConnection(async (conn) => conn);
+  const pool = await poolPromise;
+  const connection = await pool.getConnection();
   const { chapterSeq } = chapterSeqRow;
 
   try {

@@ -1,14 +1,12 @@
 const { StatusCodes } = require("http-status-codes");
 
 // INTERNAL IMPORT
-const pool = require("../configs/database");
+const poolPromise = require("../configs/database");
 const dao = require("./dao");
 
 exports.getLeaderBoard = async function () {
-  const connection = await pool.getConnection(async (conn) => conn);
-
-  const result = await dao.selectLeaderBoard(connection);
-  connection.release();
+  const pool = await poolPromise;
+  const result = await dao.selectLeaderBoard(pool);
 
   if (!result.length) {
     const err = new Error("데이터가 존재하지 않습니다.");
@@ -26,25 +24,19 @@ exports.getLeaderBoardPage = async function (limit, page, lastPage) {
     return Promise.reject(err);
   }
 
-  const connection = await pool.getConnection(async (conn) => conn);
-
+  const pool = await poolPromise;
   const offset = (page - 1) * limit;
   const selectLeaderBoardParams = [limit, offset];
 
-  const result = await dao.selectLeaderBoardPage(
-    connection,
-    selectLeaderBoardParams
-  );
-  connection.release();
+  const result = await dao.selectLeaderBoardPage(pool, selectLeaderBoardParams);
 
   return Promise.resolve(result);
 };
 
 exports.getTotalCount = async function () {
-  const connection = await pool.getConnection(async (conn) => conn);
-  const rows = await dao.selectTotalCount(connection);
-  connection.release();
-
+  const pool = await poolPromise;
+  const rows = await dao.selectTotalCount(pool);
   const result = rows[0].totalCount;
+
   return Promise.resolve(result);
 };

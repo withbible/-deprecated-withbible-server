@@ -1,7 +1,7 @@
 const { StatusCodes } = require("http-status-codes");
 
 // INTERNAL IMPORT
-const pool = require("../configs/database");
+const poolPromise = require("../configs/database");
 const provider = require("./provider");
 const dao = require("./dao");
 
@@ -21,7 +21,8 @@ exports.postQuiz = async function (
     return Promise.reject(err);
   }
 
-  const connection = await pool.getConnection(async (conn) => conn);
+  const pool = await poolPromise;
+  const connection = await pool.getConnection();
 
   // 챕터일련번호 조회
   const maxChapterRow = await provider.getMaxChapterByCategory(categorySeq);
@@ -85,7 +86,8 @@ exports.putQuiz = async function (
     return Promise.reject(err);
   }
 
-  const connection = await pool.getConnection(async (conn) => conn);
+  const pool = await poolPromise;
+  const connection = await pool.getConnection();
 
   await Promise.all([
     dao.updateQuestion(connection, [question, questionSub, questionSeq]),

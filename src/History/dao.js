@@ -152,16 +152,12 @@ exports.selectActiveChapter = async function (connection, userSeq) {
     SELECT
       c.category,
       qc.category_seq AS categorySeq,
-      CONCAT(
-        '[',
-        GROUP_CONCAT(
-          JSON_OBJECT(
-            "chapterNum", qc.chapter_num,
-            "hitQuestionCount", us.hit_question_count,
-            "questionCount", qc.question_count
-          )
-        ),
-        ']'
+      JSON_ARRAYAGG(
+        JSON_OBJECT(
+          "chapterNum", qc.chapter_num,
+          "hitQuestionCount", us.hit_question_count,
+          "questionCount", qc.question_count
+        )            
       ) AS chapterNumArray
     FROM quiz_category AS c
     LEFT JOIN quiz_chapter AS qc
@@ -183,16 +179,12 @@ exports.searchActiveChapter = async function (connection, params) {
     SELECT
       c.category,
       qc.category_seq AS categorySeq, 
-      CONCAT(
-        '[',
-        GROUP_CONCAT(
-          JSON_OBJECT(
-            "chapterNum", qc.chapter_num,
-            "hitQuestionCount", us.hit_question_count,
-            "questionCount", qc.question_count
-          )
-        ),
-        ']'
+      JSON_ARRAYAGG(
+        JSON_OBJECT(
+          "chapterNum", qc.chapter_num,
+          "hitQuestionCount", us.hit_question_count,
+          "questionCount", qc.question_count
+        )            
       ) AS chapterNumArray
     FROM quiz_category AS c
     LEFT JOIN quiz_chapter AS qc
@@ -285,18 +277,15 @@ exports.selectAvgHitCount = async function (connection) {
     SELECT
       qc.category_seq AS categorySeq,
       qc.chapter_num AS chapterNum,
-      (CASE	 	          
-        WHEN us.hit_question_count IS NULL
-        THEN 0		    
-        ELSE ROUND(AVG(us.hit_question_count), 2)
-      END) AS avgHitQuestionCount,
-      qc.question_count AS questionCount      
+      ROUND(AVG(us.hit_question_count), 2) AS avgHitQuestionCount,
+      qc.question_count AS questionCount
     FROM quiz_chapter AS qc
     LEFT JOIN quiz_chapter_user_state AS us
       ON qc.chapter_seq = us.chapter_seq
     GROUP BY
       qc.category_seq,
-      qc.chapter_num;
+      qc.chapter_num,
+      qc.question_count;
   `;
 
   const [rows] = await connection.query(query);
