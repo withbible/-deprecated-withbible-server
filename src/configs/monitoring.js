@@ -1,14 +1,17 @@
 const Sentry = require("@sentry/node");
-const Tracing = require("@sentry/tracing");
+const { Integrations } = require("@sentry/node");
+const { ProfilingIntegration } = require("@sentry/profiling-node");
 
 module.exports = function (app) {
   Sentry.init({
     dsn: process.env.SENTRY_DSN_KEY,
-    integrations: [
-      new Sentry.Integrations.Http({ tracing: true }),
-      new Tracing.Integrations.Express({ app }),
-    ],
     tracesSampleRate: 1.0,
+    profilesSampleRate: 1.0,
+    integrations: [
+      new Integrations.Http({ tracing: true }),
+      new Integrations.Express({ app }),
+      new ProfilingIntegration(),
+    ],
     enabled: process.env.NODE_ENV === "production",
   });
 };

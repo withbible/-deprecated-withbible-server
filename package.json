@@ -11,7 +11,7 @@
   "description": "",
   "dependencies": {
     "@sentry/node": "^7.35.0",
-    "@sentry/tracing": "^7.35.0",
+    "@sentry/profiling-node": "^0.3.0",
     "axios": "^1.2.2",
     "bcrypt": "^5.1.0",
     "body-parser": "^1.19.0",
