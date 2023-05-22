@@ -4,22 +4,16 @@ function getRandomElement(arr) {
 }
 
 module.exports = {
-  parseCookieValue: (requestParams, response, context, event, next) => {
-    const [cookie] = response.rawHeaders.filter((each) =>
-      each.match(/(loginData)=(.*)$/)
-    );
+  parseCookieValue: (req, res, context, events, next) => {
+    const [cookie] = res.headers["set-cookie"];
+    const cookieValue = cookie.split("=")[1];
 
-    /**
-     * @description 2번째 인덱스를 추출한 이유
-     * ["", cookieKey, cookieValue, ..., "" ]
-     */
-    const cookieValue = cookie.split(/(loginData)=(.*)$/)[2];
     context.vars.cookieValue = cookieValue;
     return next();
   },
 
-  setUserOption: (requestParams, response, context, event, next) => {
-    const { result } = JSON.parse(response.body);
+  setUserOption: (req, res, context, events, next) => {
+    const { result } = JSON.parse(res.body);
     const userOption = {};
 
     result.forEach((each) => {
@@ -30,15 +24,15 @@ module.exports = {
     context.vars.userOption = userOption;
 
     console.log(
-      `${response.req.method} | ${response.req.path} | ${
-        response.statusCode
-      } | 챕터-선택지: ${JSON.stringify(userOption)}`
+      `${res.req.method} | ${res.req.path} | ${
+        res.statusCode
+      } | 질문일련번호-선택지일련번호: ${JSON.stringify(userOption)}`
     );
     return next();
   },
 
-  setQuizQueryString: (requestParams, response, context, event, next) => {
-    const { result } = JSON.parse(response.body);
+  setQuizQueryString: (req, res, context, events, next) => {
+    const { result } = JSON.parse(res.body);
     const random = getRandomElement(result);
 
     const { categorySeq } = random;
@@ -48,17 +42,15 @@ module.exports = {
     context.vars.chapterNum = chapterNum;
 
     console.log(
-      `${response.req.method} | ${response.req.path} | ${response.statusCode} | 카테고리일련번호: ${categorySeq} 챕터번호: ${chapterNum}`
+      `${res.req.method} | ${res.req.path} | ${res.statusCode} | 카테고리일련번호: ${categorySeq} 챕터번호: ${chapterNum}`
     );
     return next();
   },
 
-  getStatusCode: (requestParams, response, context, event, next) => {
-    context.vars.statusCode = response.statusCode;
+  getStatusCode: (req, res, context, events, next) => {
+    context.vars.statusCode = res.statusCode;
 
-    console.log(
-      `${response.req.method} | ${response.req.path} | ${response.statusCode}`
-    );
+    console.log(`${res.req.method} | ${res.req.path} | ${res.statusCode}`);
     return next();
   },
 };
