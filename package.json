@@ -4,8 +4,7 @@
   "main": "index.js",
   "scripts": {
     "start": "cross-env NODE_ENV=production node index.js",
-    "dev": "cross-env NODE_ENV=development nodemon index.js",
-    "load-test": "nodemon index.js"
+    "dev": "cross-env NODE_ENV=development nodemon index.js"
   },
   "author": "Yongki Kim",
   "license": "ISC",
@@ -31,7 +30,7 @@
     "pusher": "^5.1.2",
     "redis": "^4.6.4",
     "winston": "^3.3.3"
-  },  
+  },
   "devDependencies": {
     "eslint": "^8.31.0",
     "eslint-config-airbnb": "^19.0.4",

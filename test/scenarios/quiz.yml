@@ -1,5 +1,10 @@
 config:
   target: "{{ $processEnvironment.CLOUD_HOST }}"
+  tls:
+    rejectUnauthorized: false
+    client:
+      key: "./etc/certs/localhost-key.pem"
+      cert: "./etc/certs/localhost.pem"
   processor: "../load-test-hook.js"
   phases:
     - name: "Warming up the application"

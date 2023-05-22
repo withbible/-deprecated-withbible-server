@@ -1,0 +1,6 @@
+{
+  "ignore": [".clinic/", ".github/", ".vscode", "etc/", "test/"],
+  "env": {
+    "NODE_ENV": "development"
+  }
+}
