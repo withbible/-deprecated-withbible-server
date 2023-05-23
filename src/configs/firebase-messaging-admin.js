@@ -1,33 +1,41 @@
-const admin = require("firebase-admin");
-const axios = require("axios");
-
-// INTERNAL IMPORT
 const path = require("path");
 const logger = require("./logger");
 
 // CONSTANT
 const fileName = path.basename(__filename, ".js");
-const REPO_URL = `https://api.github.com/repos/WithBible/withbible-server-etc/contents/keys/${process.env.FCM_ADMIN_SDK}.json`;
 
-// MAIN
-(async function () {
+async function getSDKConfigRemote() {
+  const axios = require("axios");
+  const REPO_URL = `https://api.github.com/repos/WithBible/withbible-server-etc/contents/keys/${process.env.FCM_ADMIN_SDK}.json`;
+  const headers = {
+    Authorization: `Bearer ${process.env.GHP_SERVER_ETC_ACCESS_TOKEN}`,
+    Accept: "application/vnd.github+json",
+  };
+
+  const response = await axios.get(REPO_URL, {
+    headers,
+  });
+  const decoded = Buffer.from(response.data.content, "base64");
+
+  return JSON.parse(decoded);
+}
+
+// eslint-disable-next-line consistent-return
+const messagingPromise = (async () => {
   try {
-    const response = await axios.get(REPO_URL, {
-      headers: {
-        Authorization: `Bearer ${process.env.GHP_SERVER_ETC_ACCESS_TOKEN}`,
-        Accept: "application/vnd.github+json",
-      },
-    });
+    const admin = require("firebase-admin");
+    const sdkConfig = await getSDKConfigRemote();
 
-    const decoded = Buffer.from(response.data.content, "base64");
     admin.initializeApp({
-      credential: admin.credential.cert(JSON.parse(decoded)),
+      credential: admin.credential.cert(sdkConfig),
     });
 
     logger.info("Firebase Cloud Messaging connected");
+
+    return admin.messaging();
   } catch (err) {
     logger.error(`[${fileName}]_${err.message}`);
   }
 })();
 
-module.exports = admin;
+module.exports = messagingPromise;

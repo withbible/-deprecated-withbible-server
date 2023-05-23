@@ -37,7 +37,7 @@
 |
 +---Notice
 |       controller.js
-|       cron.js
+|       batch.js
 |       dao.js
 |       provider.js
 |       route.js
