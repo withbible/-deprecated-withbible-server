@@ -43,6 +43,10 @@ const checkSessionCookie = (req, res, next) => {
   return next();
 };
 
+(async () => {
+  await client.connect();
+})();
+
 module.exports = {
   session: session(sessionOption),
   checkSessionCookie,

@@ -6,7 +6,6 @@ const logger = require("./logger");
 // CONSTANT
 const redisConfig = {
   url: process.env.REDIS_URL,
-  legacyMode: true,
 };
 
 // MAIN
