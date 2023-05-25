@@ -4,7 +4,7 @@ const { StatusCodes } = require("http-status-codes");
 const poolPromise = require("../configs/database");
 const dao = require("./dao");
 
-exports.getChapter = async function (keyword) {
+exports.getChapter = async (keyword) => {
   const pool = await poolPromise;
   const result = keyword
     ? await dao.searchChapter(pool, keyword)
@@ -19,7 +19,7 @@ exports.getChapter = async function (keyword) {
   return Promise.resolve(result);
 };
 
-exports.getQuiz = async function (categorySeq, chapterNum) {
+exports.getQuiz = async (categorySeq, chapterNum) => {
   const pool = await poolPromise;
   const result = await dao.selectQuiz(pool, [categorySeq, chapterNum]);
 
@@ -32,35 +32,35 @@ exports.getQuiz = async function (categorySeq, chapterNum) {
   return Promise.resolve(result);
 };
 
-exports.getQuestionSeqByText = async function (question) {
+exports.getQuestionSeqByText = async (question) => {
   const pool = await poolPromise;
   const [result] = await dao.selectQuestionSeqByText(pool, question);
 
   return result;
 };
 
-exports.getQuestionSeqByNumber = async function (questionSeq) {
+exports.getQuestionSeqByNumber = async (questionSeq) => {
   const pool = await poolPromise;
   const [result] = await dao.selectQuestionSeqByNumber(pool, questionSeq);
 
   return result;
 };
 
-exports.getChapterByNumber = async function (questionSeq) {
+exports.getChapterByNumber = async (questionSeq) => {
   const pool = await poolPromise;
   const [result] = await dao.selectChapterByNumber(pool, questionSeq);
 
   return result;
 };
 
-exports.getChapterSeq = async function (categorySeq, chapterNum) {
+exports.getChapterSeq = async (categorySeq, chapterNum) => {
   const pool = await poolPromise;
   const [result] = await dao.selectChapterSeq(pool, [categorySeq, chapterNum]);
 
   return result;
 };
 
-exports.getMaxChapterByCategory = async function (categorySeq) {
+exports.getMaxChapterByCategory = async (categorySeq) => {
   const pool = await poolPromise;
   const [result] = await dao.selectMaxChapterByCategory(pool, categorySeq);
 

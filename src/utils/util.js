@@ -1,5 +1,5 @@
 module.exports = {
-  filterReferenceOther: (iteratee, target) => {
+  filterReferenceOther(iteratee, target) {
     return iteratee.filter((each) => each.rel !== target);
   },
 };

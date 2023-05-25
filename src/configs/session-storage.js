@@ -10,7 +10,7 @@ const redisConfig = {
 };
 
 // MAIN
-function waitForRedis(redisConfig) {
+const waitForRedis = (redisConfig) => {
   const client = redis.createClient(redisConfig);
   let times = 0;
 
@@ -32,9 +32,8 @@ function waitForRedis(redisConfig) {
   });
 
   return client;
-}
+};
 
-module.exports = (function () {
-  const client = waitForRedis(redisConfig);
-  return client;
+module.exports = (() => {
+  return waitForRedis(redisConfig);
 })();

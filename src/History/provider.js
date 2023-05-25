@@ -4,7 +4,7 @@ const { StatusCodes } = require("http-status-codes");
 const poolPromise = require("../configs/database");
 const dao = require("./dao");
 
-exports.getUserOption = async function (categorySeq, chapterNum, userSeq) {
+exports.getUserOption = async (categorySeq, chapterNum, userSeq) => {
   const pool = await poolPromise;
   const result = await dao.selectUserOption(pool, [
     categorySeq,
@@ -15,7 +15,7 @@ exports.getUserOption = async function (categorySeq, chapterNum, userSeq) {
   return Promise.resolve(result);
 };
 
-exports.getActiveChapterCount = async function (categorySeq, userSeq) {
+exports.getActiveChapterCount = async (categorySeq, userSeq) => {
   const pool = await poolPromise;
   const [result] = await dao.selectActiveChapterCount(pool, [
     userSeq,
@@ -31,7 +31,7 @@ exports.getActiveChapterCount = async function (categorySeq, userSeq) {
   return Promise.resolve(result);
 };
 
-exports.getActiveChapter = async function (categorySeq, userSeq) {
+exports.getActiveChapter = async (categorySeq, userSeq) => {
   const pool = await poolPromise;
   const result = categorySeq
     ? await dao.searchActiveChapter(pool, [userSeq, categorySeq])
@@ -46,7 +46,7 @@ exports.getActiveChapter = async function (categorySeq, userSeq) {
   return Promise.resolve(result);
 };
 
-exports.getActiveChapterPage = async function (limit, page, lastPage, userSeq) {
+exports.getActiveChapterPage = async (limit, page, lastPage, userSeq) => {
   if (!limit || !page || page > lastPage) {
     const err = new Error("해당 기록이 존재하지 않습니다.");
     err.status = StatusCodes.BAD_REQUEST;
@@ -70,7 +70,7 @@ exports.getActiveChapterPage = async function (limit, page, lastPage, userSeq) {
   return Promise.resolve(result);
 };
 
-exports.getTotalCount = async function (userSeq) {
+exports.getTotalCount = async (userSeq) => {
   const pool = await poolPromise;
   const rows = await dao.selectTotalCount(pool, userSeq);
   const result = rows[0].totalCount;
@@ -78,7 +78,7 @@ exports.getTotalCount = async function (userSeq) {
   return Promise.resolve(result);
 };
 
-exports.getHitCount = async function (categorySeq, chapterNum, userSeq) {
+exports.getHitCount = async (categorySeq, chapterNum, userSeq) => {
   const pool = await poolPromise;
   const [result] = await dao.selectHitCountByChapterNum(pool, [
     categorySeq,
@@ -95,7 +95,7 @@ exports.getHitCount = async function (categorySeq, chapterNum, userSeq) {
   return Promise.resolve(result);
 };
 
-exports.getAvgHitCount = async function () {
+exports.getAvgHitCount = async () => {
   const pool = await poolPromise;
   const rows = await dao.selectAvgHitCount(pool);
   const result = [];

@@ -1,4 +1,4 @@
-exports.selectChapter = async function (connection) {
+exports.selectChapter = async (connection) => {
   const query = `
     SELECT
       c.category,
@@ -17,7 +17,7 @@ exports.selectChapter = async function (connection) {
   return rows;
 };
 
-exports.searchChapter = async function (connection, keyword) {
+exports.searchChapter = async (connection, keyword) => {
   const symbol = `%${keyword}%`;
 
   const query = `
@@ -42,7 +42,7 @@ exports.searchChapter = async function (connection, keyword) {
   return rows;
 };
 
-exports.selectQuiz = async function (connection, params) {
+exports.selectQuiz = async (connection, params) => {
   const query = `
     SELECT	
       q.question_seq AS questionSeq,
@@ -70,7 +70,7 @@ exports.selectQuiz = async function (connection, params) {
   return rows;
 };
 
-exports.selectQuestionSeqByText = async function (connection, question) {
+exports.selectQuestionSeqByText = async (connection, question) => {
   const query = `
     SELECT 
       question_seq AS questionSeq
@@ -82,7 +82,7 @@ exports.selectQuestionSeqByText = async function (connection, question) {
   return rows;
 };
 
-exports.selectQuestionSeqByNumber = async function (connection, questionSeq) {
+exports.selectQuestionSeqByNumber = async (connection, questionSeq) => {
   const query = `
     SELECT
       question_seq AS questionSeq
@@ -94,7 +94,7 @@ exports.selectQuestionSeqByNumber = async function (connection, questionSeq) {
   return rows;
 };
 
-exports.selectChapterByNumber = async function (connection, questionSeq) {
+exports.selectChapterByNumber = async (connection, questionSeq) => {
   const query = `
     SELECT
       qc.category_seq AS categorySeq,
@@ -109,7 +109,7 @@ exports.selectChapterByNumber = async function (connection, questionSeq) {
   return rows;
 };
 
-exports.selectChapterSeq = async function (connection, params) {
+exports.selectChapterSeq = async (connection, params) => {
   const query = `
     SELECT
       chapter_seq AS chapterSeq
@@ -122,7 +122,7 @@ exports.selectChapterSeq = async function (connection, params) {
   return rows;
 };
 
-exports.selectMaxChapterByCategory = async function (connection, categorySeq) {
+exports.selectMaxChapterByCategory = async (connection, categorySeq) => {
   const query = `
     SELECT
       chapter_seq AS chapterSeq,
@@ -141,7 +141,7 @@ exports.selectMaxChapterByCategory = async function (connection, categorySeq) {
   return rows;
 };
 
-exports.insertChapterSeq = async function (connection, params) {
+exports.insertChapterSeq = async (connection, params) => {
   const query = `
     INSERT INTO quiz_chapter
       (category_seq, chapter_num)
@@ -153,7 +153,7 @@ exports.insertChapterSeq = async function (connection, params) {
   return rows;
 };
 
-exports.insertQuestion = async function (connection, params) {
+exports.insertQuestion = async (connection, params) => {
   const query = `
       INSERT INTO quiz_question
         (question, question_sub, chapter_seq)
@@ -165,11 +165,7 @@ exports.insertQuestion = async function (connection, params) {
   return rows;
 };
 
-exports.insertOptionArray = async function (
-  connection,
-  optionArray,
-  questionSeq
-) {
+exports.insertOptionArray = async (connection, optionArray, questionSeq) => {
   let query = `
     INSERT INTO quiz_question_option
       (question_seq, question_option, answer_yn)
@@ -192,7 +188,7 @@ exports.insertOptionArray = async function (
   return rows;
 };
 
-exports.updateQuestion = async function (connection, params) {
+exports.updateQuestion = async (connection, params) => {
   const query = `
     UPDATE quiz_question
       SET question = ?,
@@ -203,7 +199,7 @@ exports.updateQuestion = async function (connection, params) {
   return rows;
 };
 
-exports.updateOption = async function (connection, optionArray, questionSeq) {
+exports.updateOption = async (connection, optionArray, questionSeq) => {
   let query = `
     INSERT INTO quiz_question_option
       (question_option_seq, question_seq, question_option, answer_yn)

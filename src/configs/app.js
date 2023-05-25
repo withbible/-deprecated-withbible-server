@@ -5,38 +5,39 @@ const Sentry = require("@sentry/node");
 // INTERNAL IMPORT
 const path = require("path");
 const logger = require("./logger");
-const { errResponse } = require("../modules/response");
-const { authenticate } = require("../middlewares/validator");
+const { errResponse } = require("../utils/response");
+const { session, checkSessionCookie } = require("../middlewares/authenticator");
+const cors = require("../middlewares/authorizer");
+const HTTPrequestLogger = require("../middlewares/logger");
+const queryParser = require("../middlewares/parser");
 
 // CONSTANT
 const fileName = path.basename(__filename, ".js");
 
-module.exports = function () {
+module.exports = () => {
   const app = express();
 
-  // MONITORING
+  // CONFIG
   require("./monitoring")(app);
-
-  // VARIABLES
   app.set("trust proxy", 1);
 
   // MIDDLEWARE
   app.use(
     Sentry.Handlers.requestHandler(),
     Sentry.Handlers.tracingHandler(),
-    require("../middlewares/session"),
-    require("../middlewares/cors"),
+    session,
+    cors,
     express.urlencoded({ extended: false }),
     express.json(),
-    require("../middlewares/parser"),
-    require("../middlewares/morgan")
+    queryParser,
+    HTTPrequestLogger
   );
 
   // ROUTING
   require("../User/route")(app);
   require("../Quiz/route")(app);
   require("../LeaderBoard/route")(app);
-  app.use(authenticate);
+  app.use(checkSessionCookie);
   require("../History/route")(app);
   require("../Notice/route")(app);
 

@@ -12,6 +12,7 @@
     "global-require": "off",
     "func-names": "off",
     "no-console": "off",
-    "no-shadow": "off"
+    "no-shadow": "off",
+    "consistent-return": "off"
   }
 }

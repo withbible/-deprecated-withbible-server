@@ -4,7 +4,8 @@ const logger = require("./logger");
 // CONSTANT
 const fileName = path.basename(__filename, ".js");
 
-async function getSDKConfigRemote() {
+// MAIN
+const getSDKConfigRemote = async () => {
   const axios = require("axios");
   const REPO_URL = `https://api.github.com/repos/WithBible/withbible-server-etc/contents/keys/${process.env.FCM_ADMIN_SDK}.json`;
   const headers = {
@@ -18,9 +19,8 @@ async function getSDKConfigRemote() {
   const decoded = Buffer.from(response.data.content, "base64");
 
   return JSON.parse(decoded);
-}
+};
 
-// eslint-disable-next-line consistent-return
 const messagingPromise = (async () => {
   try {
     const admin = require("firebase-admin");

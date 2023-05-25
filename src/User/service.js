@@ -9,10 +9,10 @@ const provider = require("./provider");
 const dao = require("./dao");
 const leaderBoardDao = require("../LeaderBoard/dao");
 
-exports.postUser = async function (userID, password, userEmail, token) {
-  const userIDRows = await provider.userIDCheck(userID);
+exports.postUser = async (userID, password, userEmail, token) => {
+  const userIDRow = await provider.userIDCheck(userID);
 
-  if (userIDRows.length > 0) {
+  if (userIDRow.length > 0) {
     const err = new Error("중복된 아이디입니다.");
     err.status = StatusCodes.UNAUTHORIZED;
     return Promise.reject(err);
@@ -51,13 +51,13 @@ exports.postUser = async function (userID, password, userEmail, token) {
   }
 };
 
-exports.login = async function (userID, password, token) {
-  const [userIDRows, existedToken] = await Promise.all([
+exports.login = async (userID, password, token) => {
+  const [[userIDRow], existedToken] = await Promise.all([
     provider.userIDCheck(userID),
     noticeProvider.getToken(userID),
   ]);
 
-  if (userIDRows.length < 1) {
+  if (!userIDRow) {
     const err = new Error("가입되지 않은 아이디입니다.");
     err.status = StatusCodes.UNAUTHORIZED;
     return Promise.reject(err);
@@ -65,7 +65,7 @@ exports.login = async function (userID, password, token) {
 
   const isValidPassword = await bcypt.compare(
     password,
-    userIDRows[0].hahsedPassword
+    userIDRow.hahsedPassword
   );
 
   if (!isValidPassword) {
@@ -85,7 +85,7 @@ exports.login = async function (userID, password, token) {
   }
 
   return Promise.resolve({
-    userSeq: userIDRows[0].userSeq,
-    userID: userIDRows[0].userID,
+    userSeq: userIDRow.userSeq,
+    userID: userIDRow.userID,
   });
 };

@@ -3,14 +3,14 @@ const { StatusCodes } = require("http-status-codes");
 // INTERNAL IMPORT
 const path = require("path");
 const logger = require("../configs/logger");
-const { response, errResponse } = require("../modules/response");
+const { response, errResponse } = require("../utils/response");
 const service = require("./service");
 const provider = require("./provider");
 
 // CONSTANT
 const dirName = path.basename(__dirname);
 
-exports.getToken = async function (req, res) {
+exports.getToken = async (req, res) => {
   const { userSeq } = req.session.user;
 
   try {
@@ -37,7 +37,7 @@ exports.getToken = async function (req, res) {
   }
 };
 
-exports.postToken = async function (req, res) {
+exports.postToken = async (req, res) => {
   const { token } = req.body;
   const { userSeq } = req.session.user;
 
@@ -63,7 +63,7 @@ exports.postToken = async function (req, res) {
   }
 };
 
-exports.putToken = async function (req, res) {
+exports.putToken = async (req, res) => {
   const { token } = req.body;
   const { userSeq } = req.session.user;
 

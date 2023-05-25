@@ -1,4 +1,4 @@
-exports.selectUserID = async function (connection, userID) {
+exports.selectUserID = async (connection, userID) => {
   const query = `
     SELECT 
       user_seq AS userSeq,
@@ -13,7 +13,7 @@ exports.selectUserID = async function (connection, userID) {
   return rows;
 };
 
-exports.insertUser = async function (connection, params) {
+exports.insertUser = async (connection, params) => {
   const query = `
     INSERT INTO user 
       (user_id, hashed_password, user_email, fcm_token)

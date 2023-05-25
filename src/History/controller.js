@@ -4,10 +4,10 @@ const Sentry = require("@sentry/node");
 // INTERNAL IMPORT
 const path = require("path");
 const logger = require("../configs/logger");
-const pusher = require("../configs/pusher-trigger");
+const pusherChannelsPromise = require("../configs/pusher-channels");
 const docs = require("../constants/docs");
 const { CATEGORY, HISTORY_API_DOCS } = require("../constants/enum");
-const { response, errResponse } = require("../modules/response");
+const { response, errResponse } = require("../utils/response");
 const { filterReferenceOther } = require("../utils/util");
 const provider = require("./provider");
 const service = require("./service");
@@ -15,7 +15,7 @@ const service = require("./service");
 // CONSTANT
 const dirName = path.basename(__dirname);
 
-exports.getUserOption = async function (req, res) {
+exports.getUserOption = async (req, res) => {
   const { categorySeq, chapterNum } = req.query;
   const { userSeq } = req.session.user;
 
@@ -51,7 +51,7 @@ exports.getUserOption = async function (req, res) {
   }
 };
 
-exports.postUserOption = async function (req, res) {
+exports.postUserOption = async (req, res) => {
   const { categorySeq, chapterNum } = req.query;
   const { userOption } = req.body;
   const { userSeq } = req.session.user;
@@ -64,6 +64,7 @@ exports.postUserOption = async function (req, res) {
       userOption
     );
 
+    const pusher = await pusherChannelsPromise;
     const pusherResponse = await pusher.trigger(
       "quiz-interaction-channel",
       "quiz-interaction-event",
@@ -104,7 +105,7 @@ exports.postUserOption = async function (req, res) {
   }
 };
 
-exports.putUserOption = async function (req, res) {
+exports.putUserOption = async (req, res) => {
   const { categorySeq, chapterNum } = req.query;
   const { userOption } = req.body;
   const { userSeq } = req.session.user;
@@ -117,6 +118,7 @@ exports.putUserOption = async function (req, res) {
       userOption
     );
 
+    const pusher = await pusherChannelsPromise;
     const pusherResponse = await pusher.trigger(
       "quiz-interaction-channel",
       "quiz-interaction-event",
@@ -157,7 +159,7 @@ exports.putUserOption = async function (req, res) {
   }
 };
 
-exports.deleteUserOption = async function (req, res) {
+exports.deleteUserOption = async (req, res) => {
   const { categorySeq, chapterNum } = req.query;
   const { userSeq } = req.session.user;
 
@@ -168,6 +170,7 @@ exports.deleteUserOption = async function (req, res) {
       userSeq
     );
 
+    const pusher = await pusherChannelsPromise;
     const pusherResponse = await pusher.trigger(
       "quiz-interaction-channel",
       "quiz-interaction-event",
@@ -208,7 +211,7 @@ exports.deleteUserOption = async function (req, res) {
   }
 };
 
-exports.getHitCount = async function (req, res) {
+exports.getHitCount = async (req, res) => {
   const { categorySeq, chapterNum } = req.query;
   const { userSeq } = req.session.user;
 
@@ -239,7 +242,7 @@ exports.getHitCount = async function (req, res) {
   }
 };
 
-exports.getAvgHitCount = async function (req, res) {
+exports.getAvgHitCount = async (req, res) => {
   try {
     const result = await provider.getAvgHitCount();
 
@@ -262,7 +265,7 @@ exports.getAvgHitCount = async function (req, res) {
   }
 };
 
-exports.getActiveChapterCount = async function (req, res) {
+exports.getActiveChapterCount = async (req, res) => {
   const { categorySeq } = req.query;
   const { userSeq } = req.session.user;
 
@@ -292,7 +295,7 @@ exports.getActiveChapterCount = async function (req, res) {
   }
 };
 
-exports.getActiveChapter = async function (req, res) {
+exports.getActiveChapter = async (req, res) => {
   const { categorySeq } = req.query;
   const { userSeq } = req.session.user;
 
@@ -324,7 +327,7 @@ exports.getActiveChapter = async function (req, res) {
   }
 };
 
-exports.getActiveChapterPage = async function (req, res) {
+exports.getActiveChapterPage = async (req, res) => {
   const { limit, page } = req.query;
   const { userSeq } = req.session.user;
 
@@ -369,7 +372,7 @@ exports.getActiveChapterPage = async function (req, res) {
   }
 };
 
-exports.getActiveChapterLastPage = async function (req, res) {
+exports.getActiveChapterLastPage = async (req, res) => {
   const { limit } = req.query;
   const { userSeq } = req.session.user;
 

@@ -7,12 +7,7 @@ const dao = require("./dao");
 
 const MAX_QUESTION_COUNT = 3;
 
-exports.postQuiz = async function (
-  categorySeq,
-  question,
-  questionSub,
-  optionArray
-) {
+exports.postQuiz = async (categorySeq, question, questionSub, optionArray) => {
   const questionRow = await provider.getQuestionSeqByText(question);
 
   if (questionRow) {
@@ -69,12 +64,7 @@ exports.postQuiz = async function (
   }
 };
 
-exports.putQuiz = async function (
-  questionSeq,
-  question,
-  questionSub,
-  optionArray
-) {
+exports.putQuiz = async (questionSeq, question, questionSub, optionArray) => {
   const [questionRow, chapterRow] = await Promise.all([
     provider.getQuestionSeqByNumber(questionSeq),
     provider.getChapterByNumber(questionSeq),

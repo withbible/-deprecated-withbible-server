@@ -4,7 +4,7 @@ const { StatusCodes } = require("http-status-codes");
 const poolPromise = require("../configs/database");
 const dao = require("./dao");
 
-exports.putToken = async function (token, userID) {
+exports.putToken = async (token, userID) => {
   const pool = await poolPromise;
 
   try {

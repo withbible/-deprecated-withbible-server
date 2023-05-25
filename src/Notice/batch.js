@@ -6,7 +6,7 @@ const messagingPromise = require("../configs/firebase-messaging-admin");
 // CONSTANT
 const dirName = path.basename(__dirname);
 
-exports.sendQuizNotification = async function () {
+exports.sendQuizNotification = async () => {
   const [createdCountResponse, tokens, messaging] = await Promise.all([
     provider.getCreatedCountByPrevMonth(),
     provider.getToken(),

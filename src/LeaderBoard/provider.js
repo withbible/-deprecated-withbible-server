@@ -4,7 +4,7 @@ const { StatusCodes } = require("http-status-codes");
 const poolPromise = require("../configs/database");
 const dao = require("./dao");
 
-exports.getLeaderBoard = async function () {
+exports.getLeaderBoard = async () => {
   const pool = await poolPromise;
   const result = await dao.selectLeaderBoard(pool);
 
@@ -17,7 +17,7 @@ exports.getLeaderBoard = async function () {
   return Promise.resolve(result);
 };
 
-exports.getLeaderBoardPage = async function (limit, page, lastPage) {
+exports.getLeaderBoardPage = async (limit, page, lastPage) => {
   if (!limit || !page || page > lastPage) {
     const err = new Error("데이터가 존재하지 않습니다.");
     err.status = StatusCodes.BAD_REQUEST;
@@ -33,7 +33,7 @@ exports.getLeaderBoardPage = async function (limit, page, lastPage) {
   return Promise.resolve(result);
 };
 
-exports.getTotalCount = async function () {
+exports.getTotalCount = async () => {
   const pool = await poolPromise;
   const rows = await dao.selectTotalCount(pool);
   const result = rows[0].totalCount;

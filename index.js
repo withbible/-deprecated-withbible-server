@@ -1,4 +1,5 @@
 require("dotenv").config();
+const cron = require("node-cron");
 
 // INTERNAL IMPORT
 const app = require("./src/configs/app");
@@ -16,7 +17,7 @@ if (!PORT) {
 
 // MAIN
 const server = (() => {
-  // +++ production 환경에서 https 지원
+  // +++ production 환경(cloudtype)에서 HTTPS 인증서 자동발급
   if (NODE_ENV === "production") {
     return app();
   }
@@ -26,7 +27,6 @@ const server = (() => {
 })();
 
 server.listen(PORT, () => {
-  const cron = require("node-cron");
   console.log(`
 ##############################################
   🛡️  HTTPS Server listening on port: ${PORT} 🛡️

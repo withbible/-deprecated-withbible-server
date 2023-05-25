@@ -1,4 +1,4 @@
-exports.selectLeaderBoard = async function (connection) {
+exports.selectLeaderBoard = async (connection) => {
   const query = `
     SELECT
       u.user_id AS userID,      
@@ -15,10 +15,7 @@ exports.selectLeaderBoard = async function (connection) {
   return rows;
 };
 
-exports.selectLeaderBoardPage = async function (
-  connection,
-  selectLeaderBoardParams
-) {
+exports.selectLeaderBoardPage = async (connection, selectLeaderBoardParams) => {
   const query = `
     SELECT
       u.user_id AS userID,      
@@ -36,7 +33,7 @@ exports.selectLeaderBoardPage = async function (
   return rows;
 };
 
-exports.insertLeaderBoard = async function (connection, userSeq) {
+exports.insertLeaderBoard = async (connection, userSeq) => {
   const query = `
     INSERT INTO user_leaderboard
       (user_seq)
@@ -48,7 +45,7 @@ exports.insertLeaderBoard = async function (connection, userSeq) {
   return rows;
 };
 
-exports.updateLeaderBoard = async function (connection, userSeq, quizScore) {
+exports.updateLeaderBoard = async (connection, userSeq, quizScore) => {
   const query = `
     UPDATE user_leaderboard
       SET quiz_score = ${quizScore}
@@ -60,7 +57,7 @@ exports.updateLeaderBoard = async function (connection, userSeq, quizScore) {
   return rows;
 };
 
-exports.selectTotalCount = async function (connection) {
+exports.selectTotalCount = async (connection) => {
   const query = `
     SELECT
       COUNT(*) AS totalCount

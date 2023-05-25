@@ -1,4 +1,4 @@
-exports.selectUserOption = async function (connection, params) {
+exports.selectUserOption = async (connection, params) => {
   const query = `
     SELECT
       q.question_seq AS questionSeq,
@@ -20,12 +20,12 @@ exports.selectUserOption = async function (connection, params) {
   return rows;
 };
 
-exports.insertUserOption = async function (
+exports.insertUserOption = async (
   connection,
   userOption,
   userSeq,
   chapterSeq
-) {
+) => {
   let query = `
     INSERT INTO quiz_user_option
       (question_seq, question_option_seq, user_seq, chapter_seq)
@@ -42,12 +42,12 @@ exports.insertUserOption = async function (
   await connection.query(query);
 };
 
-exports.updateUserOption = async function (
+exports.updateUserOption = async (
   connection,
   userOption,
   userSeq,
   chapterSeq
-) {
+) => {
   let query = `
     INSERT INTO quiz_user_option
       (question_seq, question_option_seq, user_seq, chapter_seq)
@@ -70,7 +70,7 @@ exports.updateUserOption = async function (
   await connection.query(query);
 };
 
-exports.deleteUserOption = async function (connection, userSeq, chapterSeq) {
+exports.deleteUserOption = async (connection, userSeq, chapterSeq) => {
   const query = `
     DELETE 
     FROM quiz_user_option
@@ -81,11 +81,7 @@ exports.deleteUserOption = async function (connection, userSeq, chapterSeq) {
   await connection.query(query);
 };
 
-exports.deleteChapterUserState = async function (
-  connection,
-  userSeq,
-  chapterSeq
-) {
+exports.deleteChapterUserState = async (connection, userSeq, chapterSeq) => {
   const query = `
     DELETE 
     FROM quiz_chapter_user_state
@@ -96,7 +92,7 @@ exports.deleteChapterUserState = async function (
   await connection.query(query);
 };
 
-exports.selectScore = async function (connection, userSeq) {
+exports.selectScore = async (connection, userSeq) => {
   const query = `
     SELECT 
       COUNT(*) * 100 AS quizScore
@@ -111,7 +107,7 @@ exports.selectScore = async function (connection, userSeq) {
   return rows;
 };
 
-exports.selectActiveQuestionCount = async function (connection, params) {
+exports.selectActiveQuestionCount = async (connection, params) => {
   const query = `
     SELECT 			
       COUNT(uo.question_option_seq) AS activeQuestionCount
@@ -127,7 +123,7 @@ exports.selectActiveQuestionCount = async function (connection, params) {
   return rows;
 };
 
-exports.selectActiveChapterCount = async function (connection, params) {
+exports.selectActiveChapterCount = async (connection, params) => {
   const query = `
     SELECT
       COUNT(us.chapter_seq) AS activeChapterCount,
@@ -147,7 +143,7 @@ exports.selectActiveChapterCount = async function (connection, params) {
   return rows;
 };
 
-exports.selectActiveChapter = async function (connection, userSeq) {
+exports.selectActiveChapter = async (connection, userSeq) => {
   const query = `
     SELECT
       c.category,
@@ -174,7 +170,7 @@ exports.selectActiveChapter = async function (connection, userSeq) {
   return rows;
 };
 
-exports.searchActiveChapter = async function (connection, params) {
+exports.searchActiveChapter = async (connection, params) => {
   const query = `
     SELECT
       c.category,
@@ -202,7 +198,7 @@ exports.searchActiveChapter = async function (connection, params) {
   return rows;
 };
 
-exports.selectActiveChapterPage = async function (connection, params) {
+exports.selectActiveChapterPage = async (connection, params) => {
   const query = `
     SELECT
       qc.category_seq AS categorySeq,  
@@ -223,7 +219,7 @@ exports.selectActiveChapterPage = async function (connection, params) {
   return rows;
 };
 
-exports.selectTotalCount = async function (connection, userSeq) {
+exports.selectTotalCount = async (connection, userSeq) => {
   const query = `
     SELECT
       COUNT(*) AS totalCount
@@ -236,7 +232,7 @@ exports.selectTotalCount = async function (connection, userSeq) {
   return rows;
 };
 
-exports.selectHitCountByChapterNum = async function (connection, params) {
+exports.selectHitCountByChapterNum = async (connection, params) => {
   const query = `
     SELECT
       us.hit_question_count AS hitQuestionCount,
@@ -253,7 +249,7 @@ exports.selectHitCountByChapterNum = async function (connection, params) {
   return rows;
 };
 
-exports.selectHitCountByChapterSeq = async function (connection, params) {
+exports.selectHitCountByChapterSeq = async (connection, params) => {
   const query = `
     SELECT	
       COUNT(uo.question_option_seq) AS hitQuestionCount
@@ -272,7 +268,7 @@ exports.selectHitCountByChapterSeq = async function (connection, params) {
   return rows;
 };
 
-exports.selectAvgHitCount = async function (connection) {
+exports.selectAvgHitCount = async (connection) => {
   const query = `
     SELECT
       qc.category_seq AS categorySeq,
@@ -292,7 +288,7 @@ exports.selectAvgHitCount = async function (connection) {
   return rows;
 };
 
-exports.insertChapterUserState = async function (connection, params) {
+exports.insertChapterUserState = async (connection, params) => {
   const query = `
     INSERT INTO quiz_chapter_user_state
       (chapter_seq, user_seq, active_question_count, hit_question_count)
@@ -310,7 +306,7 @@ exports.insertChapterUserState = async function (connection, params) {
   return rows;
 };
 
-exports.updateChapterUserState = async function (connection, params) {
+exports.updateChapterUserState = async (connection, params) => {
   const query = `
     UPDATE quiz_chapter_user_state
     SET active_question_count = ?,

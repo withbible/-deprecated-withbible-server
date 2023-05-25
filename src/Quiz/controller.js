@@ -5,7 +5,7 @@ const path = require("path");
 const logger = require("../configs/logger");
 const docs = require("../constants/docs");
 const { CATEGORY, QUIZ_API_DOCS } = require("../constants/enum");
-const { response, errResponse } = require("../modules/response");
+const { response, errResponse } = require("../utils/response");
 const { filterReferenceOther } = require("../utils/util");
 const provider = require("./provider");
 const service = require("./service");
@@ -13,7 +13,7 @@ const service = require("./service");
 // CONSTANT
 const dirName = path.basename(__dirname);
 
-exports.getChapter = async function (req, res) {
+exports.getChapter = async (req, res) => {
   const { keyword } = req.query;
 
   try {
@@ -38,7 +38,7 @@ exports.getChapter = async function (req, res) {
   }
 };
 
-exports.getQuiz = async function (req, res) {
+exports.getQuiz = async (req, res) => {
   const { categorySeq, chapterNum } = req.query;
 
   try {
@@ -69,7 +69,7 @@ exports.getQuiz = async function (req, res) {
   }
 };
 
-exports.postQuiz = async function (req, res) {
+exports.postQuiz = async (req, res) => {
   const { categorySeq, question, questionSub, optionArray } = req.body;
 
   try {
@@ -103,7 +103,7 @@ exports.postQuiz = async function (req, res) {
   }
 };
 
-exports.putQuiz = async function (req, res) {
+exports.putQuiz = async (req, res) => {
   const { questionSeq, question, questionSub, optionArray } = req.body;
 
   try {

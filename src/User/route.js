@@ -1,6 +1,6 @@
-const { authenticate } = require("../middlewares/validator");
+const { checkSessionCookie } = require("../middlewares/authenticator");
 
-module.exports = function (app) {
+module.exports = (app) => {
   const user = require("./controller");
 
   // 유저 생성 (회원가입) API
@@ -10,8 +10,8 @@ module.exports = function (app) {
   app.patch("/user/login", user.login);
 
   // 로그인여부 확인 API
-  app.get("/user/login-check", authenticate, user.loginCheck);
+  app.get("/user/login-check", checkSessionCookie, user.loginCheck);
 
   // 로그아웃 API
-  app.patch("/user/logout", authenticate, user.logout);
+  app.patch("/user/logout", checkSessionCookie, user.logout);
 };

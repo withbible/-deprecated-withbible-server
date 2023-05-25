@@ -1,26 +1,38 @@
-const { quiz: validator } = require("../middlewares/validator");
+const checkQuizDomain = require("../middlewares/validator");
 
-module.exports = function (app) {
+module.exports = (app) => {
   const history = require("./controller");
 
   // 한 챕터의 선택기록 조회 API
-  app.get("/history/chapter/user-option", validator, history.getUserOption);
+  app.get(
+    "/history/chapter/user-option",
+    checkQuizDomain,
+    history.getUserOption
+  );
 
   // 한 챕터의 선택기록 생성 API
-  app.post("/history/chapter/user-option", validator, history.postUserOption);
+  app.post(
+    "/history/chapter/user-option",
+    checkQuizDomain,
+    history.postUserOption
+  );
 
   // 한 챕터의 선택기록 수정 API
-  app.put("/history/chapter/user-option", validator, history.putUserOption);
+  app.put(
+    "/history/chapter/user-option",
+    checkQuizDomain,
+    history.putUserOption
+  );
 
   // 한 챕터의 선택기록 삭제 API
   app.delete(
     "/history/chapter/user-option",
-    validator,
+    checkQuizDomain,
     history.deleteUserOption
   );
 
   // 한 챕터의 맞힌개수 조회 API
-  app.get("/history/chapter/hit-count", validator, history.getHitCount);
+  app.get("/history/chapter/hit-count", checkQuizDomain, history.getHitCount);
 
   // 카테고리별 평균 맞힌개수 챕터 전체조회 API
   app.get("/history/categories/avg-hit-count", history.getAvgHitCount);

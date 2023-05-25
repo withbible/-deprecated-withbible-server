@@ -3,7 +3,7 @@ const { StatusCodes } = require("http-status-codes");
 // INTERNAL IMPORT
 const path = require("path");
 const logger = require("../configs/logger");
-const { errResponse, response } = require("../modules/response");
+const { errResponse, response } = require("../utils/response");
 const { filterReferenceOther } = require("../utils/util");
 const service = require("./service");
 const { USER_API_DOCS } = require("../constants/enum");
@@ -20,7 +20,7 @@ function decodeAuthorization(authorization) {
   return decoded.split(":");
 }
 
-exports.postUser = async function (req, res) {
+exports.postUser = async (req, res) => {
   const [userID, password] = decodeAuthorization(req.headers.authorization);
   const { userEmail, fcmToken } = req.body;
 
@@ -63,7 +63,7 @@ exports.postUser = async function (req, res) {
   }
 };
 
-exports.login = async function (req, res) {
+exports.login = async (req, res) => {
   const [userID, password] = decodeAuthorization(req.headers.authorization);
   const { isAutoLogin, fcmToken } = req.body;
 
@@ -104,7 +104,7 @@ exports.login = async function (req, res) {
   }
 };
 
-exports.loginCheck = async function (req, res) {
+exports.loginCheck = async (req, res) => {
   res.json(
     response({
       message: "세션이 유효합니다",
@@ -118,7 +118,7 @@ exports.loginCheck = async function (req, res) {
   );
 };
 
-exports.logout = async function (req, res) {
+exports.logout = async (req, res) => {
   req.session.destroy((err) => {
     if (err) {
       logger.warn(`[${dirName}]_${err.message}`);

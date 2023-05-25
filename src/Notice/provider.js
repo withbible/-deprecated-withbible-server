@@ -1,7 +1,7 @@
 const poolPromise = require("../configs/database");
 const dao = require("./dao");
 
-exports.getToken = async function (userID) {
+exports.getToken = async (userID) => {
   const pool = await poolPromise;
   const rows = userID
     ? await dao.searchToken(pool, userID)
@@ -11,7 +11,7 @@ exports.getToken = async function (userID) {
   return Promise.resolve(result);
 };
 
-exports.getCreatedCountByPrevMonth = async function () {
+exports.getCreatedCountByPrevMonth = async () => {
   const pool = await poolPromise;
   const [result] = await dao.selectCreatedCountByPrevMonth(pool);
 

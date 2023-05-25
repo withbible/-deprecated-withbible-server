@@ -21,12 +21,12 @@ function sleep(ms) {
 }
 
 // MAIN
-async function waitForDB(dbConfig, times = 1) {
+const waitForDB = async (dbConfig, times = 1) => {
   try {
     const pool = mysql.createPool(dbConfig);
     await pool.query("SELECT 1");
 
-    logger.info("MariaDB 10.5 connected");
+    logger.info("MySQL connected");
     return pool;
   } catch (err) {
     if (times > 5) {
@@ -43,9 +43,8 @@ async function waitForDB(dbConfig, times = 1) {
     await sleep(backoff);
     return waitForDB(dbConfig, times + 1);
   }
-}
+};
 
-// eslint-disable-next-line consistent-return
 const poolPromise = (async () => {
   try {
     const sslConfig = await getSSLConfigRemote();

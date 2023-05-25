@@ -1,14 +1,14 @@
 // INTERNAL IMPORT
 const path = require("path");
 const logger = require("../configs/logger");
-const { response, errResponse } = require("../modules/response");
+const { response, errResponse } = require("../utils/response");
 const provider = require("./provider");
 const docs = require("../constants/docs");
 
 // CONSTANT
 const dirName = path.basename(__dirname);
 
-exports.getLeaderBoard = async function (req, res) {
+exports.getLeaderBoard = async (req, res) => {
   try {
     const result = await provider.getLeaderBoard();
 
@@ -23,7 +23,7 @@ exports.getLeaderBoard = async function (req, res) {
   }
 };
 
-exports.getLeaderBoardPage = async function (req, res) {
+exports.getLeaderBoardPage = async (req, res) => {
   const { limit, page } = req.query;
 
   try {
@@ -62,7 +62,7 @@ exports.getLeaderBoardPage = async function (req, res) {
   }
 };
 
-exports.getLeaderBoardLastPage = async function (req, res) {
+exports.getLeaderBoardLastPage = async (req, res) => {
   const { limit } = req.query;
 
   try {

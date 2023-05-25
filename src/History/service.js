@@ -7,7 +7,7 @@ const quizProvider = require("../Quiz/provider");
 const dao = require("./dao");
 const leaderBoardDao = require("../LeaderBoard/dao");
 
-exports.getUserOption = async function (categorySeq, chapterNum, userSeq) {
+exports.getUserOption = async (categorySeq, chapterNum, userSeq) => {
   const rows = await provider.getUserOption(categorySeq, chapterNum, userSeq);
 
   if (!rows.length) {
@@ -19,12 +19,12 @@ exports.getUserOption = async function (categorySeq, chapterNum, userSeq) {
   return rows;
 };
 
-exports.postUserOption = async function (
+exports.postUserOption = async (
   categorySeq,
   chapterNum,
   userSeq,
   userOption
-) {
+) => {
   const [userOptionRows, chapterSeqRow] = await Promise.all([
     provider.getUserOption(categorySeq, chapterNum, userSeq),
     quizProvider.getChapterSeq(categorySeq, chapterNum),
@@ -73,12 +73,12 @@ exports.postUserOption = async function (
   }
 };
 
-exports.putUserOption = async function (
+exports.putUserOption = async (
   categorySeq,
   chapterNum,
   userSeq,
   userOption
-) {
+) => {
   const [userOptionRows, chapterSeqRow] = await Promise.all([
     provider.getUserOption(categorySeq, chapterNum, userSeq),
     quizProvider.getChapterSeq(categorySeq, chapterNum),
@@ -130,7 +130,7 @@ exports.putUserOption = async function (
   }
 };
 
-exports.deleteUserOption = async function (categorySeq, chapterNum, userSeq) {
+exports.deleteUserOption = async (categorySeq, chapterNum, userSeq) => {
   const [userOptionRows, chapterSeqRow] = await Promise.all([
     provider.getUserOption(categorySeq, chapterNum, userSeq),
     quizProvider.getChapterSeq(categorySeq, chapterNum),

@@ -1,4 +1,4 @@
-exports.searchToken = async function (connection, userID) {
+exports.searchToken = async (connection, userID) => {
   const query = `
     SELECT
       fcm_token AS token
@@ -11,7 +11,7 @@ exports.searchToken = async function (connection, userID) {
   return rows;
 };
 
-exports.selectToken = async function (connection) {
+exports.selectToken = async (connection) => {
   const query = `
     SELECT
       fcm_token AS token
@@ -24,7 +24,7 @@ exports.selectToken = async function (connection) {
   return rows;
 };
 
-exports.updateToken = async function (connection, params) {
+exports.updateToken = async (connection, params) => {
   const query = `
     UPDATE user
       SET fcm_token = ?
@@ -36,7 +36,7 @@ exports.updateToken = async function (connection, params) {
   return rows;
 };
 
-exports.selectCreatedCountByPrevMonth = async function (connection) {
+exports.selectCreatedCountByPrevMonth = async (connection) => {
   const query = `
     SELECT
       DATE_FORMAT(created_at, '%Y-%m') AS date,  
