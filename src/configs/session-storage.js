@@ -9,30 +9,40 @@ const redisConfig = {
 };
 
 // MAIN
-const waitForRedis = (redisConfig) => {
-  const client = redis.createClient(redisConfig);
-  let times = 0;
+class SessionStorage {
+  static async init() {
+    this.waitForRedis();
+    await this.client.connect();
+  }
 
-  client.on("connect", () => {
-    times = 0;
-    logger.info("Redis connected");
-  });
+  static waitForRedis() {
+    this.client = redis.createClient(redisConfig);
+    let times = 0;
 
-  client.on("reconnecting", () => {
-    times += 1;
-    logger.warn(`Unable to connect to Redis, trying again immediately`);
-  });
+    this.client.on("connect", () => {
+      times = 0;
+      logger.info("Redis connected");
+    });
 
-  client.on("error", () => {
-    if (times > 5) {
-      logger.error(`Unable to connect to Redis in ${times} attempts, exiting`);
-      process.exit();
-    }
-  });
+    this.client.on("reconnecting", () => {
+      times += 1;
+      logger.warn(`Unable to connect to Redis, trying again immediately`);
+    });
 
-  return client;
-};
+    this.client.on("error", () => {
+      if (times > 5) {
+        logger.error(
+          `Unable to connect to Redis in ${times} attempts, exiting`
+        );
 
-module.exports = (() => {
-  return waitForRedis(redisConfig);
-})();
+        process.exit();
+      }
+    });
+  }
+
+  static getClient() {
+    return this.client;
+  }
+}
+
+module.exports = SessionStorage;

@@ -21,38 +21,44 @@ function sleep(ms) {
 }
 
 // MAIN
-const waitForDB = async (dbConfig, times = 1) => {
-  try {
-    const pool = mysql.createPool(dbConfig);
-    await pool.query("SELECT 1");
+class Database {
+  static async init() {
+    try {
+      const sslConfig = await getSSLConfigRemote();
 
-    logger.info("MySQL connected");
-    return pool;
-  } catch (err) {
-    if (times > 5) {
-      logger.error(
-        `Unable to connect to database in ${times} attemps, exiting`
-      );
-      process.exit();
+      this.pool = this.waitForDB({ ...dbConfig, ...sslConfig });
+    } catch (err) {
+      logger.error(err);
     }
-
-    const backoff = 2 ** (times - 1) * 1000;
-    logger.warn(`Unable to connect to database, trying again in ${backoff}ms
-    `);
-
-    await sleep(backoff);
-    return waitForDB(dbConfig, times + 1);
   }
-};
 
-const poolPromise = (async () => {
-  try {
-    const sslConfig = await getSSLConfigRemote();
+  static async waitForDB(dbConfig, times = 1) {
+    try {
+      const pool = mysql.createPool(dbConfig);
+      await pool.query("SELECT 1");
 
-    return waitForDB({ ...dbConfig, ...sslConfig });
-  } catch (err) {
-    logger.error(err);
+      logger.info("MySQL connected");
+      return pool;
+    } catch (err) {
+      if (times > 5) {
+        logger.error(
+          `Unable to connect to database in ${times} attemps, exiting`
+        );
+        process.exit();
+      }
+
+      const backoff = 2 ** (times - 1) * 1000;
+      logger.warn(`Unable to connect to database, trying again in ${backoff}ms
+      `);
+
+      await sleep(backoff);
+      return this.waitForDB(dbConfig, times + 1);
+    }
   }
-})();
 
-module.exports = poolPromise;
+  static getPool() {
+    return this.pool;
+  }
+}
+
+module.exports = Database;

@@ -2,7 +2,6 @@ const bcypt = require("bcrypt");
 const { StatusCodes } = require("http-status-codes");
 
 // INTERNAL IMPORT
-const poolPromise = require("../configs/database");
 const noticeService = require("../Notice/service");
 const noticeProvider = require("../Notice/provider");
 const provider = require("./provider");
@@ -21,7 +20,7 @@ exports.postUser = async (userID, password, userEmail, token) => {
   const saltRounds = 10;
   const hashedPassword = await bcypt.hash(password, saltRounds);
 
-  const pool = await poolPromise;
+  const pool = await require("../configs/database").getPool();
   const connection = await pool.getConnection();
 
   try {

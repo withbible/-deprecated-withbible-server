@@ -4,7 +4,8 @@ const Sentry = require("@sentry/node");
 // INTERNAL IMPORT
 const path = require("path");
 const logger = require("../configs/logger");
-const pusherChannelsPromise = require("../configs/pusher-channels");
+const pusherChannelsPromise =
+  require("../configs/pusher-channels").getPusherChannels();
 const docs = require("../constants/docs");
 const { CATEGORY, HISTORY_API_DOCS } = require("../constants");
 const { response, errResponse } = require("../utils/response");

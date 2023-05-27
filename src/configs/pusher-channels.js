@@ -15,20 +15,25 @@ const pusherConfig = {
 const fileName = path.basename(__filename, ".js");
 
 // MAIN
-const pusherChannelsPromise = (async () => {
-  try {
-    const pusher = new Pusher(pusherConfig);
-    await pusher.trigger(
-      "quiz-interaction-channel",
-      "quiz-interaction-event",
-      {}
-    );
+class PusherChannels {
+  static async init() {
+    try {
+      this.pusher = new Pusher(pusherConfig);
+      await this.pusher.trigger(
+        "quiz-interaction-channel",
+        "quiz-interaction-event",
+        {}
+      );
 
-    logger.info("Pusher Channels connected");
-    return pusher;
-  } catch (err) {
-    logger.error(`[${fileName}]_${err.message}`);
+      logger.info("Pusher Channels connected");
+    } catch (err) {
+      logger.error(`[${fileName}]_${err.message}`);
+    }
   }
-})();
 
-module.exports = pusherChannelsPromise;
+  static getPusherChannels() {
+    return this.pusher;
+  }
+}
+
+module.exports = PusherChannels;

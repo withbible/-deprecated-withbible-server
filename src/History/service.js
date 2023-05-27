@@ -1,7 +1,6 @@
 const { StatusCodes } = require("http-status-codes");
 
 // INTERNAL IMPORT
-const poolPromise = require("../configs/database");
 const provider = require("./provider");
 const quizProvider = require("../Quiz/provider");
 const dao = require("./dao");
@@ -36,7 +35,7 @@ exports.postUserOption = async (
     return Promise.reject(err);
   }
 
-  const pool = await poolPromise;
+  const pool = await require("../configs/database").getPool();
   const connection = await pool.getConnection();
   const { chapterSeq } = chapterSeqRow;
 
@@ -93,7 +92,7 @@ exports.putUserOption = async (
     return Promise.reject(err);
   }
 
-  const pool = await poolPromise;
+  const pool = await require("../configs/database").getPool();
   const connection = await pool.getConnection();
   const { chapterSeq } = chapterSeqRow;
 
@@ -142,7 +141,7 @@ exports.deleteUserOption = async (categorySeq, chapterNum, userSeq) => {
     return Promise.reject(err);
   }
 
-  const pool = await poolPromise;
+  const pool = await require("../configs/database").getPool();
   const connection = await pool.getConnection();
   const { chapterSeq } = chapterSeqRow;
 

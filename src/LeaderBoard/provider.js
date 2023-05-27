@@ -1,11 +1,10 @@
 const { StatusCodes } = require("http-status-codes");
 
 // INTERNAL IMPORT
-const poolPromise = require("../configs/database");
 const dao = require("./dao");
 
 exports.getLeaderBoard = async () => {
-  const pool = await poolPromise;
+  const pool = await require("../configs/database").getPool();
   const result = await dao.selectLeaderBoard(pool);
 
   if (!result.length) {
@@ -24,7 +23,7 @@ exports.getLeaderBoardPage = async (limit, page, lastPage) => {
     return Promise.reject(err);
   }
 
-  const pool = await poolPromise;
+  const pool = await require("../configs/database").getPool();
   const offset = (page - 1) * limit;
   const selectLeaderBoardParams = [limit, offset];
 
@@ -34,7 +33,7 @@ exports.getLeaderBoardPage = async (limit, page, lastPage) => {
 };
 
 exports.getTotalCount = async () => {
-  const pool = await poolPromise;
+  const pool = await require("../configs/database").getPool();
   const [rows] = await dao.selectTotalCount(pool);
   const result = rows.totalCount;
 

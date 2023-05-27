@@ -1,11 +1,10 @@
 const { StatusCodes } = require("http-status-codes");
 
 // INTERNAL IMPORT
-const poolPromise = require("../configs/database");
 const dao = require("./dao");
 
 exports.putToken = async (token, userID) => {
-  const pool = await poolPromise;
+  const pool = await require("../configs/database").getPool();
 
   try {
     await dao.updateToken(pool, [token, userID]);

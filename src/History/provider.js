@@ -1,11 +1,10 @@
 const { StatusCodes } = require("http-status-codes");
 
 // INTERNAL IMPORT
-const poolPromise = require("../configs/database");
 const dao = require("./dao");
 
 exports.getUserOption = async (categorySeq, chapterNum, userSeq) => {
-  const pool = await poolPromise;
+  const pool = await require("../configs/database").getPool();
   const result = await dao.selectUserOption(pool, [
     categorySeq,
     chapterNum,
@@ -16,7 +15,7 @@ exports.getUserOption = async (categorySeq, chapterNum, userSeq) => {
 };
 
 exports.getActiveChapterCount = async (categorySeq, userSeq) => {
-  const pool = await poolPromise;
+  const pool = await require("../configs/database").getPool();
   const [result] = await dao.selectActiveChapterCount(pool, [
     userSeq,
     categorySeq,
@@ -32,7 +31,7 @@ exports.getActiveChapterCount = async (categorySeq, userSeq) => {
 };
 
 exports.getActiveChapter = async (categorySeq, userSeq) => {
-  const pool = await poolPromise;
+  const pool = await require("../configs/database").getPool();
   const result = categorySeq
     ? await dao.searchActiveChapter(pool, [userSeq, categorySeq])
     : await dao.selectActiveChapter(pool, userSeq);
@@ -53,7 +52,7 @@ exports.getActiveChapterPage = async (limit, page, lastPage, userSeq) => {
     return Promise.reject(err);
   }
 
-  const pool = await poolPromise;
+  const pool = await require("../configs/database").getPool();
   const offset = (page - 1) * limit;
   const result = await dao.selectActiveChapterPage(pool, [
     userSeq,
@@ -71,7 +70,7 @@ exports.getActiveChapterPage = async (limit, page, lastPage, userSeq) => {
 };
 
 exports.getTotalCount = async (userSeq) => {
-  const pool = await poolPromise;
+  const pool = await require("../configs/database").getPool();
   const [rows] = await dao.selectTotalCount(pool, userSeq);
   const result = rows.totalCount;
 
@@ -79,7 +78,7 @@ exports.getTotalCount = async (userSeq) => {
 };
 
 exports.getHitCount = async (categorySeq, chapterNum, userSeq) => {
-  const pool = await poolPromise;
+  const pool = await require("../configs/database").getPool();
   const [result] = await dao.selectHitCountByChapterNum(pool, [
     categorySeq,
     chapterNum,
@@ -96,7 +95,7 @@ exports.getHitCount = async (categorySeq, chapterNum, userSeq) => {
 };
 
 exports.getAvgHitCount = async () => {
-  const pool = await poolPromise;
+  const pool = await require("../configs/database").getPool();
   const rows = await dao.selectAvgHitCount(pool);
   const result = [];
 

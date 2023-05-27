@@ -4,7 +4,6 @@ const logger = require("./logger");
 // CONSTANT
 const fileName = path.basename(__filename, ".js");
 
-// MAIN
 const getSDKConfigRemote = async () => {
   const axios = require("axios");
   const REPO_URL = `https://api.github.com/repos/WithBible/withbible-server-etc/contents/keys/${process.env.FCM_ADMIN_SDK}.json`;
@@ -21,21 +20,28 @@ const getSDKConfigRemote = async () => {
   return JSON.parse(decoded);
 };
 
-const messagingPromise = (async () => {
-  try {
-    const admin = require("firebase-admin");
-    const sdkConfig = await getSDKConfigRemote();
+// MAIN
+class FirebaseMessagingAdmin {
+  static async init() {
+    try {
+      const admin = require("firebase-admin");
+      const sdkConfig = await getSDKConfigRemote();
 
-    admin.initializeApp({
-      credential: admin.credential.cert(sdkConfig),
-    });
+      admin.initializeApp({
+        credential: admin.credential.cert(sdkConfig),
+      });
 
-    logger.info("Firebase Cloud Messaging connected");
+      logger.info("Firebase Cloud Messaging connected");
 
-    return admin.messaging();
-  } catch (err) {
-    logger.error(`[${fileName}]_${err.message}`);
+      this.messaging = admin.messaging();
+    } catch (err) {
+      logger.error(`[${fileName}]_${err.message}`);
+    }
   }
-})();
 
-module.exports = messagingPromise;
+  static getMessaging() {
+    return this.messaging;
+  }
+}
+
+module.exports = FirebaseMessagingAdmin;

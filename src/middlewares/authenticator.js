@@ -3,7 +3,7 @@ const session = require("express-session");
 const { StatusCodes } = require("http-status-codes");
 
 // INTERNAL IMPORT
-const client = require("../configs/session-storage");
+const client = require("../configs/session-storage").getClient();
 const { errResponse } = require("../utils/response");
 
 // CONSTANT
@@ -42,10 +42,6 @@ const checkSessionCookie = (req, res, next) => {
 
   return next();
 };
-
-(async () => {
-  await client.connect();
-})();
 
 module.exports = {
   session: session(sessionOption),

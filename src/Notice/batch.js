@@ -1,7 +1,8 @@
 const path = require("path");
 const logger = require("../configs/logger");
 const provider = require("./provider");
-const messagingPromise = require("../configs/firebase-messaging-admin");
+const messagingPromise =
+  require("../configs/firebase-messaging-admin").getMessaging();
 
 // CONSTANT
 const dirName = path.basename(__dirname);
