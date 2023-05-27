@@ -2,7 +2,7 @@ const { StatusCodes } = require("http-status-codes");
 
 // INTERNAL IMPORT
 const client = require("../configs/session-storage");
-const { CATEGORY } = require("../constants/enum");
+const { CATEGORY } = require("../constants");
 const { response, errResponse } = require("../utils/response");
 const { getMaxChapterByCategory } = require("../Quiz/provider");
 

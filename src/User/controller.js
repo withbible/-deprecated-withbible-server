@@ -4,9 +4,9 @@ const { StatusCodes } = require("http-status-codes");
 const path = require("path");
 const logger = require("../configs/logger");
 const { errResponse, response } = require("../utils/response");
-const { filterReferenceOther } = require("../utils/util");
+const { filterReferenceOther } = require("../utils");
 const service = require("./service");
-const { USER_API_DOCS } = require("../constants/enum");
+const { USER_API_DOCS } = require("../constants");
 const docs = require("../constants/docs");
 
 // CONSTANT

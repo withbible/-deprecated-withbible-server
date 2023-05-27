@@ -35,8 +35,8 @@ exports.getLeaderBoardPage = async (limit, page, lastPage) => {
 
 exports.getTotalCount = async () => {
   const pool = await poolPromise;
-  const rows = await dao.selectTotalCount(pool);
-  const result = rows[0].totalCount;
+  const [rows] = await dao.selectTotalCount(pool);
+  const result = rows.totalCount;
 
   return Promise.resolve(result);
 };

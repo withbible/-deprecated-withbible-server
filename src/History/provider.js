@@ -72,8 +72,8 @@ exports.getActiveChapterPage = async (limit, page, lastPage, userSeq) => {
 
 exports.getTotalCount = async (userSeq) => {
   const pool = await poolPromise;
-  const rows = await dao.selectTotalCount(pool, userSeq);
-  const result = rows[0].totalCount;
+  const [rows] = await dao.selectTotalCount(pool, userSeq);
+  const result = rows.totalCount;
 
   return Promise.resolve(result);
 };

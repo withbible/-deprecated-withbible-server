@@ -6,9 +6,9 @@ const path = require("path");
 const logger = require("../configs/logger");
 const pusherChannelsPromise = require("../configs/pusher-channels");
 const docs = require("../constants/docs");
-const { CATEGORY, HISTORY_API_DOCS } = require("../constants/enum");
+const { CATEGORY, HISTORY_API_DOCS } = require("../constants");
 const { response, errResponse } = require("../utils/response");
-const { filterReferenceOther } = require("../utils/util");
+const { filterReferenceOther } = require("../utils");
 const provider = require("./provider");
 const service = require("./service");
 
