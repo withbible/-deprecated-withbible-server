@@ -14,6 +14,7 @@ module.exports = () => {
   const app = express();
 
   // CONFIG
+  // +++ Trust the nth hop from the front-facing proxy server as the client.
   app.set("trust proxy", 1);
   require("./monitoring")(app);
   require("./session-storage").init();
