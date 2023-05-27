@@ -3,10 +3,11 @@ const { StatusCodes } = require("http-status-codes");
 // INTERNAL IMPORT
 const path = require("path");
 const logger = require("../configs/logger");
+const client = require("../configs/session-storage");
 const docs = require("../constants/docs");
 const { CATEGORY, QUIZ_API_DOCS } = require("../constants/enum");
 const { response, errResponse } = require("../utils/response");
-const { filterReferenceOther } = require("../utils/util");
+const { filterReferenceOther } = require("../utils");
 const provider = require("./provider");
 const service = require("./service");
 
@@ -43,11 +44,14 @@ exports.getQuiz = async (req, res) => {
 
   try {
     const result = await provider.getQuiz(categorySeq, chapterNum);
-    const message = "한 챕터의 질문-선택지 전체조회 완료";
+
+    const cachingKey = `quiz:${categorySeq}-${chapterNum}`;
+    await client.set(cachingKey, JSON.stringify(result));
+    await client.expire(cachingKey, 3600);
 
     res.json(
       response({
-        message,
+        message: "한 챕터의 질문-선택지 전체조회 완료",
         meta: {
           category: CATEGORY[categorySeq],
           categorySeq,

@@ -1,4 +1,4 @@
-const checkQuizDomain = require("../middlewares/validator");
+const { checkQuizDomain, checkCache } = require("../middlewares/validator");
 
 module.exports = (app) => {
   const quiz = require("./controller");
@@ -7,7 +7,7 @@ module.exports = (app) => {
   app.get("/quiz/categories/chapter", quiz.getChapter);
 
   // 한 챕터의 질문-선택지 전체조회 API
-  app.get("/quiz/chapter", checkQuizDomain, quiz.getQuiz);
+  app.get("/quiz/chapter", [checkQuizDomain, checkCache], quiz.getQuiz);
 
   // (관리자) 질문-선택지 생성 API
   app.post("/quiz", quiz.postQuiz);

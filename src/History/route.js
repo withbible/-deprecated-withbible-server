@@ -1,4 +1,4 @@
-const checkQuizDomain = require("../middlewares/validator");
+const { checkQuizDomain } = require("../middlewares/validator");
 
 module.exports = (app) => {
   const history = require("./controller");

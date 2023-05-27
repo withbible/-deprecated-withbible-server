@@ -1,8 +1,9 @@
 const { StatusCodes } = require("http-status-codes");
 
 // INTERNAL IMPORT
-const { errResponse } = require("../utils/response");
+const client = require("../configs/session-storage");
 const { CATEGORY } = require("../constants/enum");
+const { response, errResponse } = require("../utils/response");
 const { getMaxChapterByCategory } = require("../Quiz/provider");
 
 // HELPER FUNCTION
@@ -49,4 +50,22 @@ const checkQuizDomain = async (req, res, next) => {
   return next();
 };
 
-module.exports = checkQuizDomain;
+const checkCache = async (req, res, next) => {
+  const { categorySeq, chapterNum } = req.query;
+
+  const cached = await client.get(`quiz:${categorySeq}-${chapterNum}`);
+  const result = JSON.parse(cached);
+
+  if (result) {
+    return res.json(
+      response({
+        message: "한 챕터의 질문-선택지 전체조회 완료",
+        result,
+      })
+    );
+  }
+
+  return next();
+};
+
+module.exports = { checkQuizDomain, checkCache };
