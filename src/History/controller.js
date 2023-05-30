@@ -58,27 +58,28 @@ exports.postUserOption = async (req, res) => {
   const { userSeq } = req.session.user;
 
   try {
-    const result = await service.postUserOption(
-      categorySeq,
-      chapterNum,
-      userSeq,
-      userOption
-    );
+    await service.postUserOption(categorySeq, chapterNum, userSeq, userOption);
 
-    const pusher = await pusherChannelsPromise;
+    const [pusher, avgHitCount] = await Promise.all([
+      pusherChannelsPromise,
+      provider.getAvgHitCount(),
+    ]);
+
     const pusherResponse = await pusher.trigger(
       "quiz-interaction-channel",
       "quiz-interaction-event",
       response({
         message: "카테고리별 평균 맞힌개수 챕터 전체조회 완료",
-        result,
+        result: avgHitCount,
       }),
-      { info: "subscription_count.user_count" }
+      { info: "subscription_count,user_count" }
     );
     const pusherResult = await pusherResponse.json();
-    logger.info(
-      `Pusher Channels 이용자 현황: ${JSON.stringify(pusherResult.channels)}`
+    const subscriptionCount = JSON.stringify(
+      pusherResult.channels["quiz-interaction-channel"].subscription_count
     );
+
+    logger.info(`Pusher Channels ${subscriptionCount}명 연결되어있습니다.`);
 
     res.status(StatusCodes.CREATED);
     res.json(
@@ -112,29 +113,35 @@ exports.putUserOption = async (req, res) => {
   const { userSeq } = req.session.user;
 
   try {
-    const result = await service.putUserOption(
+    const status = await service.putUserOption(
       categorySeq,
       chapterNum,
       userSeq,
       userOption
     );
 
-    const pusher = await pusherChannelsPromise;
+    const [pusher, avgHitCount] = await Promise.all([
+      pusherChannelsPromise,
+      provider.getAvgHitCount(),
+    ]);
+
     const pusherResponse = await pusher.trigger(
       "quiz-interaction-channel",
       "quiz-interaction-event",
       response({
         message: "카테고리별 평균 맞힌개수 챕터 전체조회 완료",
-        result,
+        result: avgHitCount,
       }),
-      { info: "subscription_count.user_count" }
+      { info: "subscription_count,user_count" }
     );
     const pusherResult = await pusherResponse.json();
-    logger.info(
-      `Pusher Channels 이용자 현황: ${JSON.stringify(pusherResult.channels)}`
+    const subscriptionCount = JSON.stringify(
+      pusherResult.channels["quiz-interaction-channel"].subscription_count
     );
 
-    res.status(StatusCodes.CREATED);
+    logger.info(`Pusher Channels ${subscriptionCount}명 연결되어있습니다.`);
+
+    res.status(status);
     res.json(
       response({
         message: "한 챕터의 선택기록 수정 완료",
@@ -165,28 +172,30 @@ exports.deleteUserOption = async (req, res) => {
   const { userSeq } = req.session.user;
 
   try {
-    const result = await service.deleteUserOption(
-      categorySeq,
-      chapterNum,
-      userSeq
-    );
+    await service.deleteUserOption(categorySeq, chapterNum, userSeq);
 
-    const pusher = await pusherChannelsPromise;
+    const [pusher, avgHitCount] = await Promise.all([
+      pusherChannelsPromise,
+      provider.getAvgHitCount(),
+    ]);
+
     const pusherResponse = await pusher.trigger(
       "quiz-interaction-channel",
       "quiz-interaction-event",
       response({
         message: "카테고리별 평균 맞힌개수 챕터 전체조회 완료",
-        result,
+        result: avgHitCount,
       }),
-      { info: "subscription_count.user_count" }
+      { info: "subscription_count,user_count" }
     );
     const pusherResult = await pusherResponse.json();
-    logger.info(
-      `Pusher Channels 이용자 현황: ${JSON.stringify(pusherResult.channels)}`
+    const subscriptionCount = JSON.stringify(
+      pusherResult.channels["quiz-interaction-channel"].subscription_count
     );
 
-    res.status(StatusCodes.CREATED);
+    logger.info(`Pusher Channels ${subscriptionCount}명 연결되어있습니다.`);
+
+    res.status(StatusCodes.NO_CONTENT);
     res.json(
       response({
         message: "한 챕터의 선택기록 삭제 완료",

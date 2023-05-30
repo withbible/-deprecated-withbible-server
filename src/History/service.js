@@ -59,9 +59,7 @@ exports.postUserOption = async (
     await leaderBoardDao.updateLeaderBoard(connection, userSeq, quizScore);
     await connection.commit();
 
-    const result = await provider.getAvgHitCount();
-
-    return Promise.resolve(result);
+    return Promise.resolve();
   } catch (err) {
     await connection.rollback();
 
@@ -83,13 +81,19 @@ exports.putUserOption = async (
     quizProvider.getChapterSeq(categorySeq, chapterNum),
   ]);
 
-  /**
-   * @todo 변경 유무를 검증하여 없을시, 204 반환
-   */
   if (!userOptionRows.length) {
     const err = new Error("해당 기록이 존재하지 않습니다.");
     err.status = StatusCodes.BAD_REQUEST;
     return Promise.reject(err);
+  }
+
+  const isModified = userOptionRows.some(
+    (each) => each.questionOptionSeq !== userOption[each.questionSeq]
+  );
+
+  if (!isModified) {
+    const status = StatusCodes.NO_CONTENT;
+    return Promise.resolve(status);
   }
 
   const pool = await require("../configs/database").getPool();
@@ -116,9 +120,7 @@ exports.putUserOption = async (
     await leaderBoardDao.updateLeaderBoard(connection, userSeq, quizScore);
     await connection.commit();
 
-    const result = await provider.getAvgHitCount();
-
-    return Promise.resolve(result);
+    return Promise.resolve(StatusCodes.CREATED);
   } catch (err) {
     await connection.rollback();
 
@@ -156,9 +158,7 @@ exports.deleteUserOption = async (categorySeq, chapterNum, userSeq) => {
     await leaderBoardDao.updateLeaderBoard(connection, userSeq, quizScore);
     await connection.commit();
 
-    const result = await provider.getAvgHitCount();
-
-    return Promise.resolve(result);
+    return Promise.resolve();
   } catch (err) {
     await connection.rollback();
 
