@@ -49,7 +49,7 @@ module.exports = {
   HISTORY_API_DOCS: Object.freeze([
     {
       rel: "GET",
-      moreInfo: docs["GET.USER-OPTIONS"],
+      moreInfo: docs["GET.USER-OPTION"],
     },
     {
       rel: "POST",
@@ -58,6 +58,10 @@ module.exports = {
     {
       rel: "PUT",
       moreInfo: docs["PUT.USER-OPTION"],
+    },
+    {
+      rel: "DELETE",
+      moreInfo: docs["DELETE.USER-OPTION"],
     },
   ]),
 };

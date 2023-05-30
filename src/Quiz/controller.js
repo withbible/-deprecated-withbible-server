@@ -67,7 +67,7 @@ exports.getQuiz = async (req, res) => {
     res.json(
       errResponse({
         message: err.message,
-        link: docs["GET.USER-OPTIONS"],
+        link: docs["GET.QUIZ"],
       })
     );
   }
