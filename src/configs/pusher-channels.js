@@ -3,6 +3,7 @@ const Pusher = require("pusher");
 // INTERNAL IMPORT
 const path = require("path");
 const logger = require("./logger");
+const BaseConfig = require("./base");
 
 // CONSTANT
 const pusherConfig = {
@@ -15,25 +16,39 @@ const pusherConfig = {
 const fileName = path.basename(__filename, ".js");
 
 // MAIN
-class PusherChannels {
-  static async init() {
-    try {
-      this.pusher = new Pusher(pusherConfig);
-      await this.pusher.trigger(
-        "quiz-interaction-channel",
-        "quiz-interaction-event",
-        {}
-      );
+function PusherChannels() {
+  BaseConfig.call(this);
 
-      logger.info("Pusher Channels connected");
-    } catch (err) {
-      logger.error(`[${fileName}]_${err.message}`);
-    }
-  }
+  this.retry = () => {
+    /**
+     * @link https://pusher.com/docs/channels/using_channels/connection/#available-states
+     * pusher-js will automatically retry the connection every 15 seconds.
+     */
+  };
 
-  static getPusherChannels() {
-    return this.pusher;
-  }
+  return {
+    async init() {
+      try {
+        this.pusher = new Pusher(pusherConfig);
+        await this.pusher.trigger(
+          "quiz-interaction-channel",
+          "quiz-interaction-event",
+          {}
+        );
+
+        logger.info("Pusher Channels connected");
+      } catch (err) {
+        logger.error(`[${fileName}]_${err.message}`);
+      }
+    },
+
+    get() {
+      return this.pusher;
+    },
+  };
 }
 
-module.exports = PusherChannels;
+PusherChannels.prototype = Object.create(BaseConfig.prototype);
+PusherChannels.prototype.constructor = PusherChannels;
+
+module.exports = new PusherChannels();

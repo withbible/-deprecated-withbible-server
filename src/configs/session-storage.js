@@ -1,35 +1,34 @@
 const redis = require("redis");
 
 // INTERNAL IMPORT
+const path = require("path");
 const logger = require("./logger");
+const BaseConfig = require("./base");
 
 // CONSTANT
 const redisConfig = {
   url: process.env.REDIS_URL,
 };
+const fileName = path.basename(__filename, ".js");
 
 // MAIN
-class SessionStorage {
-  static async init() {
-    this.waitForRedis();
-    await this.client.connect();
-  }
+function SessionStorage() {
+  BaseConfig.call(this);
 
-  static waitForRedis() {
-    this.client = redis.createClient(redisConfig);
+  const retry = () => {
+    const client = redis.createClient(redisConfig);
     let times = 0;
 
-    this.client.on("connect", () => {
+    client.on("connect", () => {
       times = 0;
-      logger.info("Redis connected");
     });
 
-    this.client.on("reconnecting", () => {
+    client.on("reconnecting", () => {
       times += 1;
       logger.warn(`Unable to connect to Redis, trying again immediately`);
     });
 
-    this.client.on("error", () => {
+    client.on("error", () => {
       if (times > 5) {
         logger.error(
           `Unable to connect to Redis in ${times} attempts, exiting`
@@ -38,11 +37,29 @@ class SessionStorage {
         process.exit();
       }
     });
-  }
 
-  static getClient() {
-    return this.client;
-  }
+    return client;
+  };
+
+  return {
+    async init() {
+      try {
+        this.client = retry();
+        await this.client.connect();
+
+        logger.info("Redis connected");
+      } catch (err) {
+        logger.error(`[${fileName}]_${err.message}`);
+      }
+    },
+
+    get() {
+      return this.client;
+    },
+  };
 }
 
-module.exports = SessionStorage;
+SessionStorage.prototype = Object.create(BaseConfig.prototype);
+SessionStorage.prototype.constructor = SessionStorage;
+
+module.exports = new SessionStorage();

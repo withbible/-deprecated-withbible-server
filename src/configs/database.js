@@ -1,7 +1,9 @@
 const mysql = require("mysql2/promise");
 
 // INTERNAL IMPORT
+const path = require("path");
 const logger = require("./logger");
+const BaseConfig = require("./base");
 const { getSSLConfigRemote } = require("./ssl");
 
 // CONSTANT
@@ -12,32 +14,23 @@ const dbConfig = {
   password: process.env.SQL_PASSWORD,
   database: process.env.SQL_DATABASE,
 };
-
-// HELPER FUNCTION
-function sleep(ms) {
-  return new Promise((resolve) => {
-    setTimeout(resolve, ms);
-  });
-}
+const fileName = path.basename(__filename, ".js");
 
 // MAIN
-class Database {
-  static async init() {
-    try {
-      const sslConfig = await getSSLConfigRemote();
+function Database() {
+  BaseConfig.call(this);
 
-      this.pool = this.waitForDB({ ...dbConfig, ...sslConfig });
-    } catch (err) {
-      logger.error(err);
-    }
-  }
+  const sleep = (ms) => {
+    return new Promise((resolve) => {
+      setTimeout(resolve, ms);
+    });
+  };
 
-  static async waitForDB(dbConfig, times = 1) {
+  const retry = async (dbConfig, times = 1) => {
     try {
       const pool = mysql.createPool(dbConfig);
       await pool.query("SELECT 1");
 
-      logger.info("MySQL connected");
       return pool;
     } catch (err) {
       if (times > 5) {
@@ -52,13 +45,29 @@ class Database {
       `);
 
       await sleep(backoff);
-      return this.waitForDB(dbConfig, times + 1);
+      return this.retry(dbConfig, times + 1);
     }
-  }
+  };
 
-  static getPool() {
-    return this.pool;
-  }
+  return {
+    async init() {
+      try {
+        const sslConfig = await getSSLConfigRemote();
+        this.pool = retry({ ...dbConfig, ...sslConfig });
+
+        logger.info("MySQL connected");
+      } catch (err) {
+        logger.error(`[${fileName}]_${err.message}`);
+      }
+    },
+
+    get() {
+      return this.pool;
+    },
+  };
 }
 
-module.exports = Database;
+Database.prototype = Object.create(BaseConfig.prototype);
+Database.prototype.constructor = Database;
+
+module.exports = new Database();
