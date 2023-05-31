@@ -11,20 +11,13 @@ const cookieOption = {
   httpOnly: true,
   sameSite: "none",
   secure: true,
-
-  /**
-   * @description number by milliseconds
-   *
-   * [default] no maximum
-   * [dev] 10H
-   */
-  maxAge: 10 * 60 * 60 * 1000,
+  maxAge: 15 * 60 * 1000, // +++ 15m
 };
 
 const sessionOption = {
   name: "loginData",
   secret: process.env.COOKIE_SECRET,
-  resave: false,
+  resave: true,
   saveUninitialized: false,
   store: new RedisStore({
     client,
@@ -46,4 +39,5 @@ const checkSessionCookie = (req, res, next) => {
 module.exports = {
   session: session(sessionOption),
   checkSessionCookie,
+  AUTO_LOGIN_AGE: 90 * 24 * 60 * 60 * 1000, // +++ 90d
 };

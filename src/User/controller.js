@@ -3,15 +3,15 @@ const { StatusCodes } = require("http-status-codes");
 // INTERNAL IMPORT
 const path = require("path");
 const logger = require("../configs/logger");
+const { USER_API_DOCS } = require("../constants");
+const docs = require("../constants/docs");
+const { AUTO_LOGIN_AGE } = require("../middlewares/authenticator");
 const { errResponse, response } = require("../utils/response");
 const { filterReferenceOther } = require("../utils");
 const service = require("./service");
-const { USER_API_DOCS } = require("../constants");
-const docs = require("../constants/docs");
 
 // CONSTANT
 const dirName = path.basename(__dirname);
-const AUTO_LOGIN_AGE = 90 * 24 * 60 * 60 * 1000;
 
 // HELPER FUNCTION
 function decodeAuthorization(authorization) {
@@ -68,12 +68,7 @@ exports.login = async (req, res) => {
   const { isAutoLogin, fcmToken } = req.body;
 
   try {
-    const result = await service.login(userID, password, fcmToken);
-
-    req.session.user = {
-      ...result,
-      isLogined: true,
-    };
+    req.session.user = await service.login(userID, password, fcmToken);
 
     if (isAutoLogin) {
       req.session.cookie.maxAge = AUTO_LOGIN_AGE;
