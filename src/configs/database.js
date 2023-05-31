@@ -5,6 +5,8 @@ const path = require("path");
 const logger = require("./logger");
 const BaseThirdPartyConfig = require("./base");
 const { getSSLConfigRemote } = require("./ssl");
+const { MAX_RETRY_ATTEMPTS } = require("../constants");
+const { sleep, getBackOff } = require("../utils");
 
 // CONSTANT
 const dbConfig = {
@@ -20,32 +22,26 @@ const fileName = path.basename(__filename, ".js");
 function Database() {
   BaseThirdPartyConfig.call(this);
 
-  const sleep = (ms) => {
-    return new Promise((resolve) => {
-      setTimeout(resolve, ms);
-    });
-  };
-
-  const retry = async (dbConfig, times = 1) => {
+  const retry = async (dbConfig, attempts = 1) => {
     try {
       const pool = mysql.createPool(dbConfig);
       await pool.query("SELECT 1");
 
       return pool;
     } catch (err) {
-      if (times > 5) {
+      if (attempts > MAX_RETRY_ATTEMPTS) {
         logger.error(
-          `Unable to connect to database in ${times} attemps, exiting`
+          `Unable to connect to database in ${attempts} attemps, exiting`
         );
-        process.exit();
+        process.exit(1);
       }
 
-      const backoff = 2 ** (times - 1) * 1000;
+      const backoff = getBackOff(attempts);
       logger.warn(`Unable to connect to database, trying again in ${backoff}ms
       `);
 
       await sleep(backoff);
-      return this.retry(dbConfig, times + 1);
+      return this.retry(dbConfig, attempts + 1);
     }
   };
 

@@ -4,6 +4,7 @@ const redis = require("redis");
 const path = require("path");
 const logger = require("./logger");
 const BaseThirdPartyConfig = require("./base");
+const { MAX_RETRY_ATTEMPTS } = require("../constants");
 
 // CONSTANT
 const redisConfig = {
@@ -17,24 +18,24 @@ function SessionStorage() {
 
   const retry = () => {
     const client = redis.createClient(redisConfig);
-    let times = 0;
+    let attempts = 0;
 
     client.on("connect", () => {
-      times = 0;
+      attempts = 0;
     });
 
     client.on("reconnecting", () => {
-      times += 1;
+      attempts += 1;
       logger.warn(`Unable to connect to Redis, trying again immediately`);
     });
 
     client.on("error", () => {
-      if (times > 5) {
+      if (attempts > MAX_RETRY_ATTEMPTS) {
         logger.error(
-          `Unable to connect to Redis in ${times} attempts, exiting`
+          `Unable to connect to Redis in ${attempts} attempts, exiting`
         );
 
-        process.exit();
+        process.exit(1);
       }
     });
 

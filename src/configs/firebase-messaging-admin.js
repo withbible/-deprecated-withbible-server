@@ -58,7 +58,9 @@ function FirebaseMessagingAdmin() {
   };
 }
 
-FirebaseMessagingAdmin.prototype = Object.create(BaseThirdPartyConfig.prototype);
+FirebaseMessagingAdmin.prototype = Object.create(
+  BaseThirdPartyConfig.prototype
+);
 FirebaseMessagingAdmin.prototype.constructor = FirebaseMessagingAdmin;
 
 module.exports = new FirebaseMessagingAdmin();
