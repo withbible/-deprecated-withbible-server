@@ -4,7 +4,7 @@ const { StatusCodes } = require("http-status-codes");
 const dao = require("./dao");
 
 exports.putToken = async (token, userID) => {
-  const pool = await require("../configs/database").getPool();
+  const pool = await require("../configs/database").get();
 
   try {
     await dao.updateToken(pool, [token, userID]);

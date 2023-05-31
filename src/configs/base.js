@@ -1,4 +1,4 @@
-function BaseConfig() {
+function BaseThirdPartyConfig() {
   this.init = async () => {
     throw new Error("구현체에서 호출해주세요.");
   };
@@ -12,4 +12,4 @@ function BaseConfig() {
   };
 }
 
-module.exports = BaseConfig;
+module.exports = BaseThirdPartyConfig;

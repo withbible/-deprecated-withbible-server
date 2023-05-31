@@ -3,14 +3,14 @@ const axios = require("axios");
 // INTERNAL IMPORT
 const path = require("path");
 const logger = require("./logger");
-const BaseConfig = require("./base");
+const BaseThirdPartyConfig = require("./base");
 
 // CONSTANT
 const fileName = path.basename(__filename, ".js");
 
 // MAIN
 function FirebaseMessagingAdmin() {
-  BaseConfig.call(this);
+  BaseThirdPartyConfig.call(this);
 
   this.retry = () => {
     /**
@@ -58,7 +58,7 @@ function FirebaseMessagingAdmin() {
   };
 }
 
-FirebaseMessagingAdmin.prototype = Object.create(BaseConfig.prototype);
+FirebaseMessagingAdmin.prototype = Object.create(BaseThirdPartyConfig.prototype);
 FirebaseMessagingAdmin.prototype.constructor = FirebaseMessagingAdmin;
 
 module.exports = new FirebaseMessagingAdmin();

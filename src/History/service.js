@@ -35,7 +35,7 @@ exports.postUserOption = async (
     return Promise.reject(err);
   }
 
-  const pool = await require("../configs/database").getPool();
+  const pool = await require("../configs/database").get();
   const connection = await pool.getConnection();
   const { chapterSeq } = chapterSeqRow;
 
@@ -96,7 +96,7 @@ exports.putUserOption = async (
     return Promise.resolve(status);
   }
 
-  const pool = await require("../configs/database").getPool();
+  const pool = await require("../configs/database").get();
   const connection = await pool.getConnection();
   const { chapterSeq } = chapterSeqRow;
 
@@ -143,7 +143,7 @@ exports.deleteUserOption = async (categorySeq, chapterNum, userSeq) => {
     return Promise.reject(err);
   }
 
-  const pool = await require("../configs/database").getPool();
+  const pool = await require("../configs/database").get();
   const connection = await pool.getConnection();
   const { chapterSeq } = chapterSeqRow;
 

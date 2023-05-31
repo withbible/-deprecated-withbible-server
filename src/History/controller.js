@@ -5,7 +5,7 @@ const Sentry = require("@sentry/node");
 const path = require("path");
 const logger = require("../configs/logger");
 const pusherChannelsPromise =
-  require("../configs/pusher-channels").getPusherChannels();
+  require("../configs/pusher-channels").get();
 const docs = require("../constants/docs");
 const { CATEGORY, HISTORY_API_DOCS } = require("../constants");
 const { response, errResponse } = require("../utils/response");

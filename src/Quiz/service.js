@@ -15,7 +15,7 @@ exports.postQuiz = async (categorySeq, question, questionSub, optionArray) => {
     return Promise.reject(err);
   }
 
-  const pool = await require("../configs/database").getPool();
+  const pool = await require("../configs/database").get();
   const connection = await pool.getConnection();
 
   // 챕터일련번호 조회
@@ -75,7 +75,7 @@ exports.putQuiz = async (questionSeq, question, questionSub, optionArray) => {
     return Promise.reject(err);
   }
 
-  const pool = await require("../configs/database").getPool();
+  const pool = await require("../configs/database").get();
   const connection = await pool.getConnection();
 
   await Promise.all([

@@ -4,7 +4,7 @@ const { StatusCodes } = require("http-status-codes");
 const dao = require("./dao");
 
 exports.getChapter = async (keyword) => {
-  const pool = await require("../configs/database").getPool();
+  const pool = await require("../configs/database").get();
   const result = keyword
     ? await dao.searchChapter(pool, keyword)
     : await dao.selectChapter(pool);
@@ -19,7 +19,7 @@ exports.getChapter = async (keyword) => {
 };
 
 exports.getQuiz = async (categorySeq, chapterNum) => {
-  const pool = await require("../configs/database").getPool();
+  const pool = await require("../configs/database").get();
   const result = await dao.selectQuiz(pool, [categorySeq, chapterNum]);
 
   if (!result.length) {
@@ -32,35 +32,35 @@ exports.getQuiz = async (categorySeq, chapterNum) => {
 };
 
 exports.getQuestionSeqByText = async (question) => {
-  const pool = await require("../configs/database").getPool();
+  const pool = await require("../configs/database").get();
   const [result] = await dao.selectQuestionSeqByText(pool, question);
 
   return result;
 };
 
 exports.getQuestionSeqByNumber = async (questionSeq) => {
-  const pool = await require("../configs/database").getPool();
+  const pool = await require("../configs/database").get();
   const [result] = await dao.selectQuestionSeqByNumber(pool, questionSeq);
 
   return result;
 };
 
 exports.getChapterByNumber = async (questionSeq) => {
-  const pool = await require("../configs/database").getPool();
+  const pool = await require("../configs/database").get();
   const [result] = await dao.selectChapterByNumber(pool, questionSeq);
 
   return result;
 };
 
 exports.getChapterSeq = async (categorySeq, chapterNum) => {
-  const pool = await require("../configs/database").getPool();
+  const pool = await require("../configs/database").get();
   const [result] = await dao.selectChapterSeq(pool, [categorySeq, chapterNum]);
 
   return result;
 };
 
 exports.getMaxChapterByCategory = async (categorySeq) => {
-  const pool = await require("../configs/database").getPool();
+  const pool = await require("../configs/database").get();
   const [result] = await dao.selectMaxChapterByCategory(pool, categorySeq);
 
   return result;

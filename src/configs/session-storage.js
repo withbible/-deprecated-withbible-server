@@ -3,7 +3,7 @@ const redis = require("redis");
 // INTERNAL IMPORT
 const path = require("path");
 const logger = require("./logger");
-const BaseConfig = require("./base");
+const BaseThirdPartyConfig = require("./base");
 
 // CONSTANT
 const redisConfig = {
@@ -13,7 +13,7 @@ const fileName = path.basename(__filename, ".js");
 
 // MAIN
 function SessionStorage() {
-  BaseConfig.call(this);
+  BaseThirdPartyConfig.call(this);
 
   const retry = () => {
     const client = redis.createClient(redisConfig);
@@ -59,7 +59,7 @@ function SessionStorage() {
   };
 }
 
-SessionStorage.prototype = Object.create(BaseConfig.prototype);
+SessionStorage.prototype = Object.create(BaseThirdPartyConfig.prototype);
 SessionStorage.prototype.constructor = SessionStorage;
 
 module.exports = new SessionStorage();

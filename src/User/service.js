@@ -20,7 +20,7 @@ exports.postUser = async (userID, password, userEmail, token) => {
   const saltRounds = 10;
   const hashedPassword = await bcypt.hash(password, saltRounds);
 
-  const pool = await require("../configs/database").getPool();
+  const pool = await require("../configs/database").get();
   const connection = await pool.getConnection();
 
   try {

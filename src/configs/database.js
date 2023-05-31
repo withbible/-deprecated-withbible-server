@@ -3,7 +3,7 @@ const mysql = require("mysql2/promise");
 // INTERNAL IMPORT
 const path = require("path");
 const logger = require("./logger");
-const BaseConfig = require("./base");
+const BaseThirdPartyConfig = require("./base");
 const { getSSLConfigRemote } = require("./ssl");
 
 // CONSTANT
@@ -18,7 +18,7 @@ const fileName = path.basename(__filename, ".js");
 
 // MAIN
 function Database() {
-  BaseConfig.call(this);
+  BaseThirdPartyConfig.call(this);
 
   const sleep = (ms) => {
     return new Promise((resolve) => {
@@ -67,7 +67,7 @@ function Database() {
   };
 }
 
-Database.prototype = Object.create(BaseConfig.prototype);
+Database.prototype = Object.create(BaseThirdPartyConfig.prototype);
 Database.prototype.constructor = Database;
 
 module.exports = new Database();

@@ -3,7 +3,7 @@ const Pusher = require("pusher");
 // INTERNAL IMPORT
 const path = require("path");
 const logger = require("./logger");
-const BaseConfig = require("./base");
+const BaseThirdPartyConfig = require("./base");
 
 // CONSTANT
 const pusherConfig = {
@@ -17,7 +17,7 @@ const fileName = path.basename(__filename, ".js");
 
 // MAIN
 function PusherChannels() {
-  BaseConfig.call(this);
+  BaseThirdPartyConfig.call(this);
 
   this.retry = () => {
     /**
@@ -48,7 +48,7 @@ function PusherChannels() {
   };
 }
 
-PusherChannels.prototype = Object.create(BaseConfig.prototype);
+PusherChannels.prototype = Object.create(BaseThirdPartyConfig.prototype);
 PusherChannels.prototype.constructor = PusherChannels;
 
 module.exports = new PusherChannels();

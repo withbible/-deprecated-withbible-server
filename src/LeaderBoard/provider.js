@@ -4,7 +4,7 @@ const { StatusCodes } = require("http-status-codes");
 const dao = require("./dao");
 
 exports.getLeaderBoard = async () => {
-  const pool = await require("../configs/database").getPool();
+  const pool = await require("../configs/database").get();
   const result = await dao.selectLeaderBoard(pool);
 
   if (!result.length) {
@@ -23,7 +23,7 @@ exports.getLeaderBoardPage = async (limit, page, lastPage) => {
     return Promise.reject(err);
   }
 
-  const pool = await require("../configs/database").getPool();
+  const pool = await require("../configs/database").get();
   const offset = (page - 1) * limit;
   const selectLeaderBoardParams = [limit, offset];
 
@@ -33,7 +33,7 @@ exports.getLeaderBoardPage = async (limit, page, lastPage) => {
 };
 
 exports.getTotalCount = async () => {
-  const pool = await require("../configs/database").getPool();
+  const pool = await require("../configs/database").get();
   const [rows] = await dao.selectTotalCount(pool);
   const result = rows.totalCount;
 

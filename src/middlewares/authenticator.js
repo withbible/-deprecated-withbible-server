@@ -3,7 +3,7 @@ const session = require("express-session");
 const { StatusCodes } = require("http-status-codes");
 
 // INTERNAL IMPORT
-const client = require("../configs/session-storage").getClient();
+const client = require("../configs/session-storage").get();
 const { errResponse } = require("../utils/response");
 
 // CONSTANT
