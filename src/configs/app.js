@@ -16,7 +16,7 @@ module.exports = () => {
   // CONFIG
   // +++ Trust the nth hop from the front-facing proxy server as the client.
   app.set("trust proxy", 1);
-  require("./monitoring")(app);
+  require("./monitoring").init(app);
   require("./session-storage").init();
   require("./pusher-channels").init();
   require("./firebase-messaging-admin").init();

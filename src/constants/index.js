@@ -1,6 +1,8 @@
 const docs = require("./docs");
 
 module.exports = {
+  MAX_RETRY_ATTEMPTS: 5,
+
   CATEGORY: Object.freeze({
     1: "모세오경",
     2: "역사서",
