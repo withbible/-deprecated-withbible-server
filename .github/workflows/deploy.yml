@@ -53,10 +53,6 @@ jobs:
                   value: ${{ secrets.SQL_DATABASE }}
                 - name: REDIS_URL
                   value: ${{ secrets.REDIS_URL }}
-                - name: COOKIE_SECRET
-                  value: ${{ secrets.COOKIE_SECRET }}
-                - name: FCM_ADMIN_SDK
-                  value: ${{ secrets.FCM_ADMIN_SDK }}
                 - name: GHP_SERVER_ETC_ACCESS_TOKEN
                   value: ${{ secrets.GHP_SERVER_ETC_ACCESS_TOKEN }}
                 - name: PUSHER_APP_ID
@@ -67,6 +63,10 @@ jobs:
                   value: ${{ secrets.PUSHER_SECREAT }}
                 - name: PUSHER_CLUSTER
                   value: ${{ secrets.PUSHER_CLUSTER }}
+                - name: PUSHER_BEAMS_INSTANCE_ID
+                  value: ${{ secrets.PUSHER_BEAMS_INSTANCE_ID }}
+                - name: PUSHER_BEAMS_PRIMARY_KEY
+                  value: ${{ secrets.PUSHER_BEAMS_PRIMARY_KEY }}
                 - name: SENTRY_DSN_KEY
                   value: ${{ secrets.SENTRY_DSN_KEY }}
             context:

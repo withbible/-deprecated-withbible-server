@@ -19,7 +19,7 @@ module.exports = () => {
   require("./monitoring").init(app);
   require("./session-storage").init();
   require("./pusher-channels").init();
-  require("./firebase-messaging-admin").init();
+  require("./push-notification").init();
   require("./database").init();
 
   // MIDDLEWARE
@@ -39,7 +39,6 @@ module.exports = () => {
   require("../LeaderBoard/route")(app);
   app.use(require("../middlewares/authenticator").checkSessionCookie);
   require("../History/route")(app);
-  require("../Notice/route")(app);
 
   // ERROR HANDLEING
   app.use((req, res) => {

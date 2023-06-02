@@ -2,13 +2,11 @@ const bcypt = require("bcrypt");
 const { StatusCodes } = require("http-status-codes");
 
 // INTERNAL IMPORT
-const noticeService = require("../Notice/service");
-const noticeProvider = require("../Notice/provider");
 const provider = require("./provider");
 const dao = require("./dao");
 const leaderBoardDao = require("../LeaderBoard/dao");
 
-exports.postUser = async (userID, password, userEmail, token) => {
+exports.postUser = async (userID, password, userEmail) => {
   const userIDRow = await provider.userIDCheck(userID);
 
   if (userIDRow.length > 0) {
@@ -30,7 +28,6 @@ exports.postUser = async (userID, password, userEmail, token) => {
       userID,
       hashedPassword,
       userEmail,
-      token,
     ]);
     const userSeq = newUserRow.insertId;
 
@@ -50,11 +47,8 @@ exports.postUser = async (userID, password, userEmail, token) => {
   }
 };
 
-exports.login = async (userID, password, token) => {
-  const [[userIDRow], existedToken] = await Promise.all([
-    provider.userIDCheck(userID),
-    noticeProvider.getToken(userID),
-  ]);
+exports.login = async (userID, password) => {
+  const [userIDRow] = await provider.userIDCheck(userID);
 
   if (!userIDRow) {
     const err = new Error("가입되지 않은 아이디입니다.");
@@ -71,16 +65,6 @@ exports.login = async (userID, password, token) => {
     const err = new Error("비밀번호가 잘못 되었습니다.");
     err.status = StatusCodes.UNAUTHORIZED;
     return Promise.reject(err);
-  }
-
-  if (!existedToken) {
-    const err = new Error("데이터가 존재하지 않습니다.");
-    err.status = StatusCodes.BAD_REQUEST;
-    return Promise.reject(err);
-  }
-
-  if (token !== existedToken) {
-    await noticeService.putToken(token, userID);
   }
 
   return Promise.resolve({

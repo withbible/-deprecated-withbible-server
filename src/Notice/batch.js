@@ -1,17 +1,14 @@
 const path = require("path");
 const logger = require("../configs/logger");
 const provider = require("./provider");
-const messagingPromise =
-  require("../configs/firebase-messaging-admin").get();
 
 // CONSTANT
 const dirName = path.basename(__dirname);
 
 exports.sendQuizNotification = async () => {
-  const [createdCountResponse, tokens, messaging] = await Promise.all([
+  const [createdCountResponse, client] = await Promise.all([
     provider.getCreatedCountByPrevMonth(),
-    provider.getToken(),
-    messagingPromise,
+    require("../configs/push-notification").get(),
   ]);
 
   const body = createdCountResponse
@@ -20,18 +17,31 @@ exports.sendQuizNotification = async () => {
 
   try {
     const message = {
-      notification: {
-        title: "전월 퀴즈 등록수 알림",
-        body,
-        image: `${process.env.CLOUD_GUEST_SWYG}/images/logo.png`,
-      },
-      tokens,
+      title: "전월 퀴즈 등록수 알림",
+      body,
+      image: `${process.env.CLOUD_GUEST_SWYG}/images/logo.png`,
     };
 
-    const response = await messaging.sendEachForMulticast(message);
-    logger.info(
-      `전월 퀴즈 등록수 알림 송신 | 성공: ${response.successCount} | 실패: ${response.failureCount}`
+    const response = await client.publishToInterests(
+      ["quizCreatedCountByPrevMonth"],
+      {
+        apns: {
+          aps: {
+            alert: message,
+          },
+        },
+        fcm: {
+          notification: message,
+        },
+        web: {
+          notification: message,
+        },
+      }
     );
+
+    console.log(response);
+
+    logger.info(`전월 퀴즈 등록수 알림 송신`);
   } catch (err) {
     logger.warn(`[${dirName}]_${err.message}`);
   }
