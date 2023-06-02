@@ -36,12 +36,9 @@
 |       route.js
 |
 +---Notice
-|       controller.js
 |       batch.js
 |       dao.js
 |       provider.js
-|       route.js
-|       service.js
 |
 +---Quiz
 |       controller.js

@@ -37,7 +37,7 @@ function Monitoring() {
     } catch (err) {
       if (attempts > MAX_RETRY_ATTEMPTS) {
         logger.error(
-          `Unable to connect to Sentry in ${attempts} attemps, exiting`
+          `Unable to connect to Sentry in ${attempts} attempts, exiting`
         );
         process.exit(1);
       }
@@ -51,8 +51,8 @@ function Monitoring() {
   };
 
   return {
-    init(app) {
-      retry(app);
+    async init(app) {
+      await retry(app);
     },
   };
 }

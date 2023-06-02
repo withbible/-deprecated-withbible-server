@@ -4,8 +4,7 @@ const Sentry = require("@sentry/node");
 // INTERNAL IMPORT
 const path = require("path");
 const logger = require("../configs/logger");
-const pusherChannelsPromise =
-  require("../configs/pusher-channels").get();
+const realtimeStatisticPromise = require("../configs/realtime-statistic").get();
 const docs = require("../constants/docs");
 const { CATEGORY, HISTORY_API_DOCS } = require("../constants");
 const { response, errResponse } = require("../utils/response");
@@ -61,7 +60,7 @@ exports.postUserOption = async (req, res) => {
     await service.postUserOption(categorySeq, chapterNum, userSeq, userOption);
 
     const [pusher, avgHitCount] = await Promise.all([
-      pusherChannelsPromise,
+      realtimeStatisticPromise,
       provider.getAvgHitCount(),
     ]);
 
@@ -121,7 +120,7 @@ exports.putUserOption = async (req, res) => {
     );
 
     const [pusher, avgHitCount] = await Promise.all([
-      pusherChannelsPromise,
+      realtimeStatisticPromise,
       provider.getAvgHitCount(),
     ]);
 
@@ -135,9 +134,8 @@ exports.putUserOption = async (req, res) => {
       { info: "subscription_count,user_count" }
     );
     const pusherResult = await pusherResponse.json();
-    const subscriptionCount = JSON.stringify(
-      pusherResult.channels["quiz-interaction-channel"].subscription_count
-    );
+    const subscriptionCount =
+      pusherResult.channels["quiz-interaction-channel"].subscription_count;
 
     logger.info(`Pusher Channels ${subscriptionCount}명 연결되어있습니다.`);
 
@@ -175,7 +173,7 @@ exports.deleteUserOption = async (req, res) => {
     await service.deleteUserOption(categorySeq, chapterNum, userSeq);
 
     const [pusher, avgHitCount] = await Promise.all([
-      pusherChannelsPromise,
+      realtimeStatisticPromise,
       provider.getAvgHitCount(),
     ]);
 

@@ -18,7 +18,7 @@ module.exports = () => {
   app.set("trust proxy", 1);
   require("./monitoring").init(app);
   require("./session-storage").init();
-  require("./pusher-channels").init();
+  require("./realtime-statistic").init();
   require("./push-notification").init();
   require("./database").init();
 

@@ -16,7 +16,7 @@ const pusherConfig = {
 const fileName = path.basename(__filename, ".js");
 
 // MAIN
-function PusherChannels() {
+function RealtimeStatistic() {
   BaseThirdPartyConfig.call(this);
 
   this.retry = () => {
@@ -48,7 +48,7 @@ function PusherChannels() {
   };
 }
 
-PusherChannels.prototype = Object.create(BaseThirdPartyConfig.prototype);
-PusherChannels.prototype.constructor = PusherChannels;
+RealtimeStatistic.prototype = Object.create(BaseThirdPartyConfig.prototype);
+RealtimeStatistic.prototype.constructor = RealtimeStatistic;
 
-module.exports = new PusherChannels();
+module.exports = new RealtimeStatistic();

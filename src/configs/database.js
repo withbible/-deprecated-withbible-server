@@ -31,7 +31,7 @@ function Database() {
     } catch (err) {
       if (attempts > MAX_RETRY_ATTEMPTS) {
         logger.error(
-          `Unable to connect to database in ${attempts} attemps, exiting`
+          `Unable to connect to database in ${attempts} attempts, exiting`
         );
         process.exit(1);
       }
