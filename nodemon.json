@@ -1,5 +1,12 @@
 {
-  "ignore": [".clinic/", ".github/", ".vscode", "etc/", "test/"],
+  "ignore": [
+    ".clinic/",
+    ".github/",
+    ".vscode",
+    "etc/",
+    "test/",
+    "src/**/*.spec.js"
+  ],
   "env": {
     "NODE_ENV": "development"
   }

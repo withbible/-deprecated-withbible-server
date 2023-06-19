@@ -6,7 +6,7 @@
 
 - [KBU BibleGraduationExam QuizApp API Server](#kbu-biblegraduationexam-quizapp-api-server)
   - [진행사항](#진행사항)
-  - [`src`폴더 주요 서비스](#src폴더-주요-서비스)
+  - [아키텍처](#아키텍처)
   - [ERD](#erd)
   - [API 명세서](#api-명세서)
   - [사용법](#사용법)
@@ -16,43 +16,22 @@
 
 링크를 확인해주세요.
 
-## `src`폴더 주요 서비스 
+## 아키텍처
 
 ```bash
-# Service 계층 의미: 쓰기 비즈니스 로직을 처리
-# Provider 계층 의미: 읽기 비즈니스 로직을 처리
-
-+---History
-|       controller.js
-|       dao.js
-|       provider.js
-|       route.js
-|       service.js
-|
-+---LeaderBoard
-|       controller.js
-|       dao.js
-|       provider.js
-|       route.js
-|
-+---Notice
-|       batch.js
-|       dao.js
-|       provider.js
-|
-+---Quiz
-|       controller.js
-|       dao.js
-|       provider.js
-|       route.js
-|       service.js
-|
-+---User
-|       controller.js
-|       dao.js
-|       provider.js
-|       route.js
-|       service.js
++---application-layer
+|   +---batches
+|   \---usecases
++---data-access-layer
+|   \---repositories
++---infrastructure-layer
+|   +---configs
+|   +---constants
+|   \---external-services
++---presentation-layer
+|   +---controllers
+|   +---middlewares
+|   \---routes
 ```
 
 ## [ERD](https://www.erdcloud.com/p/vzY38iExRFRMcLYNv)
