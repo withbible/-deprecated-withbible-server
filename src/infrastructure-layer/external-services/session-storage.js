@@ -20,24 +20,13 @@ function SessionStorage() {
   };
 
   async function init() {
-    try {
-      this.client = redis.createClient(redisConfig);
-      await this.client.connect();
-
-      logger.info("Redis connected");
-    } catch (err) {
-      retry();
-    }
-  }
-
-  async function retry() {
     this.client = redis.createClient(redisConfig);
-    await this.client.connect();
 
     let attempts = 0;
 
     this.client.on("connect", () => {
       attempts = 0;
+      logger.info("Redis connected");
     });
 
     this.client.on("reconnecting", () => {
@@ -54,9 +43,29 @@ function SessionStorage() {
         process.exit(1);
       }
     });
+
+    await this.client.connect();
   }
 
-  function get() {
+  // eslint-disable-next-line no-unused-vars
+  async function retry() {
+    /**
+     * @link https://github.com/redis/node-redis#events
+     */
+    throw new Error(`
+The Node Redis client class is an Nodejs EventEmitter and it emits an event each time the network status changes.
+
++--------------+---------------------------------------------+
+|     Name     |                     When                    |
++--------------+---------------------------------------------+
+|      ...     |                     ...                     |
++--------------+---------------------------------------------+
+| reconnecting | Client is trying to reconnect to the server |
++--------------+---------------------------------------------+      
+    `);
+  }
+
+  async function get() {
     return this.client;
   }
 }

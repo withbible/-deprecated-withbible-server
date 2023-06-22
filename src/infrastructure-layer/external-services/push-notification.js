@@ -1,16 +1,16 @@
 const PushNotifications = require("@pusher/push-notifications-server");
 
 // INTERNAL IMPORT
+const path = require("path");
 const logger = require("../configs/logger");
 const BaseThirdPartyConfig = require("./base");
-const { MAX_RETRY_ATTEMPTS } = require("../constants");
-const { sleep, getBackOff } = require("../../utils");
 
 // CONSTANT
 const config = {
   instanceId: process.env.PUSHER_BEAMS_INSTANCE_ID,
   secretKey: process.env.PUSHER_BEAMS_PRIMARY_KEY,
 };
+const fileName = path.basename(__filename, ".js");
 
 // MAIN
 function PushNotification() {
@@ -31,31 +31,21 @@ function PushNotification() {
 
       logger.info("Pusher Beams connected");
     } catch (err) {
-      retry();
+      logger.error(`[${fileName}]_${err.message}`);
     }
   }
 
-  async function retry(attempts = 1) {
-    try {
-      this.client.checkConnection();
-    } catch (err) {
-      if (attempts > MAX_RETRY_ATTEMPTS) {
-        logger.error(
-          `Unable to connect to Pusher Beams in ${attempts} attempts, exiting`
-        );
-        process.exit(1);
-      }
-
-      const backoff = getBackOff(attempts);
-      logger.warn(`Unable to connect to Pusher Beams, trying again in ${backoff}ms
-      `);
-
-      await sleep(backoff);
-      return retry(attempts + 1);
-    }
+  // eslint-disable-next-line no-unused-vars
+  async function retry() {
+    /**
+     * @link https://pusher.com/docs/beams/concepts/webhooks/?_gl=1*10b0ewk*_gcl_au*NTU3MjY4NDk0LjE2ODU0MjA5NDEuMTUzNDg2MzA1OC4xNjg1OTQ2MjkyLjE2ODU5NDYyOTI.#retry-strategy
+     */
+    throw new Error(
+      "If your server fails to reply with the expected response, we will retry the webhook request up to four times – first after 10 seconds, then a further 30 seconds, a further 120 seconds, and finally a further 300 seconds."
+    );
   }
 
-  function get() {
+  async function get() {
     return this.client;
   }
 }
