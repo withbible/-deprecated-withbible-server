@@ -25,10 +25,8 @@ const limit = 11;
 describe("사용자 기록 도메인", () => {
   let usecase;
 
-  beforeEach(async () => {
-    if (!(await database.get())) {
-      await database.init();
-    }
+  before(async () => {
+    await database.init();
 
     usecase = makeHistoryUsecase(
       historyRepository,

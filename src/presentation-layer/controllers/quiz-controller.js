@@ -11,7 +11,7 @@ const { filterReferenceOther } = require("../../utils");
 // CONSTANT
 const fileName = path.basename(__filename, ".js");
 
-module.exports = (usecase, client) => {
+module.exports = (usecase, sessionStorage) => {
   return Object.freeze({
     getChapter,
     getQuiz,
@@ -48,7 +48,10 @@ module.exports = (usecase, client) => {
     const { categorySeq, chapterNum } = req.query;
 
     try {
-      const result = await usecase.getQuiz(categorySeq, chapterNum);
+      const [result, client] = await Promise.all([
+        usecase.getQuiz(categorySeq, chapterNum),
+        sessionStorage.get(),
+      ]);
 
       const cachingKey = `quiz:${categorySeq}-${chapterNum}`;
       await client.set(cachingKey, JSON.stringify(result));

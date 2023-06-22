@@ -39,7 +39,7 @@ function Monitoring() {
 
       logger.info("Sentry connected");
     } catch (err) {
-      retry();
+      await retry();
     }
   }
 

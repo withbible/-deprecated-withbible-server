@@ -65,7 +65,8 @@ The Node Redis client class is an Nodejs EventEmitter and it emits an event each
     `);
   }
 
-  async function get() {
+  // TODO: 사용처는 모두 await을 사용하는데, async function이면 TypeError: client.get is not a function 에러가 나는가
+  function get() {
     return this.client;
   }
 }

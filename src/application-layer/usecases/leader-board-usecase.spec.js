@@ -12,10 +12,8 @@ const database = require("../../infrastructure-layer/external-services/database"
 describe("사용자별 순위 도메인", () => {
   let usecase;
 
-  beforeEach(async () => {
-    if (!(await database.get())) {
-      await database.init();
-    }
+  before(async () => {
+    await database.init();
 
     usecase = makeLeaderBoardUseCase(leaderBoardRepository);
   });

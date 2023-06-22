@@ -39,8 +39,7 @@ module.exports = (database) => {
     const query = `
       DELETE
       FROM user
-      WHERE 
-        user_seq = ${userSeq};
+      WHERE user_seq = ${userSeq};
     `;
 
     const [result] = await pool.query(query);

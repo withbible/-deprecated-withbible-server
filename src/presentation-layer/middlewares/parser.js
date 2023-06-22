@@ -10,7 +10,7 @@ const queryParserOption = {
 };
 const urlEncodedOption = { extended: false };
 
-module.exports = {
+module.exports = Object.freeze({
   queryParser: queryParser(queryParserOption),
   bodyParser: [express.urlencoded(urlEncodedOption), express.json()],
-};
+});

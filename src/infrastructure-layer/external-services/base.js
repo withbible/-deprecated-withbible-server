@@ -13,7 +13,7 @@ function BaseThirdPartyConfig() {
     throw new Error("구현체에서 호출해주세요.");
   }
 
-  function get() {
+  async function get() {
     throw new Error("구현체에서 호출해주세요.");
   }
 }

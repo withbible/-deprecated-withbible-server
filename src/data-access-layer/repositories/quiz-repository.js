@@ -221,7 +221,7 @@ module.exports = (database) => {
   async function updateQuestionCount(connection, questionCount, chapterSeq) {
     const query = `
       UPDATE quiz_chapter
-        SET question_count = ${questionCount}
+      SET question_count = ${questionCount}
       WHERE
         chapter_seq = ${chapterSeq};
     `;
@@ -230,32 +230,27 @@ module.exports = (database) => {
     return rows;
   }
 
-  async function insertQuestion(connection, question, questionSub, chapterSeq) {
+  async function insertQuestion(connection, params) {
     const query = `
       INSERT INTO quiz_question
         (question, question_sub, chapter_seq)
       VALUES
-        ("${question}", "${questionSub}", ${chapterSeq});
+        (?, ?, ?);
     `;
 
-    const [rows] = await connection.query(query);
+    const [rows] = await connection.query(query, params);
     return rows;
   }
 
-  async function updateQuestion(
-    connection,
-    question,
-    questionSub,
-    questionSeq
-  ) {
+  async function updateQuestion(connection, params) {
     const query = `
       UPDATE quiz_question
-        SET question = "${question}",
-            question_sub = "${questionSub}"
-      WHERE question_seq = ${questionSeq};
+      SET question = ?,
+          question_sub = ?
+      WHERE question_seq = ?;
     `;
 
-    const [rows] = await connection.query(query);
+    const [rows] = await connection.query(query, params);
     return rows;
   }
 
@@ -264,8 +259,7 @@ module.exports = (database) => {
     const query = `
       DELETE 
       FROM quiz_question
-      WHERE 
-        question_seq = "${questionSeq}";      
+      WHERE question_seq = ${questionSeq};      
     `;
 
     const [rows] = await pool.query(query);
@@ -328,8 +322,7 @@ module.exports = (database) => {
     const query = `
       DELETE 
       FROM quiz_question_option
-      WHERE 
-        question_seq = "${questionSeq}";      
+      WHERE question_seq = ${questionSeq};
     `;
 
     const [rows] = await pool.query(query);

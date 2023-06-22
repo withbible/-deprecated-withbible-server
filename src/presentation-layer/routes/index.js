@@ -13,7 +13,13 @@ const { checkQuizDomain, checkCache } = require("../middlewares/validator");
 
 module.exports = (app) => {
   makeLeaderBoardRoute(app, leaderBoardController);
-  makeQuizRoute(app, quizController, checkQuizDomain, checkCache);
+  makeQuizRoute(
+    app,
+    quizController,
+    checkSessionCookie,
+    checkQuizDomain,
+    checkCache
+  );
   makeUserRoute(app, userController, checkSessionCookie);
   makeHistoryRoute(app, historyController, checkSessionCookie, checkQuizDomain);
 };

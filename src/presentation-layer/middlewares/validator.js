@@ -2,8 +2,7 @@ const { StatusCodes } = require("http-status-codes");
 
 // INTERNAL IMPORT
 const { CATEGORY } = require("../../infrastructure-layer/constants");
-const client =
-  require("../../infrastructure-layer/external-services/session-storage").get();
+const sessionStorage = require("../../infrastructure-layer/external-services/session-storage");
 const { response, errResponse } = require("../../utils/response");
 const { quizRepository } = require("../../data-access-layer/repositories");
 
@@ -56,6 +55,7 @@ const checkQuizDomain = async (req, res, next) => {
 const checkCache = async (req, res, next) => {
   const { categorySeq, chapterNum } = req.query;
 
+  const client = await sessionStorage.get();
   const cached = await client.get(`quiz:${categorySeq}-${chapterNum}`);
   const result = JSON.parse(cached);
 
@@ -71,4 +71,4 @@ const checkCache = async (req, res, next) => {
   return next();
 };
 
-module.exports = { checkQuizDomain, checkCache };
+module.exports = Object.freeze({ checkQuizDomain, checkCache });

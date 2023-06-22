@@ -8,8 +8,7 @@ const {
   historyUsecase,
   quizUsecase,
 } = require("../../application-layer/usecases");
-const client =
-  require("../../infrastructure-layer/external-services/session-storage").get();
+const sessionStorage = require("../../infrastructure-layer/external-services/session-storage");
 const realtimeStatistic = require("../../infrastructure-layer/external-services/realtime-statistic");
 
 const leaderBoardController = makeLeaderBoardController(leaderBoardUsecase);
@@ -18,7 +17,7 @@ const historyController = makeHistoryController(
   historyUsecase,
   realtimeStatistic
 );
-const quizController = makeQuizController(quizUsecase, client);
+const quizController = makeQuizController(quizUsecase, sessionStorage);
 
 module.exports = Object.freeze({
   leaderBoardController,

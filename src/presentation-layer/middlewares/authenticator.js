@@ -37,8 +37,8 @@ const checkSessionCookie = (req, res, next) => {
   return next();
 };
 
-module.exports = {
+module.exports = Object.freeze({
   session: session(sessionOption),
   checkSessionCookie,
   AUTO_LOGIN_AGE: 90 * 24 * 60 * 60 * 1000, // +++ 90d
-};
+});

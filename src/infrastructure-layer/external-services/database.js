@@ -22,6 +22,7 @@ function Database() {
 
   return {
     init,
+    retry,
     get,
   };
 
@@ -32,7 +33,7 @@ function Database() {
 
       logger.info("MySQL connected");
     } catch (err) {
-      retry();
+      await retry();
     }
   }
 
@@ -56,7 +57,7 @@ function Database() {
     }
   }
 
-  function get() {
+  async function get() {
     return this.pool;
   }
 }

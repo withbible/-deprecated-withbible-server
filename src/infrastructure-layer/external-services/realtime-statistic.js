@@ -49,7 +49,7 @@ function RealtimeStatistic() {
     );
   }
 
-  function get() {
+  async function get() {
     return this.pusher;
   }
 }

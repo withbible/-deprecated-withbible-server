@@ -76,12 +76,11 @@ module.exports = (repository, database) => {
         );
       }
 
-      const newQuestionRow = await repository.insertQuestion(
-        connection,
+      const newQuestionRow = await repository.insertQuestion(connection, [
         question,
         questionSub,
-        chapterSeq
-      );
+        chapterSeq,
+      ]);
 
       await Promise.all([
         repository.insertOptionArray(
@@ -128,12 +127,11 @@ module.exports = (repository, database) => {
 
     try {
       await Promise.all([
-        repository.updateQuestion(
-          connection,
+        repository.updateQuestion(connection, [
           question,
           questionSub,
-          questionSeq
-        ),
+          questionSeq,
+        ]),
         repository.updateOptionArray(connection, optionArray, questionSeq),
         repository.updateQuestionCount(connection, questionCount, chapterSeq),
       ]);

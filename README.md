@@ -5,18 +5,14 @@
 </div>
 
 - [KBU BibleGraduationExam QuizApp API Server](#kbu-biblegraduationexam-quizapp-api-server)
-  - [진행사항](#진행사항)
-  - [아키텍처](#아키텍처)
+  - [주요 폴더 구조](#주요-폴더-구조)
+  - [시스템 설계도](#시스템-설계도)
   - [ERD](#erd)
   - [API 명세서](#api-명세서)
   - [사용법](#사용법)
   - [커밋메시지 컨벤션](#커밋메시지-컨벤션)
 
-## [진행사항](https://github.com/WithBible/withbible-server/wiki)
-
-링크를 확인해주세요.
-
-## 아키텍처
+## 주요 폴더 구조
 
 ```bash
 +---application-layer
@@ -33,6 +29,10 @@
 |   +---middlewares
 |   \---routes
 ```
+
+## [시스템 설계도](https://github.com/WithBible#시스템-설계도)
+
+링크를 확인해주세요.
 
 ## [ERD](https://www.erdcloud.com/p/vzY38iExRFRMcLYNv)
 

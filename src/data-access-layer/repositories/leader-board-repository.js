@@ -86,9 +86,8 @@ module.exports = (database) => {
   async function updateLeaderBoard(connection, userSeq, quizScore) {
     const query = `
       UPDATE user_leaderboard
-        SET quiz_score = ${quizScore}
-      WHERE 
-        user_seq = ${userSeq};
+      SET quiz_score = ${quizScore}
+      WHERE user_seq = ${userSeq};
     `;
 
     await connection.query(query);
@@ -99,8 +98,7 @@ module.exports = (database) => {
     const query = `
       DELETE
       FROM user_leaderboard
-      WHERE 
-        user_seq = ${userSeq};
+      WHERE user_seq = ${userSeq};
     `;
 
     await pool.query(query);

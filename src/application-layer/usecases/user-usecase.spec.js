@@ -18,10 +18,8 @@ const userEmail = process.env.TEST_USER_EMAIL;
 describe("사용자 관리 도메인", () => {
   let usecase;
 
-  beforeEach(async () => {
-    if (!(await database.get())) {
-      await database.init();
-    }
+  before(async () => {
+    await database.init();
 
     usecase = makeUserUsecase(userRepository, leaderBoardRepository, database);
   });

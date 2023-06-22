@@ -81,7 +81,10 @@ module.exports = (
         hitCountRow?.hitQuestionCount ?? 0
       );
 
-      const [{ quizScore }] = await historyRepository.selectScore(userSeq);
+      const [{ quizScore }] = await historyRepository.selectScore(
+        connection,
+        userSeq
+      );
       await leaderBoardRepository.updateLeaderBoard(
         connection,
         userSeq,
@@ -155,7 +158,10 @@ module.exports = (
         userSeq
       );
 
-      const [{ quizScore }] = await historyRepository.selectScore(userSeq);
+      const [{ quizScore }] = await historyRepository.selectScore(
+        connection,
+        userSeq
+      );
       await leaderBoardRepository.updateLeaderBoard(
         connection,
         userSeq,
@@ -197,7 +203,10 @@ module.exports = (
         historyRepository.deleteChapterUserState(userSeq, chapterSeq),
       ]);
 
-      const [{ quizScore }] = await historyRepository.selectScore(userSeq);
+      const [{ quizScore }] = await historyRepository.selectScore(
+        connection,
+        userSeq
+      );
       await leaderBoardRepository.updateLeaderBoard(
         connection,
         userSeq,
