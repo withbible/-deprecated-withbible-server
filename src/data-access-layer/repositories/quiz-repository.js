@@ -10,6 +10,8 @@ module.exports = (database) => {
     insertChapterSeq,
     selectQuestionSeqByText,
     selectQuestionSeqByNumber,
+    insertQuestionCount,
+    updateQuestionCount,
     insertQuestion,
     updateQuestion,
     deleteQuestion,
@@ -116,10 +118,12 @@ module.exports = (database) => {
     const query = `
       SELECT
         qc.category_seq AS categorySeq,
-        qc.chapter_num AS chapterNum      
+        qc.chapter_num AS chapterNum,
+        q.chapter_seq AS chapterSeq,
+        qc.question_count AS questionCount
       FROM quiz_question AS q
       INNER JOIN quiz_chapter AS qc
-        ON q.chapter_seq = qc.chapter_seq 
+        ON q.chapter_seq = qc.chapter_seq
       WHERE question_seq = ${questionSeq};
     `;
 
@@ -202,8 +206,31 @@ module.exports = (database) => {
     return rows;
   }
 
-  async function insertQuestion(question, questionSub, chapterSeq) {
-    const pool = await database.get();
+  async function insertQuestionCount(connection, chapterSeq, categorySeq) {
+    const query = `
+      INSERT INTO quiz_chapter
+        (chapter_seq, category_seq)
+      VALUES
+        (${chapterSeq}, ${categorySeq});
+    `;
+
+    const [rows] = await connection.query(query);
+    return rows;
+  }
+
+  async function updateQuestionCount(connection, questionCount, chapterSeq) {
+    const query = `
+      UPDATE quiz_chapter
+        SET question_count = ${questionCount}
+      WHERE
+        chapter_seq = ${chapterSeq};
+    `;
+
+    const [rows] = await connection.query(query);
+    return rows;
+  }
+
+  async function insertQuestion(connection, question, questionSub, chapterSeq) {
     const query = `
       INSERT INTO quiz_question
         (question, question_sub, chapter_seq)
@@ -211,12 +238,16 @@ module.exports = (database) => {
         ("${question}", "${questionSub}", ${chapterSeq});
     `;
 
-    const [rows] = await pool.query(query);
+    const [rows] = await connection.query(query);
     return rows;
   }
 
-  async function updateQuestion(question, questionSub, questionSeq) {
-    const pool = await database.get();
+  async function updateQuestion(
+    connection,
+    question,
+    questionSub,
+    questionSeq
+  ) {
     const query = `
       UPDATE quiz_question
         SET question = "${question}",
@@ -224,7 +255,7 @@ module.exports = (database) => {
       WHERE question_seq = ${questionSeq};
     `;
 
-    const [rows] = await pool.query(query);
+    const [rows] = await connection.query(query);
     return rows;
   }
 
@@ -241,8 +272,7 @@ module.exports = (database) => {
     return rows;
   }
 
-  async function insertOptionArray(optionArray, questionSeq) {
-    const pool = await database.get();
+  async function insertOptionArray(connection, optionArray, questionSeq) {
     let query = `
       INSERT INTO quiz_question_option
         (question_seq, question_option, answer_yn)
@@ -260,12 +290,11 @@ module.exports = (database) => {
     query += values.join();
     query += ";";
 
-    const [rows] = await pool.query(query);
+    const [rows] = await connection.query(query);
     return rows;
   }
 
-  async function updateOptionArray(optionArray, questionSeq) {
-    const pool = await database.get();
+  async function updateOptionArray(connection, optionArray, questionSeq) {
     let query = `
       INSERT INTO quiz_question_option
         (question_option_seq, question_seq, question_option, answer_yn)
@@ -290,7 +319,7 @@ module.exports = (database) => {
         answer_yn = VALUES(answer_yn);
     `;
 
-    const [rows] = await pool.query(query);
+    const [rows] = await connection.query(query);
     return rows;
   }
 

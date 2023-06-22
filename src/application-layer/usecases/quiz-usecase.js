@@ -54,12 +54,13 @@ module.exports = (repository, database) => {
       categorySeq
     );
     let { chapterSeq, maxChapterNum } = maxChapterRow;
+    const { questionCount } = maxChapterRow;
 
     try {
       await connection.beginTransaction();
 
       // 질문개수가 초과될 시 +1 채번
-      if (maxChapterRow.questionCount === MAX_QUESTION_COUNT) {
+      if (questionCount === MAX_QUESTION_COUNT) {
         maxChapterNum += 1;
 
         const newChapterRow = await repository.insertChapterSeq(connection, [
@@ -67,22 +68,37 @@ module.exports = (repository, database) => {
           maxChapterNum,
         ]);
         chapterSeq = newChapterRow.insertId;
+
+        await repository.insertQuestionCount(
+          connection,
+          chapterSeq,
+          categorySeq
+        );
       }
 
       const newQuestionRow = await repository.insertQuestion(
+        connection,
         question,
         questionSub,
         chapterSeq
       );
 
-      await repository.insertOptionArray(optionArray, newQuestionRow.insertId);
+      await Promise.all([
+        repository.insertOptionArray(
+          connection,
+          optionArray,
+          newQuestionRow.insertId
+        ),
+        repository.updateQuestionCount(connection, questionCount, chapterSeq),
+      ]);
+
       await connection.commit();
 
       return Promise.resolve({
         categorySeq,
         chapterNum: maxChapterNum,
         questionSeq: newQuestionRow.insertId,
-        questionCount: maxChapterRow.questionCount,
+        questionCount,
       });
     } catch (err) {
       await connection.rollback();
@@ -108,16 +124,30 @@ module.exports = (repository, database) => {
     const pool = await database.get();
     const connection = await pool.getConnection();
 
-    await Promise.all([
-      repository.updateQuestion(question, questionSub, questionSeq),
-      repository.updateOptionArray(optionArray, questionSeq),
-    ]);
+    const { categorySeq, chapterNum, chapterSeq, questionCount } = chapterRow;
 
-    connection.release();
+    try {
+      await Promise.all([
+        repository.updateQuestion(
+          connection,
+          question,
+          questionSub,
+          questionSeq
+        ),
+        repository.updateOptionArray(connection, optionArray, questionSeq),
+        repository.updateQuestionCount(connection, questionCount, chapterSeq),
+      ]);
 
-    return Promise.resolve({
-      categorySeq: chapterRow.categorySeq,
-      chapterNum: chapterRow.chapterNum,
-    });
+      return Promise.resolve({
+        categorySeq,
+        chapterNum,
+      });
+    } catch (err) {
+      await connection.rollback();
+
+      return Promise.reject(err);
+    } finally {
+      connection.release();
+    }
   }
 };
