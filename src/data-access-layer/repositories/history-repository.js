@@ -94,19 +94,15 @@ module.exports = (database) => {
     await pool.query(query);
   }
 
-  async function selectScore(userSeq) {
-    const pool = await database.get();
+  async function selectScore(connection, userSeq) {
     const query = `
-      SELECT 
-        COUNT(*) * 100 AS quizScore
-      FROM quiz_question_option AS qo
-      INNER JOIN quiz_user_option AS uo
-        ON qo.question_option_seq = uo.question_option_seq    
-      WHERE qo.answer_yn = 1
-        AND uo.user_seq = ${userSeq};
+      SELECT
+        (SUM(hit_question_count)) * 100 AS quizScore
+      FROM quiz_chapter_user_state
+      WHERE user_seq = ${userSeq};
     `;
 
-    const [rows] = await pool.query(query);
+    const [rows] = await connection.query(query);
     return rows;
   }
 
