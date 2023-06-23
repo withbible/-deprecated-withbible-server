@@ -1,11 +1,10 @@
 require("dotenv").config();
-const cron = require("node-cron");
 
 // INTERNAL IMPORT
 const app = require("./src/infrastructure-layer/configs/app");
 const logger = require("./src/infrastructure-layer/configs/logger");
 const getSSLConfigLocal = require("./src/infrastructure-layer/configs/ssl-config-local");
-const { noticeBatch } = require("./src/application-layer/batches");
+const batch = require("./src/application-layer/batches");
 
 // CONSTANT
 const { PORT, NODE_ENV } = process.env;
@@ -26,14 +25,12 @@ const server = (() => {
   return https.createServer(getSSLConfigLocal(), app());
 })();
 
+batch.run();
+
 server.listen(PORT, () => {
   console.log(`
 ##############################################
   🛡️  HTTPS Server listening on port: ${PORT} 🛡️
 ##############################################
   `);
-
-  cron.schedule("0 9 1 * *", () => {
-    noticeBatch.sendQuizNotification();
-  });
 });
