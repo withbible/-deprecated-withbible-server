@@ -115,9 +115,11 @@ module.exports = (
       return Promise.reject(err);
     }
 
-    const isModified = userOptionRows.some(
-      (each) => each.questionOptionSeq !== userOption[each.questionSeq]
-    );
+    const isModified =
+      Object.keys(userOption).length !== userOptionRows.length ||
+      userOptionRows.some(
+        (each) => each.questionOptionSeq !== userOption[each.questionSeq]
+      );
 
     if (!isModified) {
       const status = StatusCodes.NO_CONTENT;
@@ -242,9 +244,9 @@ module.exports = (
   async function getActiveChapter(categorySeq, userSeq) {
     const result = categorySeq
       ? await historyRepository.selectActiveChapterByCategorySeq(
-        userSeq,
-        categorySeq
-      )
+          userSeq,
+          categorySeq
+        )
       : await historyRepository.selectActiveChapter(userSeq);
 
     if (!result.length) {

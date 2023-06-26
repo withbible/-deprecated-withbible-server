@@ -83,8 +83,21 @@ describe("사용자 기록 도메인", () => {
     expect(status).to.equal(StatusCodes.NO_CONTENT);
   });
 
-  it("한 챕터의 선택기록 수정 (변경된 요소 존재)", async () => {
+  it("한 챕터의 선택기록 수정 (같은 개수의 변경된 요소 존재)", async () => {
     const newUserOption = { ...userOption, ...{ 9: 34 } };
+
+    const status = await usecase.putUserOption(
+      categorySeq,
+      chapterNum,
+      userSeq,
+      newUserOption
+    );
+
+    expect(status).to.equal(StatusCodes.CREATED);
+  });
+
+  it("한 챕터의 선택기록 수정 (다른 개수의 변경된 요소 존재)", async () => {
+    const newUserOption = { 9: 35 };
 
     const status = await usecase.putUserOption(
       categorySeq,
