@@ -27,7 +27,6 @@ before:
           pass: "{{ $processEnvironment.TEST_PASSWORD }}"
         json:
           isAutoLogin: false
-          fcmToken: null
         afterResponse: "parseCookieValue"
         expect:
           - statusCode: 200

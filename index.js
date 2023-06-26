@@ -11,7 +11,7 @@ const { PORT, NODE_ENV } = process.env;
 
 if (!PORT) {
   logger.error("포트번호가 존재하지 않습니다.");
-  process.exit();
+  process.exit(2);
 }
 
 // MAIN

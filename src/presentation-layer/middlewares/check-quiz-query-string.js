@@ -2,8 +2,7 @@ const { StatusCodes } = require("http-status-codes");
 
 // INTERNAL IMPORT
 const { CATEGORY } = require("../../infrastructure-layer/constants");
-const sessionStorage = require("../../infrastructure-layer/external-services/session-storage");
-const { response, errResponse } = require("../../utils/response");
+const { errResponse } = require("../../utils/response");
 const { quizRepository } = require("../../data-access-layer/repositories");
 
 // HELPER FUNCTION
@@ -11,8 +10,7 @@ function makeSequence(length) {
   return [...Array(length)].map((_, index) => index + 1);
 }
 
-// MAIN
-const checkQuizDomain = async (req, res, next) => {
+module.exports = async (req, res, next) => {
   const { categorySeq, chapterNum } = req.query;
 
   if (!categorySeq || !CATEGORY[categorySeq]) {
@@ -51,24 +49,3 @@ const checkQuizDomain = async (req, res, next) => {
 
   return next();
 };
-
-const checkCache = async (req, res, next) => {
-  const { categorySeq, chapterNum } = req.query;
-
-  const client = await sessionStorage.get();
-  const cached = await client.get(`quiz:${categorySeq}-${chapterNum}`);
-  const result = JSON.parse(cached);
-
-  if (result) {
-    return res.json(
-      response({
-        message: "한 챕터의 질문-선택지 전체조회 완료",
-        result,
-      })
-    );
-  }
-
-  return next();
-};
-
-module.exports = Object.freeze({ checkQuizDomain, checkCache });

@@ -3,7 +3,7 @@ function getRandomElement(arr) {
   return arr[idx];
 }
 
-module.exports = {
+module.exports = Object.freeze({
   parseCookieValue: (req, res, context, events, next) => {
     const [cookie] = res.headers["set-cookie"];
     const cookieValue = cookie.split("=")[1];
@@ -24,8 +24,7 @@ module.exports = {
     context.vars.userOption = userOption;
 
     console.log(
-      `${res.req.method} | ${res.req.path} | ${
-        res.statusCode
+      `${res.req.method} | ${res.req.path} | ${res.statusCode
       } | 질문일련번호-선택지일련번호: ${JSON.stringify(userOption)}`
     );
     return next();
@@ -35,8 +34,8 @@ module.exports = {
     const { result } = JSON.parse(res.body);
     const random = getRandomElement(result);
 
-    const { categorySeq } = random;
-    const chapterNum = getRandomElement(random.chapterNumArray);
+    const { categorySeq, chapterNumArray } = random;
+    const chapterNum = getRandomElement(chapterNumArray);
 
     context.vars.categorySeq = categorySeq;
     context.vars.chapterNum = chapterNum;
@@ -53,4 +52,4 @@ module.exports = {
     console.log(`${res.req.method} | ${res.req.path} | ${res.statusCode}`);
     return next();
   },
-};
+});

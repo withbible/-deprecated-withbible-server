@@ -9,7 +9,8 @@ const {
   quizController,
 } = require("../controllers");
 const { checkSessionCookie } = require("../middlewares/authenticator");
-const { checkQuizDomain, checkCache } = require("../middlewares/validator");
+const checkQuizQueryString = require("../middlewares/check-quiz-query-string");
+const checkQuizCache = require("../middlewares/check-quiz-cache");
 
 module.exports = (app) => {
   makeLeaderBoardRoute(app, leaderBoardController);
@@ -17,9 +18,14 @@ module.exports = (app) => {
     app,
     quizController,
     checkSessionCookie,
-    checkQuizDomain,
-    checkCache
+    checkQuizQueryString,
+    checkQuizCache
   );
   makeUserRoute(app, userController, checkSessionCookie);
-  makeHistoryRoute(app, historyController, checkSessionCookie, checkQuizDomain);
+  makeHistoryRoute(
+    app,
+    historyController,
+    checkSessionCookie,
+    checkQuizQueryString
+  );
 };

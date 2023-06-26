@@ -1,38 +1,43 @@
-module.exports = (app, controller, checkSessionCookie, checkQuizDomain) => {
+module.exports = (
+  app,
+  controller,
+  checkSessionCookie,
+  checkQuizQueryString
+) => {
   app.use(checkSessionCookie);
 
   // 한 챕터의 선택기록 조회 API
   app.get(
     "/history/chapter/user-option",
-    checkQuizDomain,
+    checkQuizQueryString,
     controller.getUserOption
   );
 
   // 한 챕터의 선택기록 생성 API
   app.post(
     "/history/chapter/user-option",
-    checkQuizDomain,
+    checkQuizQueryString,
     controller.postUserOption
   );
 
   // 한 챕터의 선택기록 수정 API
   app.put(
     "/history/chapter/user-option",
-    checkQuizDomain,
+    checkQuizQueryString,
     controller.putUserOption
   );
 
   // 한 챕터의 선택기록 삭제 API
   app.delete(
     "/history/chapter/user-option",
-    checkQuizDomain,
+    checkQuizQueryString,
     controller.deleteUserOption
   );
 
   // 한 챕터의 맞힌개수 조회 API
   app.get(
     "/history/chapter/hit-count",
-    checkQuizDomain,
+    checkQuizQueryString,
     controller.getHitCount
   );
 
