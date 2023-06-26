@@ -11,6 +11,7 @@ const {
 const { checkSessionCookie } = require("../middlewares/authenticator");
 const checkQuizQueryString = require("../middlewares/check-quiz-query-string");
 const checkQuizCache = require("../middlewares/check-quiz-cache");
+const httpRequestLimiter = require("../middlewares/http-request-limiter");
 
 module.exports = (app) => {
   makeLeaderBoardRoute(app, leaderBoardController);
@@ -26,6 +27,7 @@ module.exports = (app) => {
     app,
     historyController,
     checkSessionCookie,
-    checkQuizQueryString
+    checkQuizQueryString,
+    httpRequestLimiter
   );
 };

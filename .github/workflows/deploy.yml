@@ -67,6 +67,8 @@ jobs:
                   value: ${{ secrets.PUSHER_BEAMS_PRIMARY_KEY }}
                 - name: SENTRY_DSN_KEY
                   value: ${{ secrets.SENTRY_DSN_KEY }}
+                - name: MAX_REQUESTS
+                  value: ${{ secrets.MAX_REQUESTS }}
             context:
               git:
                 url: git@github.com:${{ github.repository }}.git
@@ -124,6 +126,8 @@ jobs:
                   value: ${{ secrets.PUSHER_BEAMS_PRIMARY_KEY }}
                 - name: SENTRY_DSN_KEY
                   value: ${{ secrets.SENTRY_DSN_KEY }}
+                - name: MAX_REQUESTS
+                  value: ${{ secrets.MAX_REQUESTS }}
             context:
               git:
                 url: git@github.com:${{ github.repository }}.git

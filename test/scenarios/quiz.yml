@@ -55,7 +55,9 @@ scenarios:
           url: "/history/chapter/user-option?categorySeq={{ categorySeq }}&chapterNum={{ chapterNum }}"
           cookie:
             loginData: "{{ cookieValue }}"
-          afterResponse: "getStatusCode"
+          afterResponse: 
+            - "isTooManyRequests"
+            - "getStatusCode"
       # 한 챕터의 선택기록 생성 API
       - post:
           url: "/history/chapter/user-option?categorySeq={{ categorySeq }}&chapterNum={{ chapterNum }}"

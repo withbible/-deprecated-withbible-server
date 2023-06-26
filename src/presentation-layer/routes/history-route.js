@@ -2,14 +2,15 @@ module.exports = (
   app,
   controller,
   checkSessionCookie,
-  checkQuizQueryString
+  checkQuizQueryString,
+  httpRequestLimiter
 ) => {
   app.use(checkSessionCookie);
 
   // 한 챕터의 선택기록 조회 API
   app.get(
     "/history/chapter/user-option",
-    checkQuizQueryString,
+    [httpRequestLimiter, checkQuizQueryString],
     controller.getUserOption
   );
 

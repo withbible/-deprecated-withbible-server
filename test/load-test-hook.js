@@ -1,3 +1,5 @@
+const { StatusCodes } = require("http-status-codes");
+
 function getRandomElement(arr) {
   const idx = Math.floor(Math.random() * arr.length);
   return arr[idx];
@@ -50,6 +52,16 @@ module.exports = Object.freeze({
     context.vars.statusCode = res.statusCode;
 
     console.log(`${res.req.method} | ${res.req.path} | ${res.statusCode}`);
+    return next();
+  },
+
+  isTooManyRequests: (req, res, context, events, next) => {
+    if (res.statusCode === StatusCodes.TOO_MANY_REQUESTS) {
+      const { message } = JSON.parse(res.body);
+      console.error(`err: ${message} 종료합니다.`);
+      process.exit(1);
+    }
+
     return next();
   },
 });
