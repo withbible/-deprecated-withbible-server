@@ -6,7 +6,7 @@ function getRandomElement(arr) {
 }
 
 module.exports = Object.freeze({
-  parseCookieValue: (req, res, context, events, next) => {
+  setCookieValue: (req, res, context, events, next) => {
     const [cookie] = res.headers["set-cookie"];
     const cookieValue = cookie.split("=")[1];
 
@@ -48,7 +48,7 @@ module.exports = Object.freeze({
     return next();
   },
 
-  getStatusCode: (req, res, context, events, next) => {
+  setStatusCode: (req, res, context, events, next) => {
     context.vars.statusCode = res.statusCode;
 
     console.log(`${res.req.method} | ${res.req.path} | ${res.statusCode}`);

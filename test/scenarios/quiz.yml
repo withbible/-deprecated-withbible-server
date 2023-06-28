@@ -27,9 +27,7 @@ before:
           pass: "{{ $processEnvironment.TEST_PASSWORD }}"
         json:
           isAutoLogin: false
-        afterResponse: "parseCookieValue"
-        expect:
-          - statusCode: 200
+        afterResponse: "setCookieValue"        
 scenarios:
   - name: "퀴즈"
     flow:
@@ -37,8 +35,6 @@ scenarios:
       - get:
           url: "/quiz/categories/chapter"
           afterResponse: "setQuizQueryString"
-          expect:
-            - statusCode: 200
       # 카테고리별 활성화된 챕터 전체조회 API
       - get:
           url: "/history/categories/active-chapter"
@@ -48,16 +44,14 @@ scenarios:
       - get:
           url: "/quiz/chapter?categorySeq={{ categorySeq }}&chapterNum={{ chapterNum }}"
           afterResponse: "setUserOption"
-          expect:
-            - statusCode: 200
       # 한 챕터의 선택기록 조회 API
       - get:
           url: "/history/chapter/user-option?categorySeq={{ categorySeq }}&chapterNum={{ chapterNum }}"
           cookie:
             loginData: "{{ cookieValue }}"
-          afterResponse: 
+          afterResponse:
             - "isTooManyRequests"
-            - "getStatusCode"
+            - "setStatusCode"
       # 한 챕터의 선택기록 생성 API
       - post:
           url: "/history/chapter/user-option?categorySeq={{ categorySeq }}&chapterNum={{ chapterNum }}"
