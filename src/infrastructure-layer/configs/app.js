@@ -1,21 +1,27 @@
 const express = require("express");
-const { StatusCodes } = require("http-status-codes");
 const Sentry = require("@sentry/node");
+const { StatusCodes: statusCodes } = require("http-status-codes");
 
-// INTERNAL IMPORT
-const path = require("path");
-const logger = require("./logger");
-const { errResponse } = require("../../utils/response");
-
-// CONSTANT
-const fileName = path.basename(__filename, ".js");
+const {
+  handleErrorMiddleware,
+  authenticatorMiddleware,
+  authorizerMiddleware,
+  parserMiddleware,
+  httpRequestLoggerMiddleware,
+} = require("../../presentation-layer/middlewares");
+const {
+  leaderBoardRoute,
+  userRoute,
+  historyRoute,
+  quizRoute,
+} = require("../../presentation-layer/routes");
 
 module.exports = () => {
   const app = express();
 
-  // CONFIG
   // +++ Trust the nth hop from the front-facing proxy server as the client.
   app.set("trust proxy", 1);
+
   require("../external-services/monitoring").init(app);
   require("../external-services/session-storage").init();
   require("../external-services/realtime-statistic").init();
@@ -25,48 +31,29 @@ module.exports = () => {
   app.use(
     Sentry.Handlers.requestHandler(),
     Sentry.Handlers.tracingHandler(),
-    require("../../presentation-layer/middlewares/authenticator").session,
-    require("../../presentation-layer/middlewares/authorizer"),
-    require("../../presentation-layer/middlewares/parser").queryParser,
-    require("../../presentation-layer/middlewares/parser").bodyParser,
-    require("../../presentation-layer/middlewares/http-request-logger")
+    authenticatorMiddleware.session,
+    authorizerMiddleware.cors,
+    parserMiddleware.queryParser,
+    parserMiddleware.bodyParser,
+    httpRequestLoggerMiddleware.morgan
   );
 
-  app.use(
-    "/leader-board",
-    require("../../presentation-layer/routes").leaderBoardRoute
-  );
-  app.use("/user", require("../../presentation-layer/routes").userRoute);
-  app.use("/history", require("../../presentation-layer/routes").historyRoute);
-  app.use("/quiz", require("../../presentation-layer/routes").quizRoute);
+  app.use("/leader-board", leaderBoardRoute);
+  app.use("/user", userRoute);
+  app.use("/history", historyRoute);
+  app.use("/quiz", quizRoute);
 
-  // ERROR HANDLEING
-  app.use((req, res) => {
-    res.status(StatusCodes.NOT_FOUND);
-    res.json(
-      errResponse({
-        message: `${req.method} ${req.url} API는 존재하지 않습니다.`,
-      })
-    );
-  });
-
+  app.use(handleErrorMiddleware.handleErrorRoute);
   app.use(
     Sentry.Handlers.errorHandler({
-      shouldHandleError(err) {
-        if (err.status === 404 || err.status === 500) {
-          return true;
-        }
-        return false;
-      },
+      shouldHandleError: (err) =>
+        !!(
+          err.status === statusCodes.NOT_FOUND ||
+          err.status === statusCodes.INTERNAL_SERVER_ERROR
+        ),
     })
   );
-
-  app.use((err, req, res) => {
-    logger.error(`[${fileName}]_${err.message}`);
-
-    res.status(err.status);
-    res.json(errResponse({ message: err.message }));
-  });
+  app.use(handleErrorMiddleware.handleErrorModule);
 
   return app;
 };

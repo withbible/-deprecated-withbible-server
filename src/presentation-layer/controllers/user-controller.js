@@ -4,12 +4,12 @@ const { StatusCodes } = require("http-status-codes");
 const path = require("path");
 const logger = require("../../infrastructure-layer/configs/logger");
 const docs = require("../../infrastructure-layer/constants/api-docs");
-const { AUTO_LOGIN_AGE } = require("../middlewares/authenticator");
 const { response, errResponse } = require("../../utils/response");
 const { filterReferenceOther } = require("../../utils");
 
 // CONSTANT
 const fileName = path.basename(__filename, ".js");
+const AUTO_LOGIN_AGE = 90 * 24 * 60 * 60 * 1000; // +++ 90d
 
 // HELPER FUNCTION
 function decodeAuthorization(authorization) {
