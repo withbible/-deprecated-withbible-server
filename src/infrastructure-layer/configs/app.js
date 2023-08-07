@@ -22,7 +22,6 @@ module.exports = () => {
   require("../external-services/push-notification").init();
   require("../external-services/database").init();
 
-  // MIDDLEWARE
   app.use(
     Sentry.Handlers.requestHandler(),
     Sentry.Handlers.tracingHandler(),
@@ -33,8 +32,13 @@ module.exports = () => {
     require("../../presentation-layer/middlewares/http-request-logger")
   );
 
-  // ROUTING
-  require("../../presentation-layer/routes")(app);
+  app.use(
+    "/leader-board",
+    require("../../presentation-layer/routes").leaderBoardRoute
+  );
+  app.use("/user", require("../../presentation-layer/routes").userRoute);
+  app.use("/history", require("../../presentation-layer/routes").historyRoute);
+  app.use("/quiz", require("../../presentation-layer/routes").quizRoute);
 
   // ERROR HANDLEING
   app.use((req, res) => {

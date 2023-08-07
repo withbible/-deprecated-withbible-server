@@ -1,3 +1,4 @@
+const express = require("express");
 const makeLeaderBoardRoute = require("./leader-board-route");
 const makeUserRoute = require("./user-route");
 const makeHistoryRoute = require("./history-route");
@@ -13,21 +14,33 @@ const checkQuizQueryString = require("../middlewares/check-quiz-query-string");
 const checkQuizCache = require("../middlewares/check-quiz-cache");
 const httpRequestLimiter = require("../middlewares/http-request-limiter");
 
-module.exports = (app) => {
-  makeLeaderBoardRoute(app, leaderBoardController);
-  makeQuizRoute(
-    app,
-    quizController,
-    checkSessionCookie,
-    checkQuizQueryString,
-    checkQuizCache
-  );
-  makeUserRoute(app, userController, checkSessionCookie);
-  makeHistoryRoute(
-    app,
-    historyController,
-    checkSessionCookie,
-    checkQuizQueryString,
-    httpRequestLimiter
-  );
-};
+const leaderBoardRoute = makeLeaderBoardRoute({
+  express,
+  leaderBoardController,
+});
+const userRoute = makeUserRoute({
+  express,
+  userController,
+  checkSessionCookie,
+});
+const historyRoute = makeHistoryRoute({
+  express,
+  historyController,
+  checkSessionCookie,
+  checkQuizQueryString,
+  httpRequestLimiter,
+});
+const quizRoute = makeQuizRoute({
+  express,
+  quizController,
+  checkSessionCookie,
+  checkQuizQueryString,
+  checkQuizCache,
+});
+
+module.exports = Object.freeze({
+  leaderBoardRoute,
+  userRoute,
+  historyRoute,
+  quizRoute,
+});
