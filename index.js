@@ -1,36 +1,37 @@
 require("dotenv").config();
+require("./src/infrastructure-layer/external-services/session-storage").init();
+require("./src/infrastructure-layer/external-services/realtime-statistic").init();
+require("./src/infrastructure-layer/external-services/push-notification").init();
+require("./src/infrastructure-layer/external-services/database").init();
 
-// INTERNAL IMPORT
 const app = require("./src/infrastructure-layer/configs/app");
+require("./src/infrastructure-layer/external-services/monitoring").init(app);
 const logger = require("./src/infrastructure-layer/configs/logger");
-const getSSLConfigLocal = require("./src/infrastructure-layer/configs/ssl-config-local");
-const batch = require("./src/application-layer/batches");
 
-// CONSTANT
-const { PORT, NODE_ENV } = process.env;
-
-if (!PORT) {
+if (!process.env.PORT) {
   logger.error("포트번호가 존재하지 않습니다.");
   process.exit(2);
 }
 
-// MAIN
 const server = (() => {
   // +++ production 환경(cloudtype)에서 HTTPS 인증서 자동발급
-  if (NODE_ENV === "production") {
+  if (process.env.NODE_ENV === "production") {
     return app();
   }
 
   const https = require("https");
-  return https.createServer(getSSLConfigLocal(), app());
+  return https.createServer(
+    require("./src/infrastructure-layer/configs/ssl-config-local")(),
+    app()
+  );
 })();
 
-batch.run();
+require("./src/application-layer/batches").run();
 
-server.listen(PORT, () => {
+server.listen(process.env.PORT, () => {
   console.log(`
 ##############################################
-  🛡️  HTTPS Server listening on port: ${PORT} 🛡️
+  🛡️  HTTPS Server listening on port: ${process.env.PORT} 🛡️
 ##############################################
   `);
 });

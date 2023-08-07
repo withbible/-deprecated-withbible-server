@@ -22,12 +22,6 @@ module.exports = () => {
   // +++ Trust the nth hop from the front-facing proxy server as the client.
   app.set("trust proxy", 1);
 
-  require("../external-services/monitoring").init(app);
-  require("../external-services/session-storage").init();
-  require("../external-services/realtime-statistic").init();
-  require("../external-services/push-notification").init();
-  require("../external-services/database").init();
-
   app.use(
     Sentry.Handlers.requestHandler(),
     Sentry.Handlers.tracingHandler(),
