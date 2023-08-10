@@ -1,18 +1,18 @@
-const { StatusCodes } = require("http-status-codes");
-const Sentry = require("@sentry/node");
+module.exports = ({
+  usecase,
+  realtimeStatistic,
+  CATEGORY,
+  Sentry,
+  StatusCodes,
+  logger,
+  path,
+  filterReferenceOther,
+  docs,
+  response,
+  errResponse,
+}) => {
+  const fileName = path.basename(__filename, ".js");
 
-// INTERNAL IMPORT
-const path = require("path");
-const logger = require("../../infrastructure-layer/configs/logger");
-const docs = require("../../infrastructure-layer/constants/api-docs");
-const { CATEGORY } = require("../../infrastructure-layer/constants");
-const { response, errResponse } = require("../../utils/response");
-const { filterReferenceOther } = require("../../utils");
-
-// CONSTANT
-const fileName = path.basename(__filename, ".js");
-
-module.exports = (usecase, realtimeStatistic) => {
   return Object.freeze({
     getUserOption,
     postUserOption,

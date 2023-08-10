@@ -1,30 +1,28 @@
-const { StatusCodes } = require("http-status-codes");
+module.exports = ({
+  usecase,
+  filterReferenceOther,
+  StatusCodes,
+  logger,
+  path,
+  docs,
+  response,
+  errResponse,
+}) => {
+  const fileName = path.basename(__filename, ".js");
+  const AUTO_LOGIN_AGE = 90 * 24 * 60 * 60 * 1000; // +++ 90d
 
-// INTERNAL IMPORT
-const path = require("path");
-const logger = require("../../infrastructure-layer/configs/logger");
-const docs = require("../../infrastructure-layer/constants/api-docs");
-const { response, errResponse } = require("../../utils/response");
-const { filterReferenceOther } = require("../../utils");
-
-// CONSTANT
-const fileName = path.basename(__filename, ".js");
-const AUTO_LOGIN_AGE = 90 * 24 * 60 * 60 * 1000; // +++ 90d
-
-// HELPER FUNCTION
-function decodeAuthorization(authorization) {
-  const encoded = authorization.split(" ")[1];
-  const decoded = Buffer.from(encoded, "base64").toString();
-  return decoded.split(":");
-}
-
-module.exports = (usecase) => {
   return Object.freeze({
     signup,
     login,
     loginCheck,
     logout,
   });
+
+  function decodeAuthorization(authorization) {
+    const encoded = authorization.split(" ")[1];
+    const decoded = Buffer.from(encoded, "base64").toString();
+    return decoded.split(":");
+  }
 
   async function signup(req, res) {
     const [userID, password] = decodeAuthorization(req.headers.authorization);
