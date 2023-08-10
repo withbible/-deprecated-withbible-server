@@ -3,7 +3,7 @@ const redis = require("redis");
 // INTERNAL IMPORT
 const logger = require("../configs/logger");
 const BaseThirdPartyConfig = require("./base");
-const { MAX_RETRY_ATTEMPTS } = require("../constants");
+const { MAX_RETRY_ATTEMPTS, EXIT_CODE } = require("../constants");
 
 // CONSTANT
 const redisConfig = {
@@ -40,7 +40,7 @@ function SessionStorage() {
           `Unable to connect to Redis in ${attempts} attempts, exiting`
         );
 
-        process.exit(1);
+        process.exit(EXIT_CODE.APP_DEFINE_EXIT);
       }
     });
 

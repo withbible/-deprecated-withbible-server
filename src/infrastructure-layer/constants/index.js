@@ -11,4 +11,9 @@ module.exports = {
     7: "공동서신",
     8: "요한계시록",
   }),
+
+  EXIT_CODE: Object.freeze({
+    APP_DEFINE_EXIT: 1,
+    CMD_ARG_EXIT: 2,
+  }),
 };

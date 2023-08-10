@@ -5,7 +5,7 @@ const { ProfilingIntegration } = require("@sentry/profiling-node");
 // INTERNAL IMPORT
 const logger = require("../configs/logger");
 const BaseThirdPartyConfig = require("./base");
-const { MAX_RETRY_ATTEMPTS } = require("../constants");
+const { MAX_RETRY_ATTEMPTS, EXIT_CODE } = require("../constants");
 const { sleep, getBackOff } = require("../../utils");
 
 // CONSTANT
@@ -51,7 +51,7 @@ function Monitoring() {
         logger.error(
           `Unable to connect to Sentry in ${attempts} attempts, exiting`
         );
-        process.exit(1);
+        process.exit(EXIT_CODE.APP_DEFINE_EXIT);
       }
 
       const backoff = getBackOff(attempts);

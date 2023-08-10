@@ -1,4 +1,5 @@
 const { StatusCodes } = require("http-status-codes");
+const { EXIT_CODE } = require("../src/infrastructure-layer/constants");
 
 function getRandomElement(arr) {
   const idx = Math.floor(Math.random() * arr.length);
@@ -59,7 +60,7 @@ module.exports = Object.freeze({
     if (res.statusCode === StatusCodes.TOO_MANY_REQUESTS) {
       const { message } = JSON.parse(res.body);
       console.error(`err: ${message} 종료합니다.`);
-      process.exit(1);
+      process.exit(EXIT_CODE.APP_DEFINE_EXIT);
     }
 
     return next();

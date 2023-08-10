@@ -7,10 +7,11 @@ require("./src/infrastructure-layer/external-services/database").init();
 const app = require("./src/infrastructure-layer/configs/app");
 require("./src/infrastructure-layer/external-services/monitoring").init(app);
 const logger = require("./src/infrastructure-layer/configs/logger");
+const { EXIT_CODE } = require("./src/infrastructure-layer/constants");
 
 if (!process.env.PORT) {
   logger.error("포트번호가 존재하지 않습니다.");
-  process.exit(2);
+  process.exit(EXIT_CODE.CMD_ARG_EXIT);
 }
 
 const server = (() => {
