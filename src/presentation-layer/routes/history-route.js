@@ -1,6 +1,6 @@
 module.exports = ({
   express,
-  historyController: controller,
+  controller,
   checkSessionCookie,
   checkQuizQueryString,
   httpRequestLimiter,

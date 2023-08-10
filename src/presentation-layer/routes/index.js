@@ -1,4 +1,5 @@
 const express = require("express");
+
 const makeLeaderBoardRoute = require("./leader-board-route");
 const makeUserRoute = require("./user-route");
 const makeHistoryRoute = require("./history-route");
@@ -17,23 +18,23 @@ const {
 
 const leaderBoardRoute = makeLeaderBoardRoute({
   express,
-  leaderBoardController,
+  controller: leaderBoardController,
 });
 const userRoute = makeUserRoute({
   express,
-  userController,
+  controller: userController,
   checkSessionCookie: authenticatorMiddleware.checkSessionCookie,
 });
 const historyRoute = makeHistoryRoute({
   express,
-  historyController,
+  controller: historyController,
   checkSessionCookie: authenticatorMiddleware.checkSessionCookie,
   checkQuizQueryString: quizMiddleware.checkQuizQueryString,
   httpRequestLimiter: httpRequestLimiterMiddleware.rateLimit,
 });
 const quizRoute = makeQuizRoute({
   express,
-  quizController,
+  controller: quizController,
   checkSessionCookie: authenticatorMiddleware.checkSessionCookie,
   checkQuizQueryString: quizMiddleware.checkQuizQueryString,
   checkQuizCache: quizMiddleware.checkQuizCache,

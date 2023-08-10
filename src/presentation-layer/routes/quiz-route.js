@@ -1,6 +1,6 @@
 module.exports = ({
   express,
-  quizController: controller,
+  controller,
   checkSessionCookie,
   checkQuizQueryString,
   checkQuizCache,

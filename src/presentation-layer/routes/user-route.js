@@ -1,8 +1,4 @@
-module.exports = ({
-  express,
-  userController: controller,
-  checkSessionCookie,
-}) => {
+module.exports = ({ express, controller, checkSessionCookie }) => {
   const router = express.Router();
 
   // 회원 가입 API

@@ -1,4 +1,4 @@
-module.exports = ({ express, leaderBoardController: controller }) => {
+module.exports = ({ express, controller }) => {
   const router = express.Router();
 
   // 사용자별 순위 전체조회 API
