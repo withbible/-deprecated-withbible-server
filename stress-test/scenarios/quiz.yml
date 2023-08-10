@@ -1,5 +1,5 @@
 config:
-  target: "{{ $processEnvironment.CLOUD_HOST }}"
+  target: "{{ $processEnvironment.LOCAL_HOST }}"
   tls:
     rejectUnauthorized: false
     client:
@@ -12,25 +12,35 @@ config:
       arrivalRate: 1
     - name: "Mild load on the application"
       duration: 10
-      rampTo: 30
-    - name: "Putting load on the application"
-      duration: 180
-      arrivalRate: 3
-      maxVusers: 120
-before:
-  flow:
-    - log: "로그인"
-    - patch:
-        url: "/user/login"
-        auth:
-          user: "{{ $processEnvironment.TEST_USER_ID }}"
-          pass: "{{ $processEnvironment.TEST_PASSWORD }}"
-        json:
-          isAutoLogin: false
-        afterResponse: "setCookieValue"        
+      rampTo: 10
+    # - name: "Putting load on the application"
+    #   duration: 180
+    #   arrivalRate: 3
+    #   maxVusers: 120
+  variables:
+    userID:
+      - test01
+      - test02
+      - test03
+      - test04
+      - test05
+      - test06
+      - test07
+      - test08
+      - test09
+      - test10
 scenarios:
   - name: "퀴즈"
     flow:
+      # 로그인 API
+      - patch:
+          url: "/user/login"
+          auth:
+            user: "{{ userID }}"
+            pass: "{{ $processEnvironment.TEST_PASSWORD }}"
+          json:
+            isAutoLogin: false
+          afterResponse: "setCookieValue"
       # 카테고리별 검색어를 포함한 챕터수 조회 API
       - get:
           url: "/quiz/categories/chapter"
@@ -49,9 +59,7 @@ scenarios:
           url: "/history/chapter/user-option?categorySeq={{ categorySeq }}&chapterNum={{ chapterNum }}"
           cookie:
             loginData: "{{ cookieValue }}"
-          afterResponse:
-            - "isTooManyRequests"
-            - "setStatusCode"
+          afterResponse: "setStatusCode"
       # 한 챕터의 선택기록 생성 API
       - post:
           url: "/history/chapter/user-option?categorySeq={{ categorySeq }}&chapterNum={{ chapterNum }}"
@@ -78,10 +86,8 @@ scenarios:
           url: "/history/category/active-chapter-count?categorySeq={{ categorySeq }}"
           cookie:
             loginData: "{{ cookieValue }}"
-after:
-  flow:
-    - log: "로그아웃"
-    - patch:
-        url: "/user/logout"
-        cookie:
-          loginData: "{{ cookieValue }}"
+      # 로그아웃 API
+      - patch:
+          url: "/user/logout"
+          cookie:
+            loginData: "{{ cookieValue }}"
