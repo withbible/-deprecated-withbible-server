@@ -12,5 +12,4 @@ etc/
 .vscode/
 
 # test
-test/reports/
 .clinic/
