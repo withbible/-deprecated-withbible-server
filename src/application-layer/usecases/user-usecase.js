@@ -1,7 +1,10 @@
-const bcypt = require("bcrypt");
-const { StatusCodes } = require("http-status-codes");
-
-module.exports = (userRepository, leaderBoardRepository, database) => {
+module.exports = ({
+  userRepository,
+  leaderBoardRepository,
+  database,
+  bcypt,
+  StatusCodes,
+}) => {
   return Object.freeze({
     post,
     patch,

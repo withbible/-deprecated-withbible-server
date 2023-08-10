@@ -1,11 +1,10 @@
-const { StatusCodes } = require("http-status-codes");
-
-module.exports = (
+module.exports = ({
   historyRepository,
   leaderBoardRepository,
   quizRepository,
-  database
-) => {
+  database,
+  StatusCodes,
+}) => {
   return Object.freeze({
     getUserOption,
     postUserOption,
@@ -244,9 +243,9 @@ module.exports = (
   async function getActiveChapter(categorySeq, userSeq) {
     const result = categorySeq
       ? await historyRepository.selectActiveChapterByCategorySeq(
-          userSeq,
-          categorySeq
-        )
+        userSeq,
+        categorySeq
+      )
       : await historyRepository.selectActiveChapter(userSeq);
 
     if (!result.length) {

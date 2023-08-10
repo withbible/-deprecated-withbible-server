@@ -1,8 +1,8 @@
 require("dotenv").config();
 const { expect } = require("chai");
+const bcypt = require("bcrypt");
 const { StatusCodes } = require("http-status-codes");
 
-// INTERNAL IMPORT
 const makeUserUsecase = require("./user-usecase");
 const {
   leaderBoardRepository,
@@ -10,7 +10,6 @@ const {
 } = require("../../data-access-layer/repositories");
 const database = require("../../infrastructure-layer/external-services/database");
 
-// CONSTANT
 const userID = process.env.TEST_USER_ID;
 const password = process.env.TEST_PASSWORD;
 const userEmail = process.env.TEST_USER_EMAIL;
@@ -21,7 +20,13 @@ describe("사용자 관리 도메인", () => {
   before(async () => {
     await database.init();
 
-    usecase = makeUserUsecase(userRepository, leaderBoardRepository, database);
+    usecase = makeUserUsecase({
+      userRepository,
+      leaderBoardRepository,
+      database,
+      bcypt,
+      StatusCodes,
+    });
   });
 
   it("회원 가입", async () => {

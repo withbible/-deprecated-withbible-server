@@ -2,8 +2,7 @@ require("dotenv").config();
 const { expect } = require("chai");
 const { StatusCodes } = require("http-status-codes");
 
-// INTERNAL IMPORT
-const makeLeaderBoardUseCase = require("./leader-board-usecase");
+const makeLeaderBoardUsecase = require("./leader-board-usecase");
 const {
   leaderBoardRepository,
 } = require("../../data-access-layer/repositories");
@@ -15,7 +14,10 @@ describe("사용자별 순위 도메인", () => {
   before(async () => {
     await database.init();
 
-    usecase = makeLeaderBoardUseCase(leaderBoardRepository);
+    usecase = makeLeaderBoardUsecase({
+      repository: leaderBoardRepository,
+      StatusCodes,
+    });
   });
 
   it("사용자별 순위 전체조회", async () => {

@@ -2,7 +2,6 @@ require("dotenv").config();
 const { expect } = require("chai");
 const { StatusCodes } = require("http-status-codes");
 
-// INTERNAL IMPORT
 const makeQuizUsecase = require("./quiz-usecase");
 const { quizRepository } = require("../../data-access-layer/repositories");
 const database = require("../../infrastructure-layer/external-services/database");
@@ -13,7 +12,11 @@ describe("퀴즈 도메인", () => {
   before(async () => {
     await database.init();
 
-    usecase = makeQuizUsecase(quizRepository, database);
+    usecase = makeQuizUsecase({
+      repository: quizRepository,
+      database,
+      StatusCodes,
+    });
   });
 
   it("카테고리별 챕터수 전체조회", async () => {

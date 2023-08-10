@@ -1,9 +1,6 @@
-const { StatusCodes } = require("http-status-codes");
+module.exports = ({ repository, database, StatusCodes }) => {
+  const MAX_QUESTION_COUNT = 3;
 
-// CONSTNAT
-const MAX_QUESTION_COUNT = 3;
-
-module.exports = (repository, database) => {
   return Object.freeze({
     getChapter,
     getQuiz,

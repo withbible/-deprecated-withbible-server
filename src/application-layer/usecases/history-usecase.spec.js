@@ -2,7 +2,6 @@ require("dotenv").config();
 const { expect } = require("chai");
 const { StatusCodes } = require("http-status-codes");
 
-// INTERNAL IMPORT
 const makeHistoryUsecase = require("./history-usecase");
 const {
   leaderBoardRepository,
@@ -11,7 +10,6 @@ const {
 } = require("../../data-access-layer/repositories");
 const database = require("../../infrastructure-layer/external-services/database");
 
-// CONSTANT
 const userSeq = process.env.TEST_USER_SEQ;
 const categorySeq = 1;
 const chapterNum = 3;
@@ -28,12 +26,13 @@ describe("사용자 기록 도메인", () => {
   before(async () => {
     await database.init();
 
-    usecase = makeHistoryUsecase(
+    usecase = makeHistoryUsecase({
       historyRepository,
       leaderBoardRepository,
       quizRepository,
-      database
-    );
+      database,
+      StatusCodes,
+    });
   });
 
   it("한 챕터의 선택기록 생성", async () => {

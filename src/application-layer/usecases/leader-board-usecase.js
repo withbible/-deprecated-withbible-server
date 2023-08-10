@@ -1,6 +1,4 @@
-const { StatusCodes } = require("http-status-codes");
-
-module.exports = (repository) => {
+module.exports = ({ repository, StatusCodes }) => {
   return Object.freeze({
     getLeaderBoard,
     getLeaderBoardPage,
