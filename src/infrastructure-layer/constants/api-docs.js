@@ -1,57 +1,4 @@
-module.exports = {
-  USER_API_DOCS: Object.freeze([
-    {
-      rel: "POST",
-      moreInfo: this["POST.USER"],
-    },
-    {
-      rel: "PATCH.LOGIN",
-      moreInfo: this["PATCH.LOGIN"],
-    },
-    {
-      rel: "PATCH.LOGOUT",
-      moreInfo: this["PATCH.LOGOUT"],
-    },
-    {
-      rel: "GET",
-      moreInfo: this["GET.LOGIN-CHECK"],
-    },
-  ]),
-
-  QUIZ_API_DOCS: Object.freeze([
-    {
-      rel: "GET",
-      moreInfo: this["GET.QUIZ"],
-    },
-    {
-      rel: "POST",
-      moreInfo: this["POST.QUIZ"],
-    },
-    {
-      rel: "PUT",
-      moreInfo: this["PUT.QUIZ"],
-    },
-  ]),
-
-  HISTORY_API_DOCS: Object.freeze([
-    {
-      rel: "GET",
-      moreInfo: this["GET.USER-OPTION"],
-    },
-    {
-      rel: "POST",
-      moreInfo: this["POST.USER-OPTION"],
-    },
-    {
-      rel: "PUT",
-      moreInfo: this["PUT.USER-OPTION"],
-    },
-    {
-      rel: "DELETE",
-      moreInfo: this["DELETE.USER-OPTION"],
-    },
-  ]),
-
+const link = {
   "POST.USER":
     "https://documenter.getpostman.com/view/11900791/2s8YswQrkS#ab2dfa38-50f7-444c-911d-19275bac968d",
   "PATCH.LOGIN":
@@ -92,4 +39,59 @@ module.exports = {
     "https://documenter.getpostman.com/view/11900791/2s8YswQrkS#29f7b890-3ef6-4428-befb-a165524a00ce",
   "GET.LEADER-BOARD-PAGE":
     "https://documenter.getpostman.com/view/11900791/2s8YswQrkS#6e92a59d-1ada-4b77-8625-6efd421d32b8",
+};
+
+module.exports = {
+  USER_API_DOCS: Object.freeze([
+    {
+      rel: "POST",
+      moreInfo: link["POST.USER"],
+    },
+    {
+      rel: "PATCH.LOGIN",
+      moreInfo: link["PATCH.LOGIN"],
+    },
+    {
+      rel: "PATCH.LOGOUT",
+      moreInfo: link["PATCH.LOGOUT"],
+    },
+    {
+      rel: "GET",
+      moreInfo: link["GET.LOGIN-CHECK"],
+    },
+  ]),
+
+  QUIZ_API_DOCS: Object.freeze([
+    {
+      rel: "GET",
+      moreInfo: link["GET.QUIZ"],
+    },
+    {
+      rel: "POST",
+      moreInfo: link["POST.QUIZ"],
+    },
+    {
+      rel: "PUT",
+      moreInfo: link["PUT.QUIZ"],
+    },
+  ]),
+
+  HISTORY_API_DOCS: Object.freeze([
+    {
+      rel: "GET",
+      moreInfo: link["GET.USER-OPTION"],
+    },
+    {
+      rel: "POST",
+      moreInfo: link["POST.USER-OPTION"],
+    },
+    {
+      rel: "PUT",
+      moreInfo: link["PUT.USER-OPTION"],
+    },
+    {
+      rel: "DELETE",
+      moreInfo: link["DELETE.USER-OPTION"],
+    },
+  ]),
 };
