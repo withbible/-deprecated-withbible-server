@@ -1,15 +1,11 @@
 module.exports = {
-  filterReferenceOther(iteratee, target) {
-    return iteratee.filter((each) => each.rel !== target);
-  },
+  filterReferenceOther: (iteratee, target) =>
+    iteratee.filter((each) => each.rel !== target),
 
-  sleep(ms) {
-    return new Promise((resolve) => {
+  sleep: (ms) =>
+    new Promise((resolve) => {
       setTimeout(resolve, ms);
-    });
-  },
+    }),
 
-  getBackOff(attempts) {
-    return 2 ** (attempts - 1) * 1000;
-  },
+  getBackOff: (attempts) => 2 ** (attempts - 1) * 1000,
 };
