@@ -4,8 +4,8 @@
     ".github/",
     ".vscode",
     "etc/",
-    "stress-test/scenarios/",
-    "stress-test/*.bat",
+    "load-test/scenarios/",
+    "load-test/*.bat",
     "src/**/*.spec.js"
   ],
   "env": {

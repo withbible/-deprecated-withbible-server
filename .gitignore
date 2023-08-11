@@ -11,5 +11,5 @@ etc/
 # debug
 .vscode/
 
-# test
+# performance-test
 .clinic/
