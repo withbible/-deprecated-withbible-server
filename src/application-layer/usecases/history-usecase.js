@@ -305,39 +305,34 @@ module.exports = ({
 
   async function getAvgHitCount() {
     const rows = await historyRepository.selectAvgHitCount();
-    const result = [];
+    const mergeRows = [];
 
     rows.forEach((each) => {
-      const index = result.findIndex(
+      const index = mergeRows.findIndex(
         (exist) => exist.categorySeq === each.categorySeq
       );
 
       if (index > -1) {
-        result[index].chapterNumArray = result[index].chapterNumArray.concat({
+        mergeRows[index].chapterNumArray = mergeRows[
+          index
+        ].chapterNumArray.concat({
           chapterNum: each.chapterNum,
           avgHitQuestionCount: each.avgHitQuestionCount,
           questionCount: each.questionCount,
         });
       } else {
-        // eslint-disable-next-line no-param-reassign
-        each.chapterNumArray = [
-          {
-            chapterNum: each.chapterNum,
-            avgHitQuestionCount: each.avgHitQuestionCount,
-            questionCount: each.questionCount,
-          },
-        ];
-        result.push(each);
+        const { categorySeq, ...rest } = each;
+
+        mergeRows.push({
+          categorySeq,
+          chapterNumArray: [rest],
+        });
       }
     });
 
-    result.forEach((each) => {
-      // eslint-disable-next-line no-param-reassign
-      delete each.chapterNum;
-      // eslint-disable-next-line no-param-reassign
-      delete each.avgHitQuestionCount;
-      // eslint-disable-next-line no-param-reassign
-      delete each.questionCount;
+    const result = mergeRows.map((each) => {
+      const { chapterNum, avgHitQuestionCount, questionCount, ...rest } = each;
+      return rest;
     });
 
     return Promise.resolve(result);
