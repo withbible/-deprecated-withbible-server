@@ -37,11 +37,11 @@ module.exports = ({ usecase, logger, path, docs, response, errResponse }) => {
             links: [
               {
                 rel: "self",
-                link: req.url,
+                link: req.originalUrl,
               },
               {
                 rel: "last",
-                link: req.url.replace(/\d$/, lastPage),
+                link: req.originalUrl.replace(/\d$/, lastPage),
               },
             ],
           },
