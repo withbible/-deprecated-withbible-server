@@ -15,42 +15,38 @@ const fileName = path.basename(__filename, ".js");
 // MAIN
 function PushNotification() {
   BaseThirdPartyConfig.call(this);
-
-  return {
-    init,
-    get,
-  };
-
-  async function initPromisfy(config) {
-    return Promise.resolve(new PushNotifications(config));
-  }
-
-  async function init() {
-    try {
-      this.client = await initPromisfy(config);
-
-      logger.info("Pusher Beams connected");
-    } catch (err) {
-      logger.error(`[${fileName}]_${err.message}`);
-    }
-  }
-
-  // eslint-disable-next-line no-unused-vars
-  async function retry() {
-    /**
-     * @link https://pusher.com/docs/beams/concepts/webhooks/?_gl=1*10b0ewk*_gcl_au*NTU3MjY4NDk0LjE2ODU0MjA5NDEuMTUzNDg2MzA1OC4xNjg1OTQ2MjkyLjE2ODU5NDYyOTI.#retry-strategy
-     */
-    throw new Error(
-      "If your server fails to reply with the expected response, we will retry the webhook request up to four times – first after 10 seconds, then a further 30 seconds, a further 120 seconds, and finally a further 300 seconds."
-    );
-  }
-
-  async function get() {
-    return this.client;
-  }
+  this.client = null;
 }
 
 PushNotification.prototype = Object.create(BaseThirdPartyConfig.prototype);
 PushNotification.prototype.constructor = PushNotification;
+
+PushNotification.prototype.initPromisify = async function (config) {
+  return Promise.resolve(new PushNotifications(config));
+};
+
+PushNotification.prototype.init = async function () {
+  try {
+    this.client = await this.initPromisify(config);
+
+    logger.info("Pusher Beams connected");
+  } catch (err) {
+    logger.error(`[${fileName}]_${err.message}`);
+  }
+};
+
+// eslint-disable-next-line no-unused-vars
+PushNotification.prototype.retry = async function () {
+  /**
+   * @link https://pusher.com/docs/beams/concepts/webhooks/?_gl=1*10b0ewk*_gcl_au*NTU3MjY4NDk0LjE2ODU0MjA5NDEuMTUzNDg2MzA1OC4xNjg1OTQ2MjkyLjE2ODU5NDYyOTI.#retry-strategy
+   */
+  throw new Error(
+    "If your server fails to reply with the expected response, we will retry the webhook request up to four times – first after 10 seconds, then a further 30 seconds, a further 120 seconds, and finally a further 300 seconds."
+  );
+};
+
+PushNotification.prototype.get = async function () {
+  return this.client;
+};
 
 module.exports = new PushNotification();

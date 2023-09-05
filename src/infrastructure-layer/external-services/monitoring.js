@@ -19,51 +19,47 @@ const sentryConfig = {
 // MAIN
 function Monitoring() {
   BaseThirdPartyConfig.call(this);
-
-  return {
-    init,
-  };
-
-  async function init(app) {
-    try {
-      await Sentry.init({
-        ...sentryConfig,
-        ...{
-          integrations: [
-            new Integrations.Http({ tracing: true }),
-            new Integrations.Express({ app }),
-            new ProfilingIntegration(),
-          ],
-        },
-      });
-
-      logger.info("Sentry connected");
-    } catch (err) {
-      await retry();
-    }
-  }
-
-  async function retry(attempts = 1) {
-    try {
-      Sentry.captureMessage("Check connection");
-    } catch (err) {
-      if (attempts > MAX_RETRY_ATTEMPTS) {
-        logger.error(
-          `Unable to connect to Sentry in ${attempts} attempts, exiting`
-        );
-        process.exit(EXIT_CODE.APP_DEFINE_EXIT);
-      }
-
-      const backoff = getBackOff(attempts);
-      logger.warn(`Unable to connect to Sentry, trying again in ${backoff}ms`);
-
-      await sleep(backoff);
-      return retry(attempts + 1);
-    }
-  }
 }
 
 Monitoring.prototype = Object.create(BaseThirdPartyConfig.prototype);
 Monitoring.prototype.constructor = Monitoring;
+
+Monitoring.prototype.init = async function (app) {
+  try {
+    await Sentry.init({
+      ...sentryConfig,
+      ...{
+        integrations: [
+          new Integrations.Http({ tracing: true }),
+          new Integrations.Express({ app }),
+          new ProfilingIntegration(),
+        ],
+      },
+    });
+
+    logger.info("Sentry connected");
+  } catch (err) {
+    await this.retry();
+  }
+};
+
+Monitoring.prototype.retry = async function (attempts = 1) {
+  try {
+    Sentry.captureMessage("Check connection");
+  } catch (err) {
+    if (attempts > MAX_RETRY_ATTEMPTS) {
+      logger.error(
+        `Unable to connect to Sentry in ${attempts} attempts, exiting`
+      );
+      process.exit(EXIT_CODE.APP_DEFINE_EXIT);
+    }
+
+    const backoff = getBackOff(attempts);
+    logger.warn(`Unable to connect to Sentry, trying again in ${backoff}ms`);
+
+    await sleep(backoff);
+    return this.retry(attempts + 1);
+  }
+};
 
 module.exports = new Monitoring();

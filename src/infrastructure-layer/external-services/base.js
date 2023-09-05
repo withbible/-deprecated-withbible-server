@@ -1,21 +1,15 @@
-function BaseThirdPartyConfig() {
-  return {
-    init,
-    retry,
-    get,
-  };
+function BaseThirdPartyConfig() {}
 
-  async function init() {
-    throw new Error("구현체에서 호출해주세요.");
-  }
+BaseThirdPartyConfig.prototype.init = async function() {
+  throw new Error("구현체에서 호출해주세요.");
+}
 
-  async function retry() {
-    throw new Error("구현체에서 호출해주세요.");
-  }
+BaseThirdPartyConfig.prototype.retry = async function () {
+  throw new Error("구현체에서 호출해주세요.");
+}
 
-  async function get() {
-    throw new Error("구현체에서 호출해주세요.");
-  }
+BaseThirdPartyConfig.prototype.get = async function (){
+  throw new Error("구현체에서 호출해주세요.");
 }
 
 module.exports = BaseThirdPartyConfig;

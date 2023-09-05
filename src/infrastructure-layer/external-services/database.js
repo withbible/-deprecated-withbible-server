@@ -19,50 +19,45 @@ const dbConfig = {
 // MAIN
 function Database() {
   BaseThirdPartyConfig.call(this);
-
-  return {
-    init,
-    retry,
-    get,
-  };
-
-  async function init() {
-    try {
-      const sslConfig = await getSSLConfigRemote();
-      this.pool = mysql.createPool({ ...dbConfig, ...sslConfig });
-
-      logger.info("MySQL connected");
-    } catch (err) {
-      await retry();
-    }
-  }
-
-  async function retry(attempts = 1) {
-    try {
-      await this.pool.query("SELECT 1");
-    } catch (err) {
-      if (attempts > MAX_RETRY_ATTEMPTS) {
-        logger.error(
-          `Unable to connect to MySQL in ${attempts} attempts, exiting`
-        );
-        process.exit(EXIT_CODE.APP_DEFINE_EXIT);
-      }
-
-      const backoff = getBackOff(attempts);
-      logger.warn(`Unable to connect to MySQL, trying again in ${backoff}ms
-      `);
-
-      await sleep(backoff);
-      return retry(attempts + 1);
-    }
-  }
-
-  async function get() {
-    return this.pool;
-  }
+  this.pool = null;
 }
 
 Database.prototype = Object.create(BaseThirdPartyConfig.prototype);
 Database.prototype.constructor = Database;
+
+Database.prototype.init = async function () {
+  try {
+    const sslConfig = await getSSLConfigRemote();
+    this.pool = mysql.createPool({ ...dbConfig, ...sslConfig });
+
+    logger.info("MySQL connected");
+  } catch (err) {
+    await this.retry();
+  }
+};
+
+Database.prototype.retry = async function (attempts = 1) {
+  try {
+    await this.pool.query("SELECT 1");
+  } catch (err) {
+    if (attempts > MAX_RETRY_ATTEMPTS) {
+      logger.error(
+        `Unable to connect to MySQL in ${attempts} attempts, exiting`
+      );
+      process.exit(EXIT_CODE.APP_DEFINE_EXIT);
+    }
+
+    const backoff = getBackOff(attempts);
+    logger.warn(`Unable to connect to MySQL, trying again in ${backoff}ms
+    `);
+
+    await sleep(backoff);
+    return this.retry(attempts + 1);
+  }
+};
+
+Database.prototype.get = async function () {
+  return this.pool;
+};
 
 module.exports = new Database();
