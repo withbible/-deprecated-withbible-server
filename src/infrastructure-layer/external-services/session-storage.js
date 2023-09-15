@@ -2,7 +2,7 @@ const redis = require("redis");
 
 // INTERNAL IMPORT
 const logger = require("../configs/logger");
-const BaseThirdPartyConfig = require("./base");
+const BaseExternalService = require("./base");
 const { MAX_RETRY_ATTEMPTS, EXIT_CODE } = require("../constants");
 
 // CONSTANT
@@ -12,11 +12,11 @@ const redisConfig = {
 
 // MAIN
 function SessionStorage() {
-  BaseThirdPartyConfig.call(this);
+  BaseExternalService.call(this);
   this.client = null;
 }
 
-SessionStorage.prototype = Object.create(BaseThirdPartyConfig.prototype);
+SessionStorage.prototype = Object.create(BaseExternalService.prototype);
 SessionStorage.prototype.constructor = SessionStorage;
 
 SessionStorage.prototype.init = async function () {

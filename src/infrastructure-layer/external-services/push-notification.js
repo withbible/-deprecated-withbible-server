@@ -3,7 +3,7 @@ const PushNotifications = require("@pusher/push-notifications-server");
 // INTERNAL IMPORT
 const path = require("path");
 const logger = require("../configs/logger");
-const BaseThirdPartyConfig = require("./base");
+const BaseExternalService = require("./base");
 
 // CONSTANT
 const config = {
@@ -14,11 +14,11 @@ const fileName = path.basename(__filename, ".js");
 
 // MAIN
 function PushNotification() {
-  BaseThirdPartyConfig.call(this);
+  BaseExternalService.call(this);
   this.client = null;
 }
 
-PushNotification.prototype = Object.create(BaseThirdPartyConfig.prototype);
+PushNotification.prototype = Object.create(BaseExternalService.prototype);
 PushNotification.prototype.constructor = PushNotification;
 
 PushNotification.prototype.initPromisify = async function (config) {

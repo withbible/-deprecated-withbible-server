@@ -2,7 +2,7 @@ const mysql = require("mysql2/promise");
 
 // INTERNAL IMPORT
 const logger = require("../configs/logger");
-const BaseThirdPartyConfig = require("./base");
+const BaseExternalService = require("./base");
 const getSSLConfigRemote = require("../configs/ssl-config-remote");
 const { sleep, getBackOff } = require("../../utils");
 const { MAX_RETRY_ATTEMPTS, EXIT_CODE } = require("../constants");
@@ -18,11 +18,11 @@ const dbConfig = {
 
 // MAIN
 function Database() {
-  BaseThirdPartyConfig.call(this);
+  BaseExternalService.call(this);
   this.pool = null;
 }
 
-Database.prototype = Object.create(BaseThirdPartyConfig.prototype);
+Database.prototype = Object.create(BaseExternalService.prototype);
 Database.prototype.constructor = Database;
 
 Database.prototype.init = async function () {

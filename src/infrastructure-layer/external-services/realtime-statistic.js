@@ -3,7 +3,7 @@ const Pusher = require("pusher");
 // INTERNAL IMPORT
 const path = require("path");
 const logger = require("../configs/logger");
-const BaseThirdPartyConfig = require("./base");
+const BaseExternalService = require("./base");
 
 // CONSTANT
 const pusherConfig = {
@@ -17,11 +17,11 @@ const fileName = path.basename(__filename, ".js");
 
 // MAIN
 function RealtimeStatistic() {
-  BaseThirdPartyConfig.call(this);
+  BaseExternalService.call(this);
   this.pusher = null;
 }
 
-RealtimeStatistic.prototype = Object.create(BaseThirdPartyConfig.prototype);
+RealtimeStatistic.prototype = Object.create(BaseExternalService.prototype);
 RealtimeStatistic.prototype.constructor = RealtimeStatistic;
 
 RealtimeStatistic.prototype.init = async function () {

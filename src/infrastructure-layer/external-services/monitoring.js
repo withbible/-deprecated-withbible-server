@@ -4,7 +4,7 @@ const { ProfilingIntegration } = require("@sentry/profiling-node");
 
 // INTERNAL IMPORT
 const logger = require("../configs/logger");
-const BaseThirdPartyConfig = require("./base");
+const BaseExternalService = require("./base");
 const { MAX_RETRY_ATTEMPTS, EXIT_CODE } = require("../constants");
 const { sleep, getBackOff } = require("../../utils");
 
@@ -18,10 +18,10 @@ const sentryConfig = {
 
 // MAIN
 function Monitoring() {
-  BaseThirdPartyConfig.call(this);
+  BaseExternalService.call(this);
 }
 
-Monitoring.prototype = Object.create(BaseThirdPartyConfig.prototype);
+Monitoring.prototype = Object.create(BaseExternalService.prototype);
 Monitoring.prototype.constructor = Monitoring;
 
 Monitoring.prototype.init = async function (app) {
