@@ -14,7 +14,7 @@ module.exports = (database) => {
     const query = `
       SELECT
         u.user_id AS userID,      
-        CONCAT('https://avatars.dicebear.com/api/micah/', u.user_id,'.svg') AS image,
+        CONCAT('https://api.dicebear.com/7.x/micah/svg?seed=', u.user_id) AS image,
         ul.quiz_score AS quizScore,
         ul.updated_at AS updatedAt
       FROM user_leaderboard AS ul
@@ -32,7 +32,7 @@ module.exports = (database) => {
     const query = `
       SELECT
         u.user_id AS userID,      
-        CONCAT('https://avatars.dicebear.com/api/micah/', u.user_id,'.svg') AS image,
+        CONCAT('https://api.dicebear.com/7.x/micah/svg?seed=', u.user_id) AS image,
         ul.quiz_score AS quizScore,
         ul.updated_at AS updatedAt
       FROM user_leaderboard AS ul
