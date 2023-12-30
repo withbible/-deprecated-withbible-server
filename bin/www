@@ -1,11 +1,4 @@
-require("dotenv").config();
-require("../src/infrastructure-layer/external-services/session-storage").init();
-require("../src/infrastructure-layer/external-services/realtime-statistic").init();
-require("../src/infrastructure-layer/external-services/push-notification").init();
-require("../src/infrastructure-layer/external-services/database").init();
-
 const app = require("../src/infrastructure-layer/configs/app");
-require("../src/infrastructure-layer/external-services/monitoring").init(app);
 const logger = require("../src/infrastructure-layer/configs/logger");
 const { EXIT_CODE } = require("../src/infrastructure-layer/constants");
 

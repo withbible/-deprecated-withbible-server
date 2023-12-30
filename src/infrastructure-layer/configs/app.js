@@ -1,6 +1,12 @@
+require("dotenv").config();
 const express = require("express");
 const Sentry = require("@sentry/node");
 const { StatusCodes: statusCodes } = require("http-status-codes");
+
+require("../external-services/session-storage").init();
+require("../external-services/realtime-statistic").init();
+require("../external-services/push-notification").init();
+require("../external-services/database").init();
 
 const {
   handleErrorMiddleware,
@@ -18,6 +24,7 @@ const {
 
 module.exports = () => {
   const app = express();
+  require("../external-services/monitoring").init(app);
 
   app.use(
     Sentry.Handlers.requestHandler(),
