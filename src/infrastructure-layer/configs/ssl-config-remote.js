@@ -1,4 +1,4 @@
-const axios = require("axios");
+const fetch = require("node-fetch");
 
 module.exports = async () => {
   const REPO_URL =
@@ -9,10 +9,12 @@ module.exports = async () => {
   };
 
   const [keyResponse, certResponse] = await Promise.all([
-    axios.get(`${REPO_URL}/certs/localhost-key.pem`, {
+    fetch(`${REPO_URL}/certs/localhost-key.pem`, {
+      method: "GET",
       headers,
     }),
-    axios.get(`${REPO_URL}/certs/localhost.pem`, {
+    fetch(`${REPO_URL}/certs/localhost.pem`, {
+      method: "GET",
       headers,
     }),
   ]);
