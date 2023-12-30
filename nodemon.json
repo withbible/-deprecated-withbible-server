@@ -1,14 +1,11 @@
 {
+  "watch": ["bin/www", "src/"],
   "ignore": [
     ".clinic/",
-    ".github/",
     ".vscode",
     "etc/",
     "load-test/scenarios/",
     "load-test/*.bat",
     "src/**/*.spec.js"
-  ],
-  "env": {
-    "NODE_ENV": "development"
-  }
+  ]
 }
