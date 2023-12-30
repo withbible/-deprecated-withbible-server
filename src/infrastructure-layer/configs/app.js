@@ -19,9 +19,6 @@ const {
 module.exports = () => {
   const app = express();
 
-  // +++ Trust the nth hop from the front-facing proxy server as the client.
-  app.set("trust proxy", 1);
-
   app.use(
     Sentry.Handlers.requestHandler(),
     Sentry.Handlers.tracingHandler(),

@@ -15,11 +15,6 @@ if (!process.env.PORT) {
 }
 
 const server = (() => {
-  // +++ production 환경(cloudtype)에서 HTTPS 인증서 자동발급
-  if (process.env.NODE_ENV === "production") {
-    return app();
-  }
-
   const https = require("https");
   return https.createServer(
     require("./src/infrastructure-layer/configs/ssl-config-local")(),
