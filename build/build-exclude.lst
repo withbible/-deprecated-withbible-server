@@ -1,0 +1,11 @@
+../bin/www
+../build/*
+../etc/dump-withbible.sql
+../load-test/*
+../.git/*
+../.env
+../.eslintrc.json
+../.gitignore
+../.gitmojirc.json
+../.prettierrc.json
+../nodemon.json

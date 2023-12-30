@@ -1,10 +1,10 @@
 {
   "name": "withbible-server",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "bin/www",
   "scripts": {
-    "start": "cross-env NODE_ENV=production node index.js",
-    "dev": "cross-env NODE_ENV=development nodemon index.js"
+    "start": "cross-env NODE_ENV=production node bin/www",
+    "dev": "cross-env NODE_ENV=development nodemon bin/www"
   },
   "author": "Yongki Kim",
   "license": "ISC",
@@ -30,6 +30,7 @@
     "node-cron": "^3.0.2",
     "pusher": "^5.1.2",
     "redis": "^4.6.4",
+    "serverless-http": "^3.2.0",
     "winston": "^3.3.3"
   },
   "devDependencies": {
