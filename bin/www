@@ -11,7 +11,7 @@ const server = (() => {
   const https = require("https");
   return https.createServer(
     require("../src/infrastructure-layer/configs/ssl-config-local")(),
-    app()
+    app
   );
 })();
 
